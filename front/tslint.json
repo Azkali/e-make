@@ -1,0 +1,61 @@
+{
+    "defaultSeverity": "error",
+    "rulesDirectory": [],
+    "jsRules": {},
+    "rules": {
+        
+        "align": [true, "arguments", "elements", "members", "parameters", "statements"],
+        "array-type": [true, "array-simple"],
+        "arrow-return-shorthand": [true, "multiline"],
+        "await-promise": true,
+        "ban-types": false,
+        "callable-types": true,
+        "completed-docs": [true, "enums", "functions", "methods"],
+        "curly": true,
+        "eofline": true,
+        "indent": [true, "tabs", 4],
+        "interface-name": [true, "always-prefix"],
+        "interface-over-type-literal": true,
+        "jsdoc-format": [true, "check-multiline-start"],
+        "linebreak-style": [true, "LF"],
+        "member-access": [true, "check-accessor", "check-constructor", "check-parameter-property"],
+        "new-parens": true,
+        "no-angle-bracket-type-assertion": true,
+        "no-boolean-literal-compare": true,
+        "no-consecutive-blank-lines": false,
+        "no-console": false,
+        "no-duplicate-variable": [true, "check-parameters"],
+        "no-floating-promises": true,
+        "no-implicit-dependencies": true,
+        "no-inferred-empty-object-type": true,
+        "no-invalid-template-strings": true,
+        "no-irregular-whitespace": true,
+        "no-redundant-jsdoc": true,
+        "no-return-await": true,
+        "no-string-throw": true,
+        "no-unnecessary-qualifier": [true],
+        "no-var-requires": false,
+        "object-literal-key-quotes": [true, "as-needed"],
+        "object-literal-sort-keys": false,
+        "one-variable-per-declaration": [true, "ignore-for-loop"],
+        "prefer-readonly": true,
+        "prefer-template": [true, "allow-single-concat"],
+        "quotemark": [true, "single", "avoid-escape", "avoid-template"],
+        "semicolon": [true, "always"],
+        "space-within-parens": [true, 1],
+        "trailing-comma": [
+            true,
+            {
+                "multiline": {
+                    "objects": "always",
+                    "arrays": "always",
+                    "functions": "never",
+                    "typeLiterals": "ignore"
+                },
+                "singleline": "never"
+            }
+        ],
+        "type-literal-delimiter": true,
+        "whitespace": [true, "check-branch", "check-operator", "check-typecast"]
+    }
+}

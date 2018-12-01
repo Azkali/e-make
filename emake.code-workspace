@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "front"
+		},
+		{
+			"path": "back"
+		},
+		{
+			"path": "cross"
+		},
+		{
+			"path": "/mnt/shared/Work/nodejs/@diaspora/plugin-server"
+		}
+	],
+	"settings": {}
+}
