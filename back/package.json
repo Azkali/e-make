@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@diaspora/diaspora": "^0.3.0",
+    "@diaspora/diaspora": "^0.3.1",
     "@diaspora/plugin-server": "^0.2.0-alpha.3",
     "express": "^4.16.4",
     "express-gateway": "^1.13.0"
