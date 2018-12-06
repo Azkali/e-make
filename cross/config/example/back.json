@@ -1,0 +1,7 @@
+{
+    "domainName": "http://todo.e-make.io",
+    "port": 123456,
+    "host": "127.0.0.1",
+
+    "tokenSecret": "just type a secret"
+}
