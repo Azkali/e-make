@@ -12,11 +12,19 @@
   "dependencies": {
     "@diaspora/diaspora": "^0.3.1",
     "@diaspora/plugin-server": "^0.2.0-alpha.3",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
-    "express-gateway": "^1.13.0"
+    "express-gateway": "^1.13.0",
+    "express-session": "^1.15.6",
+    "jsonwebtoken": "^8.4.0",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^1.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
+    "@types/jsonwebtoken": "^8.3.0",
+    "@types/passport": "^0.4.7",
+    "@types/passport-google-oauth": "^1.0.39",
     "body-parser": "^1.18.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
