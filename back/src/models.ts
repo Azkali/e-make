@@ -1,5 +1,5 @@
 import { Diaspora } from '@diaspora/diaspora';
-import {product, user, attributeCategory, attribute, IProduct, IUser, IAttributeCategory, IAttribute} from '../cross/models';
+import {product, user, attributeCategory, attribute, IProduct, IUser, IAttributeCategory, IAttribute} from '../../cross/models';
 
 export const mainDataSource = Diaspora.createNamedDataSource( 'main', 'inMemory' );
 export const Product = Diaspora.declareModel<IProduct>( 'Product', {

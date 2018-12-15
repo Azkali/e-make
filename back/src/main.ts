@@ -3,7 +3,7 @@ import { initializePassport } from './authentication';
 import { ExpressApiGenerator } from '@diaspora/plugin-server';
 import express = require( 'express' );
 import './models';
-import { IUser, EAuthorization } from '../cross/models';
+import { IUser, EAuthorization } from '../../cross/models';
 import { mainDataSource } from './models';
 import { backConfig } from './configs';
 

@@ -2,7 +2,7 @@ import passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import express = require( 'express' );
 import { User } from './models';
-import { IUser, EAuthorization } from '../cross/models';
+import { IUser, EAuthorization } from '../../cross/models';
 import { Entity } from '@diaspora/diaspora/dist/types';
 import { sign } from 'jsonwebtoken';
 import { oauthConfigGoogle, backConfig, frontConfig } from './configs';
