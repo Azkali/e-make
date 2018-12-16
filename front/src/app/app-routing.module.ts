@@ -6,12 +6,14 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { CartComponent } from './pages/shop/cart/cart.component';
 import { ShopComponent } from './pages/shop/shop.component';
+import { MarkdownScrapperComponent } from './pages/markdown-scrapper/markdown-scrapper.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
   { path: 'index', component: IndexComponent },
+  { path: 'blog', component: MarkdownScrapperComponent },
   { path: 'shop', component: ShopComponent },
-  { path: 'blog', component: BlogComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'cart', component: CartComponent },
 ];

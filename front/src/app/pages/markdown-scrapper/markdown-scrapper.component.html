@@ -1,0 +1,4 @@
+<article *ngFor="let article of tree | async">
+    <h1>{{article.title}}</h1>
+    <showdown [value]="article.summary"></showdown>
+</article>
