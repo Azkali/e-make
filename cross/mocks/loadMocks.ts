@@ -19,7 +19,6 @@ export const loadMocks = async (
 				.toChainable( Set.ETransformationMode.PROPERTIES, dataSourceName )
 				.find<Array<IAttributeCategory & IEntityProperties>>( {name: attr.category.name} )
 				.value() as ( IAttributeCategory & IEntityProperties );
-			console.log( {attributeCategoryEntity, attr} );
 			attr.categoryId = attributeCategoryEntity.id;
 			delete attr.category;
 			return attr;
@@ -31,7 +30,6 @@ export const loadMocks = async (
 						.toChainable( Set.ETransformationMode.PROPERTIES, dataSourceName )
 						.find<Array<IAttributeCategory & IEntityProperties>>( {name: part.category.name} )
 						.value() as ( IAttributeCategory & IEntityProperties );
-					console.log( {attributeCategoryEntity, product} );
 					part.categoryId = attributeCategoryEntity.id;
 					delete part.category;
 					return part;

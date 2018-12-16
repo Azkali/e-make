@@ -1,17 +1,21 @@
+import { IProduct } from './product';
 import { IAttributeCategory } from './attributeCategory';
 import { EFieldType, EntityUid } from "@diaspora/diaspora";
 import { Raw } from "@diaspora/diaspora/dist/types/types/modelDescription";
 
 export interface IProduct{
 	name?: string;
-	customizableParts?: {
+	customizableParts?: IProduct.IPart[];
+	images?: string[];
+	basePrice: number;
+}
+export namespace IProduct{
+	export interface IPart{
 		factor: number;
 		name: string;
 		categoryId: EntityUid;
 		category?: IAttributeCategory;
-	}[];
-	images?: string[];
-	basePrice: number;
+	}
 }
 export const product: Raw.IAttributesDescription = {
 	name: EFieldType.STRING,
