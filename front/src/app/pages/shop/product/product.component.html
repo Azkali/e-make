@@ -1,0 +1,16 @@
+
+<a href="#" class="image">
+	<img [src]="product.images[0]" alt="" data-position="center center" />
+</a>
+<div class="content">
+	<div class="inner">
+		<header class="major">
+			<h3>{{product.name}}</h3>
+		</header>
+		<showdown [value]="product.summary"></showdown>
+		<p><em>Starts at {{ product.basePrice | currency:'€':true:'1.2-2'}}</em></p>
+		<ul class="actions">
+			<li><a class="button" [routerLink]="[product.name]">Learn more</a></li>
+		</ul>
+	</div>
+</div>

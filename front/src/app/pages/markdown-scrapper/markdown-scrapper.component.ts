@@ -13,6 +13,6 @@ export class MarkdownScrapperComponent {
 	public tree: Observable<IArticle[]>;
 
 	public constructor( private markdownScrapperService: MarkdownScrapperService ) {
-		this.tree = this.markdownScrapperService.observeArticles();
+		this.tree = this.markdownScrapperService.getBlogArticles();
 	}
 }

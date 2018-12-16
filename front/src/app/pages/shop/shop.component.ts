@@ -1,3 +1,4 @@
+import { MarkdownScrapperService } from './../../shared/services/markdown-scrapper.service';
 import { Component, OnInit } from '@angular/core';
 import { ShopService } from '../../shared/services/shop.service';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -8,7 +9,6 @@ import { IProduct } from '../../../../../cross/models/product';
 	selector: 'app-shop',
 	templateUrl: './shop.component.html',
 	styleUrls: ['./shop.component.css'],
-	providers: [ShopService],
 } )
 export class ShopComponent implements OnInit {
 	public products = new BehaviorSubject<IProduct[]>( [] );
@@ -24,15 +24,16 @@ export class ShopComponent implements OnInit {
 				() => this.reloadProducts()
 			);
 	}
-	
-	private async reloadProducts(){
+
+	private reloadProducts() {
 		console.info( 'Refresh shop content' );
 
-		const allItems = await this.dataManagerService.getAllProducts();
-
-		if ( allItems !== null ){
-			this.products.next( allItems.toChainable( Set.ETransformationMode.ATTRIBUTES ).value() );
-		}
+		this.dataManagerService.getAllProducts().subscribe( products => {
+			console.log( 'Reloaded products', products );
+			if ( products !== null ) {
+				this.products.next( products );
+			}
+		} );
 	}
 
 }

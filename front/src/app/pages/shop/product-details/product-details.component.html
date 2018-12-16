@@ -1,0 +1,34 @@
+<div *ngIf="(product | async) as productResolved; else unresolved" id="main">
+	<section id="banner" style="background-position: center 0px; background-image: url(&quot;images/pic07.jpg&quot;);" class="style5">
+		<div class="inner">
+			<header class="major">
+				<h1>{{ productResolved?.name }}</h1>
+			</header>
+			<showdown [value]="productResolved?.summary" class="content"></showdown>
+		</div>
+	</section>
+	
+	
+	<!-- One -->
+	<section id="one">
+		<div class="inner">
+			<header class="major">
+				<h2>Product infos</h2>
+			</header>
+			<showdown [src]="productResolved?.pathProductPage">Oops, we could not load the detail content !</showdown>
+		</div>
+	</section>
+</div>
+
+<ng-template #unresolved>
+	<div id="main">
+		<section id="one">
+			<div class="inner">
+				<header class="major">
+					<h2>Loading product</h2>
+				</header>
+				<p>Just wait for it...</p>
+			</div>
+		</section>
+	</div>
+</ng-template>

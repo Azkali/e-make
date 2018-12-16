@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ShowdownModule } from 'ngx-showdown';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { AppComponent } from './app.component';
 import { AdminComponent } from './pages/admin/admin.component';
@@ -10,14 +12,13 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ShopComponent } from './pages/shop/shop.component';
 import { CartComponent } from './pages/shop/cart/cart.component';
-import { ProductComponent } from './pages/shop/products/product.component';
+import { ProductComponent } from './pages/shop/product/product.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { IndexComponent } from './pages/index/index.component';
 import { LoginComponent } from './pages/login/login.component';
 import { MarkdownScrapperComponent } from './pages/markdown-scrapper/markdown-scrapper.component';
-import { ShowdownModule } from 'ngx-showdown';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { ArticleComponent } from './pages/markdown-scrapper/article/article.component';
+import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
 
 @NgModule( {
 	declarations: [
@@ -33,6 +34,7 @@ import { ArticleComponent } from './pages/markdown-scrapper/article/article.comp
 		LoginComponent,
 		MarkdownScrapperComponent,
 		ArticleComponent,
+		ProductDetailsComponent,
 	],
 	imports: [
 		BrowserModule,

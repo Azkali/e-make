@@ -28,7 +28,7 @@
 	
 	<!-- Two -->
 	<section id="two" class="spotlights">
-		<app-product *ngFor="let product of products | async" [name]="product.name" [images]="product.images"></app-product>
+		<app-product *ngFor="let product of products | async" [product]="product"></app-product>
 	</section>
 	
 	<!-- Three -->

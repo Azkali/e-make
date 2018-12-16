@@ -1,3 +1,4 @@
+import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -14,6 +15,7 @@ const routes: Routes = [
 	{ path: 'index', component: IndexComponent },
 	{ path: 'blog', component: MarkdownScrapperComponent },
 	{ path: 'shop', component: ShopComponent },
+	{ path: 'shop/:identifier', component: ProductDetailsComponent},
 	{ path: 'contact', component: ContactComponent },
 	{ path: 'cart', component: CartComponent },
 ];
