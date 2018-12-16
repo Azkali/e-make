@@ -19,31 +19,31 @@ import { ShowdownModule } from 'ngx-showdown';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ArticleComponent } from './pages/markdown-scrapper/article/article.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    AdminComponent,
-    BlogComponent,
-    ContactComponent,
-    ShopComponent,
-    ProductComponent,
-    CartComponent,
-    NavbarComponent,
-    IndexComponent,
-    LoginComponent,
-    MarkdownScrapperComponent,
-    ArticleComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ShowdownModule,
-    HttpClientModule,
-    MatSidenavModule,
-    BrowserAnimationsModule,
-    ShowdownModule.forRoot({ tables: true, tasklists: true }),
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule( {
+	declarations: [
+		AppComponent,
+		AdminComponent,
+		BlogComponent,
+		ContactComponent,
+		ShopComponent,
+		ProductComponent,
+		CartComponent,
+		NavbarComponent,
+		IndexComponent,
+		LoginComponent,
+		MarkdownScrapperComponent,
+		ArticleComponent,
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		ShowdownModule,
+		HttpClientModule,
+		MatSidenavModule,
+		BrowserAnimationsModule,
+		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
+	],
+	providers: [],
+	bootstrap: [AppComponent],
+} )
 export class AppModule { }

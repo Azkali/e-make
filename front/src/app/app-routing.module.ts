@@ -10,16 +10,16 @@ import { MarkdownScrapperComponent } from './pages/markdown-scrapper/markdown-sc
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/index', pathMatch: 'full' },
-  { path: 'index', component: IndexComponent },
-  { path: 'blog', component: MarkdownScrapperComponent },
-  { path: 'shop', component: ShopComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'cart', component: CartComponent },
+	{ path: '', redirectTo: '/index', pathMatch: 'full' },
+	{ path: 'index', component: IndexComponent },
+	{ path: 'blog', component: MarkdownScrapperComponent },
+	{ path: 'shop', component: ShopComponent },
+	{ path: 'contact', component: ContactComponent },
+	{ path: 'cart', component: CartComponent },
 ];
 
 @NgModule( {
-  imports: [RouterModule.forRoot( routes )],
-  exports: [RouterModule],
+	imports: [RouterModule.forRoot( routes )],
+	exports: [RouterModule],
 } )
 export class AppRoutingModule { }

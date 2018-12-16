@@ -42,43 +42,43 @@ export class MarkdownScrapperService {
 		const observable = forkJoin( this.getTree(), this.getSummary() );
 		observable.subscribe( ( [tree, summary] ) => console.log( tree, summary ) );
 		return observable
-			.pipe( retry( 3 ), ( resolvedObservable ) => {
-				const articleSummaries = new BehaviorSubject<IArticle[]>( [] );
-				resolvedObservable.subscribe( ( [repositoryTree, summary] ) => {
-					const summaries = summary
-						.split( /^-+$/m )
-						.filter( articleSummary => !!articleSummary )
-						.map( articleSummary => {
-							const summaryNameMatch = articleSummary.match( /^#\s*(.+)\s*$/m );
-							if ( !summaryNameMatch || summaryNameMatch.index < 0 ) {
-								throw new Error( 'Misformatted summary: ' + articleSummary );
-							}
+		.pipe( retry( 3 ), ( resolvedObservable ) => {
+			const articleSummaries = new BehaviorSubject<IArticle[]>( [] );
+			resolvedObservable.subscribe( ( [repositoryTree, summary] ) => {
+				const summaries = summary
+				.split( /^-+$/m )
+				.filter( articleSummary => !!articleSummary )
+				.map( articleSummary => {
+					const summaryNameMatch = articleSummary.match( /^#\s*(.+)\s*$/m );
+					if ( !summaryNameMatch || summaryNameMatch.index < 0 ) {
+						throw new Error( 'Misformatted summary: ' + articleSummary );
+					}
 
-							const title = summaryNameMatch[1].trim();
-							const endTitlePos = summaryNameMatch.index + summaryNameMatch[0].length;
+					const title = summaryNameMatch[1].trim();
+					const endTitlePos = summaryNameMatch.index + summaryNameMatch[0].length;
 
-							return {
-								title,
-								summary: articleSummary.slice( endTitlePos, articleSummary.length ),
-							};
-						} );
-
-					articleSummaries.next( repositoryTree.tree.map( entry => {
-						const expectedTitle = entry.path.replace( /^(?:.*?\/)?(.*)\.md$/, '$1' );
-						const relatedSummary = summaries.find( sum => sum.title === expectedTitle );
-
-						if ( relatedSummary ) {
-							return {
-								title: expectedTitle,
-								summary: relatedSummary.summary,
-								path: entry.path,
-							};
-						} else {
-							return undefined;
-						}
-					} ).filter( article => !!article ) );
+					return {
+						title,
+						summary: articleSummary.slice( endTitlePos, articleSummary.length ),
+					};
 				} );
-				return articleSummaries;
+
+				articleSummaries.next( repositoryTree.tree.map( entry => {
+					const expectedTitle = entry.path.replace( /^(?:.*?\/)?(.*)\.md$/, '$1' );
+					const relatedSummary = summaries.find( sum => sum.title === expectedTitle );
+
+					if ( relatedSummary ) {
+						return {
+							title: expectedTitle,
+							summary: relatedSummary.summary,
+							path: entry.path,
+						};
+					} else {
+						return undefined;
+					}
+				} ).filter( article => !!article ) );
 			} );
+			return articleSummaries;
+		} );
 	}
 }

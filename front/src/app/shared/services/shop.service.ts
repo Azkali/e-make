@@ -10,7 +10,7 @@ import { AsyncSubject } from 'rxjs/AsyncSubject';
 
 const mainDataSourceName = 'main';
 
-export enum EReadyState{
+export enum EReadyState {
 	Waiting,
 	Error,
 	Ready,
@@ -35,35 +35,36 @@ export class ShopService {
 					port: 8000,
 					path: 'TODO',
 				} );
-		} else {
-			( window as any ).Diaspora = Diaspora;
-			this.dataSource = Diaspora.createNamedDataSource(
-				mainDataSourceName,
-				'inMemory'
-			);
-		}
+			} else {
+				( window as any ).Diaspora = Diaspora;
+				this.dataSource = Diaspora.createNamedDataSource(
+					mainDataSourceName,
+					'inMemory'
+					);
+				}
 
 		this.Product = Diaspora.declareModel<IProduct>(
-			'Product',
-			{
-				sources: mainDataSourceName,
-				attributes: product,
-			}
-		);
+					'Product',
+					{
+						sources: mainDataSourceName,
+						attributes: product,
+					}
+					);
 
 		if ( environment.production === false ) {
-			this.dataSource.waitReady()
-				.then( () => this.Product.insertMany( products ) )
-				.then( () => this.readyState.complete() )
-				.catch( err => this.readyState.error( err ) );
-		} else {
-			this.dataSource.waitReady()
-				.then( () => this.readyState.complete() )
-				.catch( err => this.readyState.error( err ) );
-		}
-	}
-	
-	public async getAllProducts(){
-		return this.Product.findMany();
-	}
-}
+						this.dataSource.waitReady()
+						.then( () => this.Product.insertMany( products ) )
+						.then( () => this.readyState.complete() )
+						.catch( err => this.readyState.error( err ) );
+					} else {
+						this.dataSource.waitReady()
+						.then( () => this.readyState.complete() )
+						.catch( err => this.readyState.error( err ) );
+					}
+				}
+
+	public async getAllProducts() {
+					return this.Product.findMany();
+				}
+			}
+
