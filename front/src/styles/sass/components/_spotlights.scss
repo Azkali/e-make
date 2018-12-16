@@ -13,7 +13,7 @@
 			border-top: 0 !important;
 		}
 
-		> section {
+		> app-product {
 			@include vendor('display', 'flex');
 			@include vendor('flex-direction', 'row');
 			background-color: desaturate(lighten(_palette(bg-alt), 2), 1);
@@ -71,7 +71,7 @@
 		}
 
 		@include breakpoint('<=xlarge') {
-			> section {
+			> app-product {
 				> .image {
 					width: 40%;
 				}
@@ -83,7 +83,7 @@
 		}
 
 		@include breakpoint('<=large') {
-			> section {
+			> app-product {
 				> .image {
 					width: 45%;
 				}
@@ -95,7 +95,7 @@
 		}
 
 		@include breakpoint('<=medium') {
-			> section {
+			> app-product {
 				display: block;
 
 				> .image {
@@ -110,7 +110,7 @@
 		}
 
 		@include breakpoint('<=small') {
-			> section {
+			> app-product {
 				> .content {
 					@include padding(3em, 1.5em);
 				}

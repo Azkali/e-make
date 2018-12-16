@@ -8,30 +8,30 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ShopComponent } from './pages/shop/shop.component';
 import { CartComponent } from './pages/shop/cart/cart.component';
-import { ProductsComponent } from './pages/shop/products/products.component';
+import { ProductComponent } from './pages/shop/products/product.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { IndexComponent } from './pages/index/index.component';
 import { LoginComponent } from './pages/login/login.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    AdminComponent,
-    BlogComponent,
-    ContactComponent,
-    ShopComponent,
-    CartComponent,
-    ProductsComponent,
-    NavbarComponent,
-    IndexComponent,
-    LoginComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule( {
+	declarations: [
+		AppComponent,
+		AdminComponent,
+		BlogComponent,
+		ContactComponent,
+		ShopComponent,
+		CartComponent,
+		ProductComponent,
+		NavbarComponent,
+		IndexComponent,
+		LoginComponent,
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		
+	],
+	providers: [],
+	bootstrap: [AppComponent],
+} )
 export class AppModule { }
