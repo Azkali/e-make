@@ -18,6 +18,36 @@
 			<showdown [src]="productResolved?.pathProductPage">Oops, we could not load the detail content !</showdown>
 		</div>
 	</section>
+	
+	<section id="two">
+		<div class="inner">
+			<ng-container *ngIf="productResolved?.customizableParts.length > 0">
+				<header class="major">
+					<h2>Customize your {{productResolved?.name}}</h2>
+				</header>
+				
+				<table class="wide-only">
+					<tr *ngFor="let part of productResolved?.customizableParts">
+						<td>{{part.name}} ({{part.category.name}})</td>
+						<td class="smallest">{{part.factor}}</td>
+						<td><ng-container [ngTemplateOutlet]="attrSelect" [ngTemplateOutletContext]="{part:part}"></ng-container></td>
+						<td class="smallest"><ng-container [ngTemplateOutlet]="addAttrToCart" [ngTemplateOutletContext]="{part:part}"></ng-container></td>
+					</tr>
+				</table>
+			</ng-container>
+			
+			<section class="small-only" id="customize-small">
+				<div *ngFor="let part of productResolved?.customizableParts">
+					<p>{{part.factor}} * {{part.name}} ({{part.category.name}})</p>
+					<p><ng-container [ngTemplateOutlet]="attrSelect" [ngTemplateOutletContext]="{part:part}"></ng-container></p>
+					<ng-container [ngTemplateOutlet]="addAttrToCart" [ngTemplateOutletContext]="{part:part}"></ng-container>
+				</div>
+			</section>
+			
+			<button class="button primary fit" (click)="addProductToCart()" *ngIf="allAttrsSelected | async; else disabledButton">Add to cart (<em>{{totalPrice | currency:'€':'symbol':'1.2-2'}}</em>)</button>
+			<ng-template #disabledButton><button class="button primary fit" disabled>Add to cart (<em>Please select all attributes first</em>)</button></ng-template>
+		</div>
+	</section>
 </div>
 
 <ng-template #unresolved>
@@ -31,4 +61,15 @@
 			</div>
 		</section>
 	</div>
+</ng-template>
+
+<ng-template #attrSelect let-part="part">
+	<select [(ngModel)]="choosenAttributes[part.name]" (ngModelChange)="refreshAllProductsSelected()">
+		<option disabled value="">Please select</option>
+		<option *ngFor="let attribute of part.category.attributes" [value]="attribute.id">{{attribute.name}} ({{attribute.price * part.factor | currency:'€':'symbol':'1.2-2'}})</option>
+	</select>
+</ng-template>
+
+<ng-template #addAttrToCart let-part="part">
+	<button class="button" (click)="addSeparatePartToCart(part)" [disabled]="!choosenAttributes[part.name]">Buy separately</button>
 </ng-template>

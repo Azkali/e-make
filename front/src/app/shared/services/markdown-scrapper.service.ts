@@ -6,6 +6,7 @@ import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { retry, tap, map } from 'rxjs/operators';
 import * as _ from 'lodash';
+import { environment } from '../../../environments/environment';
 
 const branch = 'master';
 const repo = 'Azkali/e-make-articles';
@@ -66,7 +67,9 @@ export class MarkdownScrapperService {
 	private getSummaries( directoryName?: string ) {
 		const cachedValue = this.summariesCache[directoryName];
 		if ( cachedValue ) {
-			console.info( `Using cached value for directory ${directoryName}`, cachedValue );
+			if ( environment.production === false ) {
+				console.info( `Using cached value for directory ${directoryName}`, cachedValue );
+			}
 			return cachedValue;
 		}
 

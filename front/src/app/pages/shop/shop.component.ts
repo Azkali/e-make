@@ -1,8 +1,6 @@
-import { MarkdownScrapperService } from './../../shared/services/markdown-scrapper.service';
 import { Component, OnInit } from '@angular/core';
 import { ShopService } from '../../shared/services/shop.service';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { Entity, Set } from '@diaspora/diaspora/dist/types';
+import {  BehaviorSubject } from 'rxjs';
 import { IProduct } from '../../../../../cross/models/product';
 
 @Component( {
