@@ -4,7 +4,7 @@ import { IEntityProperties } from "@diaspora/diaspora/dist/types/types/entity";
 import { IAttributeCategory } from "../models/attributeCategory";
 import { IAttribute } from "../models/attribute";
 import { IProduct } from "../models/product";
-import { attributesCategories, attributes, products } from "./datas";
+import { attributesCategories, attributes, products } from "./data";
 
 export const loadMocks = async (
 	dataSourceName: string,

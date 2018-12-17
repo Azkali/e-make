@@ -81,7 +81,7 @@ export class MarkdownScrapperService {
 	}
 
 	public getBlogArticles() {
-		return this.getRawDirectoryContent( 'products' ).pipe(
+		return this.getRawDirectoryContent( 'blog' ).pipe(
 			map( ( {entries, summaries} ) => entries.map( entry => {
 				const expectedTitle = entry.path.replace( /^(?:.*?\/)?(.*)\.md$/, '$1' );
 				const relatedSummary = summaries.find( sum => sum.title === expectedTitle );

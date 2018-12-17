@@ -24,6 +24,7 @@
     "@angular/router": "^7.1.1",
     "@diaspora/diaspora": "^0.3.3",
     "@diaspora/webapi-provider-oauth2": "0.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^4.0.0",
     "angular-oauth2-oidc": "^5.0.2",
     "core-js": "^2.6.0",
     "jquery": "^3.3.1",

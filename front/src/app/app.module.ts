@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShowdownModule } from 'ngx-showdown';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { AdminComponent } from './pages/admin/admin.component';
@@ -45,8 +47,11 @@ import { ProductDetailsComponent } from './pages/shop/product-details/product-de
 		HttpClientModule,
 		MatSidenavModule,
 		BrowserAnimationsModule,
+		MatDialogModule,
+		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
+	entryComponents: [CartComponent],
 	providers: [],
 	bootstrap: [AppComponent],
 } )
