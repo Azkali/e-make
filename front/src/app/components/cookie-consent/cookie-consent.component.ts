@@ -1,12 +1,10 @@
-import { VersionManagerService } from './../../shared/services/version-manager/version-manager.service';
-import { GoogleAnalyticsService } from './../../shared/services/google-analytics/google-analytics.service';
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, EventEmitter, Output, Input, HostBinding } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, EventEmitter, Output, Input, HostBinding, HostListener } from '@angular/core';
 import { trigger, state, style, animate, transition, AnimationTriggerMetadata } from '@angular/animations';
-
 import * as _ from 'lodash';
 
-import { CookieLawComponent } from 'angular2-cookie-law';
-import { DomSanitizer } from '@angular/platform-browser';
+import { ACookieDependentService } from '../../shared/services/ICookieDependentService';
+import { GoogleAnalyticsService } from './../../shared/services/google-analytics/google-analytics.service';
+import { ShopService } from '../../shared/services/shop.service';
 
 export type CookieLawPosition = 'top' | 'bottom';
 export type CookieLawAnimation = 'topIn' | 'bottomIn' | 'topOut' | 'bottomOut';
@@ -32,9 +30,12 @@ trigger( 'transition', [
 	transition( 'topIn => topOut', animate( '1000ms ease-out' ) ),
 ] );
 
+const DO_NOT_BOTHER = 'donotbother';
+
 export interface IConsent {
-	apiDoc: boolean;
+	localCart: boolean;
 	tracking: boolean;
+	doNotBother: boolean;
 }
 @Component( {
 	selector: 'app-cookie-consent',
@@ -44,9 +45,17 @@ export interface IConsent {
 	providers: [GoogleAnalyticsService],
 } )
 export class CookieConsentComponent implements AfterViewInit {
-	public showDetails = false;
 	@ViewChild( 'details' ) public details?: ElementRef<HTMLDivElement>;
-	public detailsHeight?:number;
+	@ViewChild( 'copy' ) public copy?: ElementRef<HTMLDivElement>;
+
+	public detailsHeight?: number;
+	public copyHeight?: number;
+
+	public showDetails = false;
+
+	public get bottomPos() {
+		return -( this.showDetails ? 0 : this.detailsHeight ) + 'px';
+	}
 
 	public hasAccepted = new EventEmitter<IConsent>();
 
@@ -55,10 +64,6 @@ export class CookieConsentComponent implements AfterViewInit {
 
 	@Output()
 	public isSeen = new EventEmitter<boolean>();
-
-	public get detailsMargin() {
-		return this.detailsHeight && !this.showDetails ? ( -this.detailsHeight ) + 'px' : undefined;
-	}
 
 	public get acceptLabel() {
 		return _.every( this.consentMatrice ) ? 'Accept all' : 'Save';
@@ -78,19 +83,24 @@ export class CookieConsentComponent implements AfterViewInit {
 
 
 	public constructor(
-		private versionManager: VersionManagerService,
+		private shopService: ShopService,
 		private googleAnalytics: GoogleAnalyticsService
 	) {
 		this.consentMatrice = {
-			apiDoc: this.versionManager.cookieAccepted,
+			localCart: this.shopService.cookieAccepted,
 			tracking: this.googleAnalytics.cookieAccepted,
+			doNotBother: false,
 		};
+		this.consentMatrice.doNotBother = this.consentMatrice.localCart ||
+			this.consentMatrice.tracking ||
+			ACookieDependentService.hasCookie( DO_NOT_BOTHER );
 		this._position =  'bottom';
 		if ( _.every( _.values( this.consentMatrice ), v => !v ) ) {
 			this.transition = 'bottomIn';
 			this.consentMatrice = {
-				apiDoc: true,
+				localCart: true,
 				tracking: true,
+				doNotBother: true,
 			};
 		} else {
 			this.transition = 'bottomOut';
@@ -116,12 +126,24 @@ export class CookieConsentComponent implements AfterViewInit {
 		this.transition = this.position === 'top' ? 'topOut' : 'bottomOut';
 	}
 
+	@HostListener( 'window:resize', ['$event'] )
+	private refreshSizes() {
+		this.detailsHeight = this.details ? this.details.nativeElement.offsetHeight : undefined;
+		this.copyHeight = this.copy ? this.copy.nativeElement.offsetHeight : undefined;
+	}
 
 	public ngAfterViewInit() {
-		window.setTimeout( () => this.detailsHeight = this.details ? this.details.nativeElement.offsetHeight : undefined );
+		window.setTimeout( () => this.refreshSizes() );
 		this.hasAccepted.subscribe( ( accepted: IConsent ) => {
 			this.googleAnalytics.cookieAccepted = accepted.tracking;
-			this.versionManager.cookieAccepted = accepted.apiDoc;
+			this.shopService.cookieAccepted = accepted.localCart;
+			if ( !accepted.tracking && !accepted.localCart ) {
+				if ( accepted.doNotBother ) {
+					ACookieDependentService.setCookie( DO_NOT_BOTHER, 'y' );
+				} else {
+					ACookieDependentService.deleteCookie( DO_NOT_BOTHER );
+				}
+			}
 		} );
 	}
 }

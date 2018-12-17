@@ -14,10 +14,13 @@ import { loadMocks } from '../../../../../cross/mocks/loadMocks';
 import { IProduct, product as ProductAttributes } from '../../../../../cross/models/product';
 import { IAttribute, attribute as AttributeAttributes } from '../../../../../cross/models/attribute';
 import { IAttributeCategory, attributeCategory as AttributeCategoryAttributes } from '../../../../../cross/models/attributeCategory';
-import { ICart, cart as CartAttributes } from '../../../../../cross/models/cart';
+import { ICart, cart as CartAttributes, ITempCart } from '../../../../../cross/models/cart';
 import { ICartItem, cartItem as CartItemAttributes } from '../../../../../cross/models/cartItem';
+import { ACookieDependentService } from './ICookieDependentService';
 
-const mainDataSourceName = 'main';
+const serverDataSourceName = 'remote';
+const localDataSourceName = 'local';
+const tempDataSourceName = 'temp';
 
 export enum EReadyState {
 	Waiting,
@@ -34,57 +37,76 @@ export interface IProductViewModel extends IProduct, IProductArticle, IEntityPro
 	}>;
 }
 
+const COOKIE_KEY = 'localcart';
 
 @Injectable( {
 	providedIn: 'root',
 } )
-export class ShopService {
+export class ShopService extends ACookieDependentService {
+	public get cookieAccepted() {
+		return ACookieDependentService.hasCookie( COOKIE_KEY );
+	}
+	public set cookieAccepted( accepted: boolean ) {
+		if ( accepted ) {
+			ACookieDependentService.setCookie( COOKIE_KEY, 'y' );
+		} else {
+			ACookieDependentService.deleteCookie( COOKIE_KEY );
+		}
+		this.refreshCart();
+	}
 
 	public constructor( private markdownScrapperService: MarkdownScrapperService ) {
+		super();
+
 		this.readyState = new AsyncSubject<any>();
 
 		if ( environment.production === true ) {
-			this.dataSource = Diaspora.createNamedDataSource( mainDataSourceName, 'webApi', {
+			this.serverDataSource = Diaspora.createNamedDataSource( serverDataSourceName, 'webApi', {
 				host: 'TODO',
 				port: 8000,
 				path: 'TODO',
 			} );
+			this.localDataSource = Diaspora.createNamedDataSource( localDataSourceName, 'webStorage' );
 		} else {
 			( window as any ).Diaspora = Diaspora;
-			this.dataSource = Diaspora.createNamedDataSource( mainDataSourceName, 'inMemory' );
+			this.serverDataSource = Diaspora.createNamedDataSource( serverDataSourceName, 'inMemory' );
+			this.localDataSource = Diaspora.createNamedDataSource( localDataSourceName, 'webStorage' );
 		}
+		this.tempDataSource = Diaspora.createNamedDataSource( tempDataSourceName, 'inMemory' );
 
 		this.Product = Diaspora.declareModel<IProduct>( 'Product', {
-			sources: mainDataSourceName,
+			sources: serverDataSourceName,
 			attributes: ProductAttributes,
 		} );
 		this.AttributeCategory = Diaspora.declareModel<IAttributeCategory>( 'AttributeCategory', {
-			sources: mainDataSourceName,
+			sources: serverDataSourceName,
 			attributes: AttributeCategoryAttributes,
 		} );
 		this.Attribute = Diaspora.declareModel<IAttribute>( 'Attribute', {
-			sources: mainDataSourceName,
+			sources: serverDataSourceName,
 			attributes: AttributeAttributes,
 		} );
 		this.Cart = Diaspora.declareModel<ICart>( 'Cart', {
-			sources: mainDataSourceName,
+			sources: serverDataSourceName,
 			attributes: CartAttributes,
 		} );
 		this.CartItem = Diaspora.declareModel<ICartItem>( 'CartItem', {
-			sources: mainDataSourceName,
+			sources: [serverDataSourceName, localDataSourceName, tempDataSourceName],
 			attributes: CartItemAttributes,
 		} );
 
-		if ( environment.production === false ) {
-			this.dataSource.waitReady()
-			.then( () => loadMocks( mainDataSourceName, this.AttributeCategory, this.Attribute, this.Product ) )
+		const waitInitPromise = Promise.all( [
+			this.serverDataSource.waitReady(),
+			this.localDataSource.waitReady(),
+		] ).then( async () => {
+			if ( environment.production === false ) {
+				await loadMocks( serverDataSourceName, this.AttributeCategory, this.Attribute, this.Product );
+			}
+			await this.refreshCart();
+		} );
+		waitInitPromise
 			.then( () => this.readyState.complete() )
 			.catch( err => this.readyState.error( err ) );
-		} else {
-			this.dataSource.waitReady()
-			.then( () => this.readyState.complete() )
-			.catch( err => this.readyState.error( err ) );
-		}
 
 		this.readyState.subscribe(
 			() => console.info( 'Data source readyState: Next' ),
@@ -93,17 +115,29 @@ export class ShopService {
 		);
 	}
 
-	private dataSource: DataAccessLayer;
+	private get cartDataSource() {
+		if ( false ) { // If user logged in, use server
+			return serverDataSourceName;
+		} else if ( this.cookieAccepted ) {
+			return localDataSourceName;
+		} else {
+			return tempDataSourceName;
+		}
+		return localDataSourceName;
+	}
+
+	private serverDataSource: DataAccessLayer;
+	private localDataSource: DataAccessLayer;
+	private tempDataSource: DataAccessLayer;
 	private Product: Model<IProduct>;
 	private AttributeCategory: Model<IAttributeCategory>;
 	private Attribute: Model<IAttribute>;
 	private Cart: Model<ICart>;
 	private CartItem: Model<ICartItem>;
 
-	public readonly currentCart = new BehaviorSubject<ICart>( {
+	public readonly currentCart = new BehaviorSubject<ITempCart>( {
 		totalSum: 0,
 		totalCount: 0,
-		itemIds: [],
 		items: [],
 	} );
 	public readonly readyState: AsyncSubject<any>;
@@ -123,8 +157,8 @@ export class ShopService {
 					this.AttributeCategory.find( { id: part.categoryId} ),
 					this.Attribute.findMany( { categoryId: part.categoryId} ),
 				] ) ) ) ).map( ( [part, attributeCategory, attributes] ) => {
-					const attributeCategoryAttributes = _.assign( attributeCategory.getProperties( mainDataSourceName ), {
-						attributes: attributes.toChainable( Set.ETransformationMode.PROPERTIES, mainDataSourceName ).value(),
+					const attributeCategoryAttributes = _.assign( attributeCategory.getProperties( serverDataSourceName ), {
+						attributes: attributes.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName ).value(),
 					} );
 					return _.assign( part, {
 						category: attributeCategoryAttributes,
@@ -163,7 +197,7 @@ export class ShopService {
 			.subscribe( null, null, () => {
 				forkJoin( this.markdownScrapperService.getProductArticles(), from( this.Product.find( {name: productName} ) ) )
 				.subscribe( async ( [productArticles, product] ) => {
-					const props = product.getProperties( mainDataSourceName );
+					const props = product.getProperties( serverDataSourceName );
 					const viewModel = await this.assembleProductViewModel( props, productArticles.entries, productArticles.summaries );
 					productObservable.next( viewModel );
 					productObservable.complete();
@@ -182,7 +216,7 @@ export class ShopService {
 				forkJoin( this.markdownScrapperService.getProductArticles(), from( this.Product.findMany() ) )
 				.subscribe( async ( [productArticles, retrievedProducts] ) => {
 					const allProducts = await Promise.all( retrievedProducts
-						.toChainable( Set.ETransformationMode.PROPERTIES, mainDataSourceName )
+						.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName )
 						.map( props => this.assembleProductViewModel( props, productArticles.entries, productArticles.summaries ) )
 						.value()
 					);
@@ -196,29 +230,37 @@ export class ShopService {
 		return allProductsObservable;
 	}
 
-	private setNewCart( cart: ICart ) {
-		cart.totalSum = _.sumBy( cart.items, item => item.unitPrice * item.count );
-		cart.totalCount = _.sumBy( cart.items, item => item.count );
-		this.currentCart.next( cart );
+	private async refreshCart() {
+		const cartItems = ( await this.CartItem.findMany( undefined, undefined, this.cartDataSource ) )
+			.toChainable( Set.ETransformationMode.ATTRIBUTES )
+			.value();
+		console.log( {cartItems} );
+		const cartObject = {
+			totalSum: _.sumBy( cartItems, item => item.unitPrice * item.count ),
+			totalCount: _.sumBy( cartItems, item => item.count ),
+			items: cartItems,
+		};
+		this.currentCart.next( cartObject );
+	}
+	private async addItemToCart( item: ICartItem ) {
+		await this.CartItem.insert( item, this.cartDataSource );
+		await this.refreshCart();
 	}
 
-	public addProductToCart( product: IProductViewModel, choosenAttributes: _.Dictionary<EntityUid> ) {
-		const cart = this.currentCart.value;
-		cart.items.push( {
+	public async addProductToCart( product: IProductViewModel, choosenAttributes: _.Dictionary<EntityUid> ) {
+		return this.addItemToCart( {
 			count: 1,
 			unitPrice: ShopService.getTotalPrice( product, choosenAttributes ),
 			item: {
 				productId: product.id,
 				product,
-				attributesIds: {},
+				attributesIds: choosenAttributes,
 			},
 		} );
-		this.setNewCart( cart );
 	}
 
-	public addAttributeToCart( attribute: IAttribute & IEntityProperties ) {
-		const cart = this.currentCart.value;
-		cart.items.push( {
+	public async addAttributeToCart( attribute: IAttribute & IEntityProperties ) {
+		return this.addItemToCart( {
 			count: 1,
 			unitPrice: attribute.price,
 			item: {
@@ -226,6 +268,5 @@ export class ShopService {
 				attribute,
 			},
 		} );
-		this.setNewCart( cart );
 	}
 }

@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { Component } from '@angular/core';
 import { ShopService } from './shared/services/shop.service';
-import { ICart } from '../../../cross/models/cart';
+import { ICart, ITempCart } from '../../../cross/models/cart';
 import { skip } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CartComponent } from './pages/shop/cart/cart.component';
@@ -18,7 +18,7 @@ export class AppComponent {
 	public title = 'app';
 
 	public cartFlash = false;
-	public cartInfos: BehaviorSubject<ICart>;
+	public cartInfos: BehaviorSubject<ITempCart>;
 
 	public constructor( private modalService: ModalService, private shopService: ShopService ) {
 		this.cartInfos = this.shopService.currentCart;
