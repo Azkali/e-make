@@ -1,5 +1,5 @@
-import { EFieldType, EntityUid } from "@diaspora/diaspora";
-import { Raw } from "@diaspora/diaspora/dist/types/types/modelDescription";
+import { EFieldType, EntityUid } from '@diaspora/diaspora';
+import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
 import { ICartItem } from './cartItem';
 
 export interface ICart{
@@ -14,7 +14,7 @@ export const cart: Raw.IAttributesDescription = {
 	userId: EFieldType.STRING,
 	totalSum: {
 		type: EFieldType.FLOAT,
-		required: true
+		required: true,
 	},
 	itemIds: {
 		type: EFieldType.ARRAY,

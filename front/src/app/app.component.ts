@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { ShopService } from './shared/services/shop.service';
 import { ICart } from '../../../cross/models/cart';
 import { skip } from 'rxjs/operators';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CartComponent } from './pages/shop/cart/cart.component';
 import { ModalService } from './shared/services/modal.service';
 
