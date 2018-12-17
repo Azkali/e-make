@@ -1,28 +1,28 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ShowdownModule } from 'ngx-showdown';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule } from '@angular/forms';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { AppRoutingModule } from './app-routing.module';
+import { ShowdownModule } from 'ngx-showdown';
+
 import { AppComponent } from './app.component';
 import { AdminComponent } from './pages/admin/admin.component';
-import { BlogComponent } from './pages/blog/blog.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ShopComponent } from './pages/shop/shop.component';
 import { CartComponent } from './pages/shop/cart/cart.component';
 import { ProductComponent } from './pages/shop/product/product.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 import { IndexComponent } from './pages/index/index.component';
 import { LoginComponent } from './pages/login/login.component';
-import { MarkdownScrapperComponent } from './pages/markdown-scrapper/markdown-scrapper.component';
-import { ArticleComponent } from './pages/markdown-scrapper/article/article.component';
+import { BlogComponent } from './pages/blog/blog.component';
+import { ArticleComponent } from './pages/blog/article/article.component';
 import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
-import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule( {
 	declarations: [
@@ -36,10 +36,11 @@ import { ModalComponent } from './components/modal/modal.component';
 		NavbarComponent,
 		IndexComponent,
 		LoginComponent,
-		MarkdownScrapperComponent,
+		BlogComponent,
 		ArticleComponent,
 		ProductDetailsComponent,
-		ModalComponent,
+		CookieConsentComponent,
+
 	],
 	imports: [
 		BrowserModule,

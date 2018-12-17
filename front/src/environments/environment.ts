@@ -4,6 +4,8 @@
 
 export const environment = {
 	production: false,
+	googleAnalyticsKey: '',
+	docsVersions: '0.1',
 };
 
 /*
