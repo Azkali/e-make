@@ -1,12 +1,9 @@
 $pulse-size: 6em;
 $pulse-rest: 2em;
-
-#cart-icon{
+#cart-icon {
 	font-size: 1em;
 	position: relative;
 	box-shadow: none;
-	
-	
 	.icon:after {
 		background-color: #cccccc;
 		content: '';
@@ -16,12 +13,12 @@ $pulse-rest: 2em;
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%,-50%);
+		transform: translate(-50%, -50%);
 		border-radius: 100%;
 		opacity: 0;
 		z-index: -1;
 	}
-	&.pulse .icon:after{
+	&.pulse .icon:after {
 		animation: pulse ease-in-out .5s normal;
 	}
 }
@@ -31,15 +28,29 @@ $pulse-rest: 2em;
 		width: $pulse-rest;
 		height: $pulse-rest;
 		opacity: 0;
-	} 
+	}
 	25% {
 		width: $pulse-size;
 		height: $pulse-size;
 		opacity: 1;
-	} 
+	}
 	100% {
 		width: $pulse-rest;
 		height: $pulse-rest;
 		opacity: 0;
 	}
+}
+
+//Modal styling
+#modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: white;
+	text-align: center;
+	z-index: 99;
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.7);
 }

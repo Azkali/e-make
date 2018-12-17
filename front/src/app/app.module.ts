@@ -22,6 +22,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { MarkdownScrapperComponent } from './pages/markdown-scrapper/markdown-scrapper.component';
 import { ArticleComponent } from './pages/markdown-scrapper/article/article.component';
 import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule( {
 	declarations: [
@@ -38,6 +39,7 @@ import { ProductDetailsComponent } from './pages/shop/product-details/product-de
 		MarkdownScrapperComponent,
 		ArticleComponent,
 		ProductDetailsComponent,
+		ModalComponent,
 	],
 	imports: [
 		BrowserModule,

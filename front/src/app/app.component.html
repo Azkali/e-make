@@ -1,11 +1,14 @@
 <div class="is-preload">
 	<!-- Wrapper -->
 	<div id="wrapper">
+		<div id="modal"></div>
 		<!-- Header -->
 		<header id="header" class="alt">
 			<a href="/index" class="logo"><strong>E-Make</strong> <span>by AZkali</span></a>
 			<nav>
-				<button (click)="openModal()" id="cart-icon" [ngClass]="{pulse: cartFlash}"><span class="icon alt fa-shopping-cart" title="Cart"></span> {{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}} ({{(cartInfos | async).totalCount}})</button>
+				<button (click)="initCartModal()" id="cart-icon" [ngClass]="{pulse: cartFlash}"><span class="icon alt fa-shopping-cart"
+					 title="Cart"></span> {{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}} ({{(cartInfos |
+					async).totalCount}})</button>
 				<a href="#menu" target="_self">Menu</a>
 			</nav>
 		</header>

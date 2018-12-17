@@ -5,6 +5,7 @@ import { ICart } from '../../../cross/models/cart';
 import { skip } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CartComponent } from './pages/shop/cart/cart.component';
+import { ModalService } from './shared/services/modal.service';
 
 @Component( {
 	selector: 'app-root',
@@ -19,7 +20,7 @@ export class AppComponent {
 	public cartFlash = false;
 	public cartInfos: BehaviorSubject<ICart>;
 
-	public constructor( private modalService: NgbModal, private shopService: ShopService ) {
+	public constructor( private modalService: ModalService, private shopService: ShopService ) {
 		this.cartInfos = this.shopService.currentCart;
 		this.cartInfos.pipe( skip( 1 ) ).subscribe( newCart => {
 			this.cartFlash = true;
@@ -27,8 +28,15 @@ export class AppComponent {
 		} );
 	}
 
-	public openModal() {
-		const modalRef = this.modalService.open( CartComponent );
-		modalRef.componentInstance();
+
+	public initCartModal() {
+		const inputs = {
+		  isMobile: false,
+		};
+		this.modalService.init( CartComponent, inputs, {} );
+	}
+
+	public removeModal() {
+		this.modalService.destroy();
 	}
 }

@@ -1,3 +1,37 @@
-* {
-    color: black;
+.sample-container {
+	margin: 15% auto;
+	/* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+	/* Could be more or less, depending on screen size */
+	box-shadow: 0 4px 8px 0 rgba(42, 47, 74, 0.2), 0 6px 20px 0 rgba(42, 47, 74, 0.19);
+	background-color: #2A2F4A !important;
+
+}
+
+.sample-text {
+	color: white;
+	font-size: 20px;
+	text-align: center;
+}
+
+.sample-close {
+	text-align: center;
+}
+
+.sample-close button {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	background-color: #2A2F4A !important;
+
+}
+
+.sample-close button:hover,
+.sample-close button:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
 }
