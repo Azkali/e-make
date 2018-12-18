@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Diaspora, Model, Adapter, Set, EntityUid } from '@diaspora/diaspora';
+import { Diaspora, Model, Adapter, Set, EntityUid, Entity } from '@diaspora/diaspora';
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import DataAccessLayer = Adapter.DataAccessLayer;
 import { from, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
@@ -228,6 +228,59 @@ export class ShopService extends ACookieDependentService {
 			allProductsObservable.subscribe( console.info.bind( this, 'All products fetched:' ) );
 		}
 		return allProductsObservable;
+	}
+
+	public async fetchItem( item: {
+			attributeId: EntityUid;
+			attribute?: IAttribute;
+		} | {
+			productId: EntityUid;
+			product: IProduct;
+			attributesIds: _.Dictionary<EntityUid>;
+			attributes?: _.Dictionary<IAttribute>;
+	} ) {
+		if ( item.hasOwnProperty( 'attributeId' ) ) {
+			console.log( 'Fetching attr', item );
+			const itemAttr = item as {
+				attribute?:IAttribute;
+				attributeId:EntityUid;
+			};
+			const fetchedAttribute = await this.Attribute.find( itemAttr.attributeId );
+			return {
+				attributeId: itemAttr.attributeId,
+				attribute: fetchedAttribute ? fetchedAttribute.getProperties( serverDataSourceName ) : undefined,
+			} as {
+				attribute?:IAttribute & IEntityProperties;
+				attributeId:EntityUid;
+			};
+		} else {
+			console.log( 'Fetching prod', item );
+			const itemProd = item as {
+				productId: EntityUid;
+				product: IProduct;
+				attributesIds: _.Dictionary<EntityUid>;
+				attributes?: _.Dictionary<IAttribute>;
+			};
+
+			const attrsPairs = _.toPairs( itemProd.attributesIds );
+			const attrsPromises = attrsPairs.map( ( [,attrId] ) => this.Attribute.find( attrId ) );
+			const fetchedComponents = await Promise.all( [
+				this.Product.find( itemProd.productId ),
+				Promise.all( attrsPromises ),
+			] );
+			const attrsProps = fetchedComponents[1].map( attr => attr ? attr.getProperties( serverDataSourceName ) : undefined );
+			return {
+				productId: itemProd.productId,
+				product: fetchedComponents[0] ? fetchedComponents[0].getProperties( serverDataSourceName ) : undefined,
+				attributesIds: itemProd.attributesIds,
+				attributes: _.zipObject( attrsPairs.map( pair => pair[0] ), attrsProps ),
+			} as {
+				productId: EntityUid;
+				product: IProduct & IEntityProperties;
+				attributesIds: _.Dictionary<EntityUid>;
+				attributes?: _.Dictionary<IAttribute & IEntityProperties>;
+			};
+		}
 	}
 
 	private async refreshCart() {

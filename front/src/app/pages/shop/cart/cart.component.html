@@ -8,22 +8,35 @@
 				<thead>
 					<tr>
 						<th>Name</th>
-						<th>Description</th>
-						<th>Price</th>
-						<th>Another One</th>
+						<th>Count</th>
+						<th>Unit price</th>
+						<th>Total price</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr [ngClass]="{pulse: cartFlash}" *ngFor="let item of (cartInfos | async).items">
-						<th>{{item.item.product.name}}</th>
-						<th>{{item.unitPrice}}</th>
-						<th>{{item.count}}</th>
-					</tr>
+					<ng-container *ngFor="let cartItem of (cartInfos | async).items">
+						<tr [ngClass]="{'product-row': cartItem.item.productId, 'attribute-row': cartItem.item.attributeId}">
+							<td *ngIf="cartItem.item.product || cartItem.item.attribute; else brokenRef">{{(cartItem.item.product || cartItem.item.attribute)?.name}}</td>
+							<td><input [(ngModel)]="cartItem.count" type="number" min="1"/></td>
+							<td>{{cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
+							<td>{{cartItem.count * cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
+							<td><button class="button" title="Remove this item"><i class="icon fa-times"></i></button></td>
+						</tr>
+						<ng-container *ngIf="cartItem.item.productId">
+							<tr *ngFor="let attribute of cartItem.item.attributes | keyvalue" class="sub-attr-row">
+								<td>{{attribute.key}}: {{attribute.value?.name || 'Broken reference...'}}</td>
+								<td *ngIf="attribute.value; else brokenRef">{{attribute.value?.name}}</td>
+								<td></td>
+								<td>{{ -1 | currency:'€':'symbol':'1.2-2'}}</td>
+								<td></td>
+							</tr>
+						</ng-container>
+					</ng-container>
 				</tbody>
 				<tfoot>
 					<tr>
-						<td colspan="2"></td>
-						<td [ngClass]="{pulse: cartFlash}" >{{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}}</td>
+						<td colspan="3"></td>
+						<td>{{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}}</td>
 					</tr>
 				</tfoot>
 			</table>
@@ -33,3 +46,7 @@
 		<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
 	</div>
 </div>
+
+<ng-template #brokenRef>
+	<td><i class="icon fa-times"></i> Broken reference...</td>
+</ng-template>
