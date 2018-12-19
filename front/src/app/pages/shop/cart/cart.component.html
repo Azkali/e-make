@@ -1,8 +1,10 @@
-<div class="sample-container">
-	<h4 class="modal-title">Your Cart</h4>
-	
-	<div class="sample-text">
-		
+<div class="modal-container">
+
+	<div class="modal-header">
+		<h4 class="modal-title">Your Cart</h4>
+	</div>
+
+	<div class="modal-text">
 		<div class="table-wrapper">
 			<table>
 				<thead>
@@ -16,8 +18,9 @@
 				<tbody>
 					<ng-container *ngFor="let cartItem of (cartInfos | async).items">
 						<tr [ngClass]="{'product-row': cartItem.item.productId, 'attribute-row': cartItem.item.attributeId}">
-							<td *ngIf="cartItem.item.product || cartItem.item.attribute; else brokenRef">{{(cartItem.item.product || cartItem.item.attribute)?.name}}</td>
-							<td><input [(ngModel)]="cartItem.count" type="number" min="1"/></td>
+							<td *ngIf="cartItem.item.product || cartItem.item.attribute; else brokenRef">{{(cartItem.item.product ||
+								cartItem.item.attribute)?.name}}</td>
+							<td><input [(ngModel)]="cartItem.count" type="number" min="1" /></td>
 							<td>{{cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
 							<td>{{cartItem.count * cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
 							<td><button class="button" title="Remove this item"><i class="icon fa-times"></i></button></td>
@@ -42,8 +45,13 @@
 			</table>
 		</div>
 	</div>
-	<div class="sample-close">
-		<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+	<div class="modal-footer">
+		<div class="modal-close">
+			<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+		</div>
+		<div class="modal-add">
+			<button type="button" class="btn btn-outline-dark" (click)="close()">Buy</button>
+		</div>
 	</div>
 </div>
 

@@ -54,7 +54,7 @@ import { ProductDetailsComponent } from './pages/shop/product-details/product-de
 		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent],
+	entryComponents: [CartComponent, LoginComponent],
 	providers: [],
 	bootstrap: [AppComponent],
 } )
