@@ -4,6 +4,7 @@ import { EFieldType, EntityUid } from "@diaspora/diaspora";
 import { Raw } from "@diaspora/diaspora/dist/types/types/modelDescription";
 
 export interface IProduct{
+	uid: string;
 	name?: string;
 	customizableParts?: IProduct.IPart[];
 	images?: string[];
@@ -18,6 +19,10 @@ export namespace IProduct{
 	}
 }
 export const product: Raw.IAttributesDescription = {
+	uid: {
+		type: EFieldType.STRING,
+		required: true,
+	},
 	name: EFieldType.STRING,
 	customizableParts: {
 		type: EFieldType.ARRAY,

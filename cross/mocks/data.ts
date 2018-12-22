@@ -4,27 +4,32 @@ import { IAttribute } from '../models/attribute';
 
 export const attributesCategories: IAttributeCategory[] = [
 	{
+		uid: 'dac-type',
 		name: 'DAC type',
 	},
 	{
+		uid: 'accessories',
 		name: 'Accessories',
 	},
 ];
 
 export const attributes: IAttribute[] = [
 	{
+		uid: 'allo-boss-1-2',
 		name: 'Allo BOSS 1.2',
 		category: attributesCategories[0],
 		categoryId: '',
 		price: 15,
 	},
 	{
+		uid: 'iq-audio-pro-+',
 		name: 'IQ audio pro +',
 		category: attributesCategories[0],
 		categoryId: '',
 		price: 78,
 	},
 	{
+		uid: 'rha-t20-earbuds',
 		name: 'RHA T20 EarBuds',
 		category: attributesCategories[1],
 		categoryId: '',
@@ -35,6 +40,7 @@ export const attributes: IAttribute[] = [
 
 export const products: IProduct[] = [
 	{
+		uid: 'mango',
 		name: 'Mango',
 		images: ['https://via.placeholder.com/576x515.png?text=Mango'],
 		customizableParts: [
@@ -54,11 +60,13 @@ export const products: IProduct[] = [
 		basePrice: 20,
 	},
 	{
+		uid: 'banana',
 		name: 'Banana',
 		images: ['https://via.placeholder.com/576x515.png?text=Banana'],
 		basePrice: 10,
 	},
 	{
+		uid: 'espio',
 		name: 'ESPIO',
 		images: ['https://via.placeholder.com/576x515.png?text=ESPIO'],
 		customizableParts: [],
