@@ -53,4 +53,9 @@ $pulse-rest: 2em;
 	z-index: 99;
 	background-color: rgb(0, 0, 0);
 	background-color: rgba(0, 0, 0, 0.7);
+	bottom: 0;
+	flex-direction: column;
+	justify-content: center;
+	align-items: stretch;
+	overflow: auto;
 }

@@ -141,7 +141,7 @@ export class ShopService extends ACookieDependentService {
 	} );
 	public readonly readyState: AsyncSubject<any>;
 
-	public static getTotalPrice( product: IProductViewModel, choosenAttributes: _.Dictionary<EntityUid> ) {
+	public static getTotalPrice( product: IProductViewModel, choosenAttributes: _.Dictionary<string> ) {
 		return product.basePrice + _.sumBy( product.customizableParts, part => {
 			const attributes: IAttribute & IEntityProperties = part.category.attributes as any;
 			return part.factor * attributes.find( attr => attr.uid === choosenAttributes[part.name] ).price;
@@ -229,6 +229,10 @@ export class ShopService extends ACookieDependentService {
 		return allProductsObservable;
 	}
 
+
+
+	// ############## CART ##############
+
 	private async fetchCartItemContentAttr( item: {
 		attribute?: IAttribute;
 		attributeUid: string;
@@ -251,27 +255,28 @@ export class ShopService extends ACookieDependentService {
 		attributes?: _.Dictionary<IAttribute>;
 	} ) {
 
-			console.log( 'Fetching prod', item );
+		console.log( 'Fetching prod', item );
 
-			const attrsPairs = _.toPairs( item.attributesUids );
-			const attrsPromises = attrsPairs.map( ( [,attrId] ) => this.Attribute.find( {uid: attrId} ) );
-			const fetchedComponents = await Promise.all( [
-				this.Product.find( {uid: item.productUid} ),
-				Promise.all( attrsPromises ),
-			] );
-			const attrsProps = fetchedComponents[1].map( attr => attr ? attr.getProperties( serverDataSourceName ) : undefined );
-			return {
-				productUid: item.productUid,
-				product: fetchedComponents[0] ? fetchedComponents[0].getProperties( serverDataSourceName ) : undefined,
-				attributesUids: item.attributesUids,
-				attributes: _.zipObject( attrsPairs.map( pair => pair[0] ), attrsProps ),
-			} as {
-				productUid: string;
-				product: IProduct & IEntityProperties;
-				attributesUids: _.Dictionary<string>;
-				attributes?: _.Dictionary<IAttribute & IEntityProperties>;
-			};
-}
+		const attrsPairs = _.toPairs( item.attributesUids );
+		const attrsPromises = attrsPairs.map( ( [,attrId] ) => this.Attribute.find( {uid: attrId} ) );
+		const fetchedComponents = await Promise.all( [
+			this.Product.find( {uid: item.productUid} ),
+			Promise.all( attrsPromises ),
+		] );
+		const attrsProps = fetchedComponents[1].map( attr => attr ? attr.getProperties( serverDataSourceName ) : undefined );
+		return {
+			productUid: item.productUid,
+			product: fetchedComponents[0] ? fetchedComponents[0].getProperties( serverDataSourceName ) : undefined,
+			attributesUids: item.attributesUids,
+			attributes: _.zipObject( attrsPairs.map( pair => pair[0] ), attrsProps ),
+		} as {
+			productUid: string;
+			product: IProduct & IEntityProperties;
+			attributesUids: _.Dictionary<string>;
+			attributes?: _.Dictionary<IAttribute & IEntityProperties>;
+		};
+	}
+
 	public async fetchCartItemContent( item: {
 			attributeUid: EntityUid;
 			attribute?: IAttribute;
@@ -290,7 +295,7 @@ export class ShopService extends ACookieDependentService {
 
 	private async refreshCart() {
 		const cartItems = ( await this.CartItem.findMany( undefined, undefined, this.cartDataSource ) )
-			.toChainable( Set.ETransformationMode.ATTRIBUTES )
+			.toChainable( Set.ETransformationMode.PROPERTIES, this.cartDataSource )
 			.value();
 		console.log( {cartItems} );
 		const cartObject = {
@@ -300,6 +305,7 @@ export class ShopService extends ACookieDependentService {
 		};
 		this.currentCart.next( cartObject );
 	}
+
 	private async addItemToCart( item: ICartItem ) {
 		await this.CartItem.insert( item, this.cartDataSource );
 		await this.refreshCart();
@@ -325,5 +331,16 @@ export class ShopService extends ACookieDependentService {
 				attribute,
 			},
 		} );
+	}
+
+	public async setCartItemCount( cartItem: ICartItem & IEntityProperties, count: number ) {
+		console.log( {cartItem, count} );
+		await this.CartItem.update( cartItem.id, {count}, undefined, this.cartDataSource );
+		return this.refreshCart();
+	}
+
+	public async deleteCartItem( cartItem: ICartItem & IEntityProperties ) {
+		await this.CartItem.delete( cartItem.id, undefined, this.cartDataSource );
+		return this.refreshCart();
 	}
 }

@@ -15,7 +15,7 @@ export class ModalService {
 		};
 
 		this.domService.appendComponentTo( this.modalElemId, component, componentConfig );
-		document.getElementById( this.modalElemId ).style.display = 'block';
+		document.getElementById( this.modalElemId ).style.display = 'flex';
 
 	}
 
