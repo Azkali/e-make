@@ -17,7 +17,7 @@ export class CartComponent {
 	public constructor( private modalService: ModalService, private shopService: ShopService ) {
 		this.cartSubscription = this.shopService.currentCart.subscribe( async newCart => {
 			const promises = newCart.items.map( async cartItem => {
-				cartItem.item = await shopService.fetchItem( cartItem.item );
+				cartItem.item = await shopService.fetchCartItemContent( cartItem.item );
 			} );
 			await Promise.all( promises );
 			console.log( newCart );

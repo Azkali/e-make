@@ -11,7 +11,7 @@ export interface ICartItem{
 		attribute?: IAttribute
 	} | {
 		productUid: string,
-		product: IProduct,
+		product?: IProduct,
 		attributesUids: _.Dictionary<string>;
 		attributes?: _.Dictionary<IAttribute>;
 	}

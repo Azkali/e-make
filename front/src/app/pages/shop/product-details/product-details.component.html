@@ -66,7 +66,7 @@
 <ng-template #attrSelect let-part="part">
 	<select [(ngModel)]="choosenAttributes[part.name]" (ngModelChange)="refreshAllProductsSelected()">
 		<option disabled value="">Please select</option>
-		<option *ngFor="let attribute of part.category.attributes" [value]="attribute.id">{{attribute.name}} ({{attribute.price * part.factor | currency:'€':'symbol':'1.2-2'}})</option>
+		<option *ngFor="let attribute of part.category.attributes" [value]="attribute.uid">{{attribute.name}} ({{attribute.price * part.factor | currency:'€':'symbol':'1.2-2'}})</option>
 	</select>
 </ng-template>
 

@@ -123,7 +123,6 @@ export class ShopService extends ACookieDependentService {
 		} else {
 			return tempDataSourceName;
 		}
-		return localDataSourceName;
 	}
 
 	private serverDataSource: DataAccessLayer;
@@ -145,7 +144,7 @@ export class ShopService extends ACookieDependentService {
 	public static getTotalPrice( product: IProductViewModel, choosenAttributes: _.Dictionary<EntityUid> ) {
 		return product.basePrice + _.sumBy( product.customizableParts, part => {
 			const attributes: IAttribute & IEntityProperties = part.category.attributes as any;
-			return part.factor * attributes.find( attr => attr.id === choosenAttributes[part.name] ).price;
+			return part.factor * attributes.find( attr => attr.uid === choosenAttributes[part.name] ).price;
 		} );
 	}
 
@@ -230,56 +229,62 @@ export class ShopService extends ACookieDependentService {
 		return allProductsObservable;
 	}
 
-	public async fetchItem( item: {
-			attributeId: EntityUid;
-			attribute?: IAttribute;
-		} | {
-			productId: EntityUid;
-			product: IProduct;
-			attributesIds: _.Dictionary<EntityUid>;
-			attributes?: _.Dictionary<IAttribute>;
+	private async fetchCartItemContentAttr( item: {
+		attribute?: IAttribute;
+		attributeUid: string;
 	} ) {
-		if ( item.hasOwnProperty( 'attributeId' ) ) {
-			console.log( 'Fetching attr', item );
-			const itemAttr = item as {
-				attribute?:IAttribute;
-				attributeId:EntityUid;
-			};
-			const fetchedAttribute = await this.Attribute.find( itemAttr.attributeId );
-			return {
-				attributeId: itemAttr.attributeId,
-				attribute: fetchedAttribute ? fetchedAttribute.getProperties( serverDataSourceName ) : undefined,
-			} as {
-				attribute?:IAttribute & IEntityProperties;
-				attributeId:EntityUid;
-			};
-		} else {
-			console.log( 'Fetching prod', item );
-			const itemProd = item as {
-				productId: EntityUid;
-				product: IProduct;
-				attributesIds: _.Dictionary<EntityUid>;
-				attributes?: _.Dictionary<IAttribute>;
-			};
+		console.log( 'Fetching attr', item );
+		const fetchedAttribute = await this.Attribute.find( {uid: item.attributeUid} );
+		return {
+			attributeUid: item.attributeUid,
+			attribute: fetchedAttribute ? fetchedAttribute.getProperties( serverDataSourceName ) : undefined,
+		} as {
+			attribute?: IAttribute & IEntityProperties;
+			attributeUid: string;
+		};
+	}
 
-			const attrsPairs = _.toPairs( itemProd.attributesIds );
-			const attrsPromises = attrsPairs.map( ( [,attrId] ) => this.Attribute.find( attrId ) );
+	private async fetchCartItemContentProd( item: {
+		productUid: EntityUid;
+		product?: IProduct;
+		attributesUids: _.Dictionary<EntityUid>;
+		attributes?: _.Dictionary<IAttribute>;
+	} ) {
+
+			console.log( 'Fetching prod', item );
+
+			const attrsPairs = _.toPairs( item.attributesUids );
+			const attrsPromises = attrsPairs.map( ( [,attrId] ) => this.Attribute.find( {uid: attrId} ) );
 			const fetchedComponents = await Promise.all( [
-				this.Product.find( itemProd.productId ),
+				this.Product.find( {uid: item.productUid} ),
 				Promise.all( attrsPromises ),
 			] );
 			const attrsProps = fetchedComponents[1].map( attr => attr ? attr.getProperties( serverDataSourceName ) : undefined );
 			return {
-				productId: itemProd.productId,
+				productUid: item.productUid,
 				product: fetchedComponents[0] ? fetchedComponents[0].getProperties( serverDataSourceName ) : undefined,
-				attributesIds: itemProd.attributesIds,
+				attributesUids: item.attributesUids,
 				attributes: _.zipObject( attrsPairs.map( pair => pair[0] ), attrsProps ),
 			} as {
-				productId: EntityUid;
+				productUid: string;
 				product: IProduct & IEntityProperties;
-				attributesIds: _.Dictionary<EntityUid>;
+				attributesUids: _.Dictionary<string>;
 				attributes?: _.Dictionary<IAttribute & IEntityProperties>;
 			};
+}
+	public async fetchCartItemContent( item: {
+			attributeUid: EntityUid;
+			attribute?: IAttribute;
+		} | {
+			productUid: EntityUid;
+			product?: IProduct;
+			attributesUids: _.Dictionary<EntityUid>;
+			attributes?: _.Dictionary<IAttribute>;
+	} ) {
+		if ( item.hasOwnProperty( 'attributeUid' ) ) {
+			return this.fetchCartItemContentAttr( item as any );
+		} else {
+			return this.fetchCartItemContentProd( item as any );
 		}
 	}
 
@@ -300,14 +305,13 @@ export class ShopService extends ACookieDependentService {
 		await this.refreshCart();
 	}
 
-	public async addProductToCart( product: IProductViewModel, choosenAttributes: _.Dictionary<EntityUid> ) {
+	public async addProductToCart( product: IProductViewModel, choosenAttributes: _.Dictionary<string> ) {
 		return this.addItemToCart( {
 			count: 1,
 			unitPrice: ShopService.getTotalPrice( product, choosenAttributes ),
 			item: {
-				productId: product.id,
-				product,
-				attributesIds: choosenAttributes,
+				productUid: product.uid,
+				attributesUids: choosenAttributes,
 			},
 		} );
 	}
@@ -317,7 +321,7 @@ export class ShopService extends ACookieDependentService {
 			count: 1,
 			unitPrice: attribute.price,
 			item: {
-				attributeId: attribute.id,
+				attributeUid: attribute.uid,
 				attribute,
 			},
 		} );

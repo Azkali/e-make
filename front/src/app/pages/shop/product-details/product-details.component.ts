@@ -34,7 +34,7 @@ export class ProductDetailsComponent implements OnInit {
 
 	public product = new BehaviorSubject<IProductViewModel|undefined>( undefined );
 
-	public choosenAttributes: _.Dictionary<EntityUid> = {};
+	public choosenAttributes: _.Dictionary<string> = {};
 
 	public allAttrsSelected = new BehaviorSubject<boolean>( false );
 
@@ -52,8 +52,7 @@ export class ProductDetailsComponent implements OnInit {
 	public addSeparatePartToCart( part: IProduct.IPart ) {
 		const attrId = this.choosenAttributes[part.name];
 		const attributes: IAttribute & IEntityProperties = part.category.attributes as any;
-		const attribute = attributes.find( attr => attr.id === attrId );
-		console.log( {attrId, attributes, attribute} );
+		const attribute = attributes.find( attr => attr.uid === attrId );
 		this.shopService.addAttributeToCart( attribute );
 	}
 }
