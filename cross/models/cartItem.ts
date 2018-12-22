@@ -7,12 +7,12 @@ export interface ICartItem{
 	unitPrice: number;
 	count: number;
 	item: {
-		attributeId: EntityUid
+		attributeUid: string
 		attribute?: IAttribute
 	} | {
-		productId: EntityUid,
+		productUid: string,
 		product: IProduct,
-		attributesIds: _.Dictionary<EntityUid>;
+		attributesUids: _.Dictionary<string>;
 		attributes?: _.Dictionary<IAttribute>;
 	}
 }
@@ -30,17 +30,17 @@ export const cartItem: Raw.IAttributesDescription = {
 		type: EFieldType.OBJECT,
 		attributes: [
 			{
-				attributeId: {
+				attributeUid: {
 					type: EFieldType.STRING,
 					required: true,
 				}
 			},
 			{
-				productId: {
+				productUid: {
 					type: EFieldType.STRING,
 					required: true,
 				},
-				attributesIds: {
+				attributesUids: {
 					type: EFieldType.OBJECT,
 					required: true,
 				}
