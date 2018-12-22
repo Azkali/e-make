@@ -11,6 +11,9 @@
       "schematics": {
           "@schematics/angular:component": {
               "styleext": "scss"
+          },
+          "@schematics/angular:service": {
+              "flat": false
           }
       },
       "architect": {

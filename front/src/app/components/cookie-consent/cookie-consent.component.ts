@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 import { ACookieDependentService } from '../../shared/services/ICookieDependentService';
 import { GoogleAnalyticsService } from './../../shared/services/google-analytics/google-analytics.service';
-import { ShopService } from '../../shared/services/shop.service';
+import { ShopService } from '../../shared/services/shop/shop.service';
 
 export type CookieLawPosition = 'top' | 'bottom';
 export type CookieLawAnimation = 'topIn' | 'bottomIn' | 'topOut' | 'bottomOut';

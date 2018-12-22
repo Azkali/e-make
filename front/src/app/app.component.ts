@@ -1,10 +1,10 @@
 import { BehaviorSubject } from 'rxjs';
 import { Component } from '@angular/core';
-import { ShopService } from './shared/services/shop.service';
+import { ShopService } from './shared/services/shop/shop.service';
 import { ICart, ITempCart } from '../../../cross/models/cart';
 import { skip } from 'rxjs/operators';
 import { CartComponent } from './pages/shop/cart/cart.component';
-import { ModalService } from './shared/services/modal.service';
+import { ModalService } from './shared/services/modal/modal.service';
 
 @Component( {
 	selector: 'app-root',

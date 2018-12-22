@@ -6,17 +6,17 @@ import { from, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import * as _ from 'lodash';
 
 import { IProductViewModel } from './shop.service';
-import { IEntry } from './../models/markdown-config';
-import { environment } from '../../../environments/environment';
-import { MarkdownScrapperService, IProductArticle, IArticle } from './markdown-scrapper.service';
-import { loadMocks } from '../../../../../cross/mocks/loadMocks';
+import { IEntry } from '../../models/markdown-config';
+import { environment } from '../../../../environments/environment';
+import { MarkdownScrapperService, IProductArticle, IArticle } from '../markdown-scrapper/markdown-scrapper.service';
+import { loadMocks } from '../../../../../../cross/mocks/loadMocks';
 
-import { IProduct, product as ProductAttributes } from '../../../../../cross/models/product';
-import { IAttribute, attribute as AttributeAttributes } from '../../../../../cross/models/attribute';
-import { IAttributeCategory, attributeCategory as AttributeCategoryAttributes } from '../../../../../cross/models/attributeCategory';
-import { ICart, cart as CartAttributes, ITempCart } from '../../../../../cross/models/cart';
-import { ICartItem, cartItem as CartItemAttributes } from '../../../../../cross/models/cartItem';
-import { ACookieDependentService } from './ICookieDependentService';
+import { IProduct, product as ProductAttributes } from '../../../../../../cross/models/product';
+import { IAttribute, attribute as AttributeAttributes } from '../../../../../../cross/models/attribute';
+import { IAttributeCategory, attributeCategory as AttributeCategoryAttributes } from '../../../../../../cross/models/attributeCategory';
+import { ICart, cart as CartAttributes, ITempCart } from '../../../../../../cross/models/cart';
+import { ICartItem, cartItem as CartItemAttributes } from '../../../../../../cross/models/cartItem';
+import { ACookieDependentService } from '../ICookieDependentService';
 
 const serverDataSourceName = 'remote';
 const localDataSourceName = 'local';

@@ -1,9 +1,9 @@
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Component } from '@angular/core';
-import { ShopService } from '../../../shared/services/shop.service';
+import { ShopService } from '../../../shared/services/shop/shop.service';
 import { ITempCart } from '../../../../../../cross/models/cart';
 import { skip } from 'rxjs/operators';
-import { ModalService } from '../../../shared/services/modal.service';
+import { ModalService } from '../../../shared/services/modal/modal.service';
 import { IAttribute } from '../../../../../../cross/models/attribute';
 @Component( {
 	selector: 'app-cart',

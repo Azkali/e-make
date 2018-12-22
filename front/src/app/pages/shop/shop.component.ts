@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ShopService } from '../../shared/services/shop.service';
+import { ShopService } from '../../shared/services/shop/shop.service';
 import {  BehaviorSubject } from 'rxjs';
 import { IProduct } from '../../../../../cross/models/product';
 

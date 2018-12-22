@@ -4,8 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, AsyncSubject } from 'rxjs';
 import * as _ from 'lodash';
 
-import { IProductViewModel } from './../../../shared/services/shop.service';
-import { ShopService } from '../../../shared/services/shop.service';
+import { IProductViewModel } from '../../../shared/services/shop/shop.service';
+import { ShopService } from '../../../shared/services/shop/shop.service';
 import { IAttribute } from '../../../../../../cross/models/attribute';
 import { IProduct } from '../../../../../../cross/models/product';
 

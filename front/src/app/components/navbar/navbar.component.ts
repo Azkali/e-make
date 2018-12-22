@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { ModalService } from '../../shared/services/modal.service';
+import { ModalService } from '../../shared/services/modal/modal.service';
 import { LoginComponent } from '../../pages/login/login.component';
-import { NavbarService } from '../../shared/services/navbar.service';
+import { NavbarService } from '../../shared/services/navbar/navbar.service';
 
 @Component( {
 	selector: 'app-navbar',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DomService } from './dom.service';
+import { DomService } from '../dom/dom.service';
 
 @Injectable( {
 	providedIn: 'root',

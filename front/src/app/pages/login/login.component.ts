@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ModalService } from '../../shared/services/modal.service';
+import { ModalService } from '../../shared/services/modal/modal.service';
 
 
 @Component( {
