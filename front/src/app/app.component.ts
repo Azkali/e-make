@@ -1,4 +1,3 @@
-import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { Component } from '@angular/core';
 import { ShopService } from './shared/services/shop/shop.service';
@@ -12,9 +11,8 @@ import { HeaderService } from './shared/services/header/header.service';
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
+	providers: [HeaderService],
 } )
-
-
 export class AppComponent {
 	public title = 'app';
 
@@ -32,7 +30,6 @@ export class AppComponent {
 	public constructor(
 		private modalService: ModalService,
 		private shopService: ShopService,
-		private activatedRoute: ActivatedRoute,
 		private headerService: HeaderService
 	) {
 		this.cartInfos = this.shopService.currentCart;
@@ -40,9 +37,9 @@ export class AppComponent {
 			this.cartFlash = true;
 			setTimeout( () => this.cartFlash = false, 500 );
 		} );
-		this.activatedRoute.data.subscribe( data => {
-			console.log( {data} );
-		} );
+
+		this.headerClasses.subscribe( console.log.bind( console, 'Changed header classes' ) );
+		this.headerStyles.subscribe( console.log.bind( console, 'Changed header styles' ) );
 	}
 
 

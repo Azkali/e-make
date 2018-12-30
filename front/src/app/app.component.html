@@ -3,7 +3,7 @@
 	<div id="wrapper">
 		<div id="modal"></div>
 		<!-- Header -->
-		<header id="header" class="alt" [ngStyle]="headerStyles">
+		<header id="header" [ngClass]="headerClasses | async" [ngStyle]="headerStyles | async">
 			<a [routerLink]="['/']" class="logo"><strong>E-Make</strong> <span>by Azkali</span></a>
 			<nav>
 				<button (click)="initCartModal()" id="cart-icon" [ngClass]="{pulse: cartFlash}"><span class="icon alt fa-shopping-cart"

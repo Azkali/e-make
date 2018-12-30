@@ -76,7 +76,7 @@ export class MarkdownScrapperService {
 		const basePath = directoryName ? directoryName + '/' : '';
 		const url = MarkdownScrapperService.getRawContentUrl( basePath + summaryFile );
 		this.summariesCache[directoryName] = this.http.get( url, {responseType: 'text'} )
-		.pipe( map( allSummaries => MarkdownScrapperService.parseSummaryFileContent( allSummaries ) ) );
+			.pipe( map( allSummaries => MarkdownScrapperService.parseSummaryFileContent( allSummaries ) ) );
 		return this.summariesCache[directoryName];
 	}
 
@@ -107,11 +107,10 @@ export class MarkdownScrapperService {
 		basePath: string
 	) {
 		const observable = forkJoin( this.apiContent, this.getSummaries( basePath ) );
-		observable.subscribe( ( [repoTree, summary] ) => console.log( repoTree, summary ) );
 		return observable
-		.pipe( retry( 3 ), map( ( [repoTree, summaries] ) => ( {
-			entries: repoTree.tree.filter( item => item.path.startsWith( basePath ) ),
-			summaries,
-		 } ) ) );
+			.pipe( retry( 3 ), map( ( [repoTree, summaries] ) => ( {
+				entries: repoTree.tree.filter( item => item.path.startsWith( basePath ) ),
+				summaries,
+			} ) ) );
 	}
 }

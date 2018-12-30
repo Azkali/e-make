@@ -1,3 +1,4 @@
+import { HeaderService } from '../../../shared/services/header/header.service';
 import { IEntityProperties, EntityUid } from '@diaspora/diaspora/dist/types/types/entity';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -13,18 +14,19 @@ import { IProduct } from '../../../../../../cross/models/product';
 	selector: 'app-product-details',
 	templateUrl: './product-details.component.html',
 	styleUrls: ['./product-details.component.scss'],
+	providers: [HeaderService],
 } )
 export class ProductDetailsComponent implements OnInit {
 
 	public constructor( private route: ActivatedRoute, private shopService: ShopService ) {
 		this.route.params.subscribe( params => {
 			this.shopService.geProductByName( params.identifier )
-			.subscribe( product => {
-				this.product.next( product );
-				if ( product.customizableParts.length === 0 ) {
-					this.allAttrsSelected.next( true );
-				}
-			} );
+				.subscribe( product => {
+					this.product.next( product );
+					if ( product.customizableParts.length === 0 ) {
+						this.allAttrsSelected.next( true );
+					}
+				} );
 		} );
 	}
 
