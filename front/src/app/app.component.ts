@@ -37,9 +37,6 @@ export class AppComponent {
 			this.cartFlash = true;
 			setTimeout( () => this.cartFlash = false, 500 );
 		} );
-
-		this.headerClasses.subscribe( console.log.bind( console, 'Changed header classes' ) );
-		this.headerStyles.subscribe( console.log.bind( console, 'Changed header styles' ) );
 	}
 
 
