@@ -6,8 +6,7 @@
 
 /* Icon */
 
-	.icon {
-		@include icon;
+	.fas, .fa, .fab {
 		border-bottom: none;
 		position: relative;
 
@@ -29,21 +28,23 @@
 		}
 	}
 
-	a.icon {
-		&.alt {
-			&:before {
-				@include vendor('transition', 'background-color #{_duration(transition)} ease-in-out');
-			}
-
-			&:hover {
+	a{
+		&.fas, &.fa, &.fab {
+			&.alt {
 				&:before {
-					background-color: _palette(accent1);
+					@include vendor('transition', 'background-color #{_duration(transition)} ease-in-out');
 				}
-			}
 
-			&:active {
-				&:before {
-					background-color: desaturate(darken(_palette(accent1), 15), 5);
+				&:hover {
+					&:before {
+						background-color: _palette(accent1);
+					}
+				}
+
+				&:active {
+					&:before {
+						background-color: desaturate(darken(_palette(accent1), 15), 5);
+					}
 				}
 			}
 		}

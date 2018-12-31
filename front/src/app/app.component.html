@@ -4,8 +4,7 @@
 		<a [routerLink]="['/']" class="logo"><strong>E-Make</strong> <span>by Azkali</span></a>
 		<nav>
 			<button
-			(click)="openCartModal()" id="cart-icon" [ngClass]="{pulse: cartFlash, 'no-border': true}"><span class="icon alt fa-shopping-cart"
-			title="Cart"></span> {{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}} ({{(cartInfos | async).totalCount}})</button>
+			(click)="openCartModal()" id="cart-icon" [ngClass]="{pulse: cartFlash, 'no-border': true}"><i class="fas fa-shopping-cart alt" aria-label="Cart"></i> {{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}} ({{(cartInfos | async).totalCount}})</button>
 			<button (click)="openMenuModal()" class="no-border no-hover" id="menu-button">Menu</button>
 		</nav>
 	</header>

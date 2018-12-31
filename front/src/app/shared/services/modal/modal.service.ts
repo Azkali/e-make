@@ -1,7 +1,8 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, EventEmitter, ComponentRef } from '@angular/core';
 import { DomService } from '../dom/dom.service';
-import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
+import { skip, first, filter } from 'rxjs/operators';
+import { isUndefined } from 'lodash';
 
 const BLUR_BACK_CLASS = 'blurred';
 
@@ -11,6 +12,7 @@ const BLUR_BACK_CLASS = 'blurred';
 export class ModalService {
 	private modalVisibleStateSource = new BehaviorSubject<boolean>( false );
 	public modalVisibleState = this.modalVisibleStateSource.asObservable();
+	private currentModal = new BehaviorSubject<undefined | ComponentRef<any>>( undefined );
 
 	public constructor( private domService: DomService ) {}
 
@@ -18,12 +20,19 @@ export class ModalService {
 
 	private modalElemId = 'modal';
 	public open( component: any, inputs: object, outputs: object ) {
+		if ( this.modalVisibleStateSource.value === true ) {
+			console.log( 'delay' );
+			this.currentModal.pipe( filter( val => isUndefined( val ) ), first() ).subscribe( () => this.open( component, inputs, outputs ) );
+			this.close();
+			return;
+		}
+		console.log( 'do' );
 		const componentConfig = {
 			inputs: inputs,
 			outputs: outputs,
 		};
 
-		this.domService.appendComponentTo( this.modalElemId, component, componentConfig );
+		this.currentModal.next( this.domService.appendComponentTo( this.modalElemId, component, componentConfig ) );
 		this.backgroundBlurred.next( true );
 		this.modalVisibleStateSource.next( true );
 	}
@@ -34,6 +43,7 @@ export class ModalService {
 	}
 
 	public removeModalElement() {
-		this.domService.removeComponent();
+		this.domService.removeComponent( this.currentModal.value );
+		this.currentModal.next( undefined );
 	}
 }

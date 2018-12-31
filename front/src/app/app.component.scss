@@ -4,22 +4,28 @@ $pulse-rest: 2em;
 	font-size: 1em;
 	position: relative;
 	box-shadow: none;
-	.icon:after {
-		background-color: #cccccc;
-		content: '';
-		width: $pulse-rest;
-		height: $pulse-rest;
-		display: block;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		border-radius: 100%;
-		opacity: 0;
-		z-index: -1;
+	.fas, .fa{
+		&:after {
+			background-color: #cccccc;
+			content: '';
+			width: $pulse-rest;
+			height: $pulse-rest;
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			border-radius: 100%;
+			opacity: 0;
+			z-index: -1;
+		}
 	}
-	&.pulse .icon:after {
-		animation: pulse ease-in-out .5s normal;
+	&.pulse{
+		.fas, .fa{
+			:after {
+				animation: pulse ease-in-out .5s normal;
+			}
+		}
 	}
 }
 

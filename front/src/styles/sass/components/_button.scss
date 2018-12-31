@@ -46,7 +46,7 @@
 			color: desaturate(darken(_palette(highlight), 15), 5);
 		}
 
-		&.icon {
+		&.fas, &.fa {
 			&:before {
 				margin-right: 0.5em;
 			}

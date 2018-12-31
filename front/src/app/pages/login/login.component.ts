@@ -1,21 +1,15 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ModalService } from '../../shared/services/modal/modal.service';
+import { ModalComponent } from '../../components/modal/modal.component';
 
 
 @Component( {
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.css'],
-	encapsulation: ViewEncapsulation.ShadowDom,
 } )
-export class LoginComponent implements OnInit {
-
-	public constructor( private modalService: ModalService ) { }
-
-	public ngOnInit() {
-	}
-
-	public close() {
-		this.modalService.close();
+export class LoginComponent extends ModalComponent {
+	public constructor( modalService: ModalService ) {
+		super( modalService );
 	}
 }

@@ -26,7 +26,7 @@ trigger( 'changeStateDisplay', [
 export abstract class ModalComponent {
 	protected subscriptions: Subscription[] = [];
 
-	public constructor( private modalService: ModalService ) {}
+	public constructor( protected modalService: ModalService ) {}
 
 	public close() {
 		this.subscriptions.forEach( subscription => subscription.unsubscribe() );
