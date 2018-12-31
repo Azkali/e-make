@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { first, filter, map, mergeMap } from 'rxjs/operators';
-import { Dictionary, castArray, Many } from 'lodash';
+import { Dictionary, castArray, Many, times, stubTrue, zipObject } from 'lodash';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 interface IHeaderData {
@@ -13,7 +13,7 @@ interface IHeaderData {
 	providedIn: 'root',
 } )
 export class HeaderService {
-	public headerClasses = new BehaviorSubject<string>( 'alt' );
+	public headerClasses = new BehaviorSubject<Dictionary<boolean>>( {alt:true} );
 	public headerStyles = new BehaviorSubject<Dictionary<string>>( {} );
 
 	public constructor(
@@ -30,7 +30,8 @@ export class HeaderService {
 				} ),
 				mergeMap( ( route ) => route.data as Observable<IHeaderData> )
 			).subscribe( ( data ) => {
-				this.headerClasses.next( castArray( data.classes || 'alt' ).join( ' ' ) );
+				const classes = castArray( data.classes || 'alt' );
+				this.headerClasses.next( zipObject( classes, times( classes.length, stubTrue ) ) );
 				this.headerStyles.next( data.styles );
 			} );
 	}

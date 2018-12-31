@@ -1,19 +1,21 @@
 <div class="is-preload">
 	<!-- Wrapper -->
-	<div id="wrapper">
-		<div id="modal"></div>
+	<header id="header" [ngClass]="headerClasses | async" [ngStyle]="headerStyles | async">
+		<a [routerLink]="['/']" class="logo"><strong>E-Make</strong> <span>by Azkali</span></a>
+		<nav>
+			<button
+			(click)="openCartModal()" id="cart-icon" [ngClass]="{pulse: cartFlash, 'no-border': true}"><span class="icon alt fa-shopping-cart"
+			title="Cart"></span> {{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}} ({{(cartInfos | async).totalCount}})</button>
+			<button (click)="openMenuModal()" class="no-border no-hover" id="menu-button">Menu</button>
+		</nav>
+	</header>
+	<div id="wrapper" [ngClass]="{blurred: modalService.backgroundBlurred | async, blurrable: true}">
 		<!-- Header -->
-		<header id="header" [ngClass]="headerClasses | async" [ngStyle]="headerStyles | async">
-			<a [routerLink]="['/']" class="logo"><strong>E-Make</strong> <span>by Azkali</span></a>
-			<nav>
-				<button (click)="initCartModal()" id="cart-icon" [ngClass]="{pulse: cartFlash}"><span class="icon alt fa-shopping-cart"
-					 title="Cart"></span> {{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}} ({{(cartInfos |
-					async).totalCount}})</button>
-				<a href="#menu" target="_self">Menu</a>
-			</nav>
-		</header>
-		<app-navbar></app-navbar>
 		<router-outlet></router-outlet>
 	</div>
+	<div id="modal"
+	[@changeStateOpacity]="state"
+	[@changeStateDisplay]="state"
+	(@changeStateOpacity.done)="modalAnimDone($event)"></div>
 </div>
 <app-cookie-consent></app-cookie-consent>

@@ -1,5 +1,16 @@
-/* Modal Header */
+button{
+	&.no-border{
+		font-size: 1em;
+		position: relative;
+		box-shadow: none;
+	}
+	&.no-hover:hover{
+		color: #ffffff;
+		box-shadow: none;
+	}
+}
 
+/* Modal Header */
 .modal-header {
 	padding: 2px 16px;
 	//background-color: #5cb85c;

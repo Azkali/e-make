@@ -231,7 +231,8 @@
 
 		});
 
-	// Menu.
+    // Menu.
+    /*
 		var $menu = $('#menu'),
 			$menuInner;
 
@@ -330,6 +331,7 @@
 					if (event.keyCode == 27)
 						$menu._hide();
 
-			});
+            });
+            */
 
 })(jQuery);

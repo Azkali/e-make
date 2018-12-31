@@ -1,3 +1,4 @@
+import { ModalService } from './shared/services/modal/modal.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -23,6 +24,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { BlogComponent } from './pages/blog/blog.component';
 import { ArticleComponent } from './pages/blog/article/article.component';
 import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
+import { ShopService } from './shared/services/shop/shop.service';
 
 @NgModule( {
 	declarations: [
@@ -54,7 +56,7 @@ import { ProductDetailsComponent } from './pages/shop/product-details/product-de
 		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent, LoginComponent],
+	entryComponents: [CartComponent, LoginComponent, NavbarComponent],
 	providers: [],
 	bootstrap: [AppComponent],
 } )

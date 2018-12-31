@@ -16,6 +16,6 @@ export class LoginComponent implements OnInit {
 	}
 
 	public close() {
-		this.modalService.destroy();
-	  }
+		this.modalService.close();
+	}
 }

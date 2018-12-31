@@ -7,25 +7,27 @@ import { skip } from 'rxjs/operators';
 import { ModalService } from '../../../shared/services/modal/modal.service';
 import { IAttribute } from '../../../../../../cross/models/attribute';
 import { ICartItem } from '../../../../../../cross/models/cartItem';
+import { ModalComponent } from '../../../components/modal/modal.component';
+
 @Component( {
 	selector: 'app-cart',
 	templateUrl: './cart.component.html',
 	styleUrls: ['./cart.component.scss'],
 } )
-export class CartComponent {
-	public cartInfos = new BehaviorSubject<ITempCart>( {items: [], totalCount: 0, totalSum: 0} );
-	private cartSubscription: Subscription;
+export class CartComponent extends ModalComponent {
 
-	public constructor( private modalService: ModalService, private shopService: ShopService ) {
-		this.cartSubscription = this.shopService.currentCart.subscribe( async newCart => {
+	public constructor( private shopService: ShopService, modalService: ModalService ) {
+		super( modalService );
+		this.subscriptions.push( this.shopService.currentCart.subscribe( async newCart => {
 			const promises = newCart.items.map( async cartItem => {
 				cartItem.item = await shopService.fetchCartItemContent( cartItem.item );
 			} );
 			await Promise.all( promises );
 			console.log( newCart );
 			this.cartInfos.next( newCart );
-		} );
+		} ) );
 	}
+	public cartInfos = new BehaviorSubject<ITempCart>( {items: [], totalCount: 0, totalSum: 0} );
 
 	public trackCartItem( index: number, cartItem: ICartItem & IEntityProperties ) {
 		return cartItem.id;
@@ -46,10 +48,5 @@ export class CartComponent {
 			const item =
 			return ShopService.getTotalPrice( cartItem.item.product, cartItem.item.attributeUids );l;
 		}*/
-	}
-
-	public close() {
-		this.cartSubscription.unsubscribe();
-		this.modalService.destroy();
 	}
 }
