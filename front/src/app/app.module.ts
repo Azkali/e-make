@@ -25,6 +25,8 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { ArticleComponent } from './pages/blog/article/article.component';
 import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
 import { ShopService } from './shared/services/shop/shop.service';
+import { WindowRef } from './shared/window-ref/window-ref.service';
+import { AfterLoginComponent } from './pages/after-login/after-login.component';
 
 @NgModule( {
 	declarations: [
@@ -42,6 +44,7 @@ import { ShopService } from './shared/services/shop/shop.service';
 		ArticleComponent,
 		ProductDetailsComponent,
 		CookieConsentComponent,
+		AfterLoginComponent,
 
 	],
 	imports: [
@@ -57,7 +60,7 @@ import { ShopService } from './shared/services/shop/shop.service';
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
 	entryComponents: [CartComponent, LoginComponent, NavbarComponent],
-	providers: [],
+	providers: [WindowRef],
 	bootstrap: [AppComponent],
 } )
 export class AppModule { }

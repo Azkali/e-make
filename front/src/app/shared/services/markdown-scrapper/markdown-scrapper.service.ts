@@ -67,7 +67,7 @@ export class MarkdownScrapperService {
 	private getSummaries( directoryName?: string ) {
 		const cachedValue = this.summariesCache[directoryName];
 		if ( cachedValue ) {
-			if ( environment.production === false ) {
+			if ( environment.common.production === false ) {
 				console.info( `Using cached value for directory ${directoryName}`, cachedValue );
 			}
 			return cachedValue;

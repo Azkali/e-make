@@ -9,6 +9,7 @@ import { HeaderService } from './shared/services/header/header.service';
 import { hideShowOpacity, hideShowDisplay, EModalAnimation } from './components/modal/modal.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { assign } from 'lodash';
+import { UserService } from './shared/services/user/user.service';
 
 @Component( {
 	selector: 'app-root',
@@ -32,7 +33,8 @@ export class AppComponent {
 	public constructor(
 		private modalService: ModalService,
 		private shopService: ShopService,
-		private headerService: HeaderService
+		private headerService: HeaderService,
+		private userService: UserService
 	) {
 		this.cartInfos = this.shopService.currentCart;
 		this.cartInfos.pipe( skip( 1 ) ).subscribe( newCart => {

@@ -60,7 +60,7 @@ export class ShopService extends ACookieDependentService {
 
 		this.readyState = new AsyncSubject<any>();
 
-		if ( environment.production === true ) {
+		if ( environment.common.production === true ) {
 			this.serverDataSource = Diaspora.createNamedDataSource( serverDataSourceName, 'webApi', {
 				host: 'TODO',
 				port: 8000,
@@ -99,7 +99,7 @@ export class ShopService extends ACookieDependentService {
 			this.serverDataSource.waitReady(),
 			this.localDataSource.waitReady(),
 		] ).then( async () => {
-			if ( environment.production === false ) {
+			if ( environment.common.production === false ) {
 				await loadMocks( serverDataSourceName, this.AttributeCategory, this.Attribute, this.Product );
 			}
 			await this.refreshCart();
@@ -202,7 +202,7 @@ export class ShopService extends ACookieDependentService {
 					productObservable.complete();
 				} );
 			} );
-		if ( environment.production === false ) {
+		if ( environment.common.production === false ) {
 			productObservable.subscribe( console.info.bind( this, `Product ${productName} fetched:` ) );
 		}
 		return productObservable;
@@ -223,7 +223,7 @@ export class ShopService extends ACookieDependentService {
 					allProductsObservable.complete();
 				} );
 			} );
-		if ( environment.production === false ) {
+		if ( environment.common.production === false ) {
 			allProductsObservable.subscribe( console.info.bind( this, 'All products fetched:' ) );
 		}
 		return allProductsObservable;

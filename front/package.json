@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port $(node -pe 'JSON.parse(process.argv[1]).port' \"$(cat ../cross/config/local/front.json)\")",
+    "start": "ng serve --public-host www.e-make.io --port $(ts-node -pe 'require(`../cross/config/local/common`).config.front.port')",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -27,6 +27,7 @@
     "@ng-bootstrap/ng-bootstrap": "^4.0.0",
     "angular-oauth2-oidc": "^5.0.2",
     "angular2-cookie-law": "^6.0.4",
+    "broadcast-channel": "^2.1.8",
     "core-js": "^2.6.0",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",

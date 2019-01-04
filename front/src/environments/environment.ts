@@ -1,11 +1,9 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+import {frontConfig} from '../../../cross/config/local/front';
 
-export const environment = {
-	production: false,
-	googleAnalyticsKey: '',
-};
+export const environment = frontConfig;
 
 /*
 * In development mode, to ignore zone related error stack frames such as
