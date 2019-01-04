@@ -1,5 +1,0 @@
-{
-	"appId": "my-appid.apps.googleusercontent.com",
-	"appSecret":"thisistheappsecret",
-	"redirectUrl": "/auth/google/callback"
-}
