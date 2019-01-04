@@ -12,20 +12,25 @@
   "dependencies": {
     "@diaspora/diaspora": "^0.3.1",
     "@diaspora/plugin-server": "^0.2.0-alpha.3",
+    "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "express-gateway": "^1.13.0",
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
     "passport": "^0.4.0",
-    "passport-google-oauth": "^1.0.0"
+    "passport-google-oauth": "^1.0.0",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.16.0",
+    "@types/express-session": "^1.15.11",
     "@types/jsonwebtoken": "^8.3.0",
+    "@types/lodash": "^4.14.119",
     "@types/passport": "^0.4.7",
     "@types/passport-google-oauth": "^1.0.39",
-    "body-parser": "^1.18.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6"
