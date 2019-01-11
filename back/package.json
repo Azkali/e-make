@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/main.ts",
-    "watch": "ts-node-dev src/main.ts",
+    "start": "LOG_DIRECTORY='./logs' ts-node src/main.ts",
+    "watch": "LOG_DIRECTORY='./logs' ts-node-dev src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -22,7 +22,8 @@
     "lodash": "^4.17.11",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "winston-daily-rotate-file": "^3.5.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.1",

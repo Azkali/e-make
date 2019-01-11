@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import { Entity } from '@diaspora/diaspora/dist/types';
 import { initializePassport } from './authentication';
 import { ExpressApiGenerator } from '@diaspora/plugin-server';
@@ -104,6 +105,6 @@ app.use( '/api', apiMiddleware.middleware );
 
 mainDataSource.waitReady().then( () => {
 	const httpServer = app.listen( backConfig.common.back.port || 80, backConfig.host, () => {
-		console.log( `Example app listening on ${backConfig.host}:${backConfig.common.back.port || 80}!` );
+		logger.info( `Example app listening on ${backConfig.host}:${backConfig.common.back.port || 80}!` );
 	} );
 } );
