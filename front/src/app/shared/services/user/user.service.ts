@@ -9,27 +9,25 @@ import { environment } from '../../../../environments/environment';
 
 const BroadcastChannelPolyfill = require( 'broadcast-channel' ).default as {new( name: string ): BroadcastChannel};
 
-const makeChan = () => new BroadcastChannelPolyfill( 'e-make' );
-
 @Injectable( {
 	providedIn: 'root',
 } )
 export class UserService {
-	private loginBroadcastEmit = makeChan();
-	private loginBroadcastReceive = makeChan();
-	private token = new BehaviorSubject<string | undefined>( undefined );
+	private loginBroadcastEmit = new BroadcastChannelPolyfill( 'e-make' );
+	private loginBroadcastReceive = new BroadcastChannelPolyfill( 'e-make' );
+	private tokenSubject = new BehaviorSubject<string | undefined>( undefined );
+	public token = this.tokenSubject.asObservable();
 
 	public constructor( private httpClient: HttpClient ) {
 		this.loginBroadcastReceive.onmessage = ( message: Dictionary<any> ) => {
-			console.log( 'Message received', message );
 			switch ( message.action ) {
 				case 'login': {
-					this.token.next( message.token );
+					this.tokenSubject.next( message.token );
 				}
 			}
 		};
 		this.loginBroadcastReceive.onmessageerror = ( message: Dictionary<any> ) => {
-			console.log( 'Message error received', message );
+			console.error( 'A broadcast channel errored:', message );
 		};
 		this.loginBroadcastEmit.postMessage( { action: 'init' } );
 	}
@@ -40,7 +38,6 @@ export class UserService {
 			.pipe(
 				first(),
 				map( ( res: {token: string} ) => {
-					console.log( 'Login done' );
 					this.loginBroadcastEmit.postMessage( { action: 'login', token: res.token } );
 					return [res.token, undefined];
 				} ),

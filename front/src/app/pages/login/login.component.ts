@@ -22,7 +22,7 @@ export class LoginComponent extends ModalComponent {
 		return `${makeAbsoluteUrl( environment.common.back )}${environment.common.back.auth.baseAuthRoute}/${method}`;
 	}
 
-	public constructor( modalService: ModalService, private httpClient: HttpClient ) {
+	public constructor( modalService: ModalService ) {
 		super( modalService );
 	}
 }

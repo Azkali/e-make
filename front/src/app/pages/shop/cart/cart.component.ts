@@ -3,11 +3,13 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { Component } from '@angular/core';
 import { ShopService } from '../../../shared/services/shop/shop.service';
 import { ITempCart, ICart } from '../../../../../../cross/models/cart';
-import { skip } from 'rxjs/operators';
+import { skip, first } from 'rxjs/operators';
 import { ModalService } from '../../../shared/services/modal/modal.service';
 import { IAttribute } from '../../../../../../cross/models/attribute';
 import { ICartItem } from '../../../../../../cross/models/cartItem';
 import { ModalComponent } from '../../../components/modal/modal.component';
+import { UserService } from '../../../shared/services/user/user.service';
+import { LoginComponent } from '../../login/login.component';
 
 @Component( {
 	selector: 'app-cart',
@@ -16,7 +18,7 @@ import { ModalComponent } from '../../../components/modal/modal.component';
 } )
 export class CartComponent extends ModalComponent {
 
-	public constructor( private shopService: ShopService, modalService: ModalService ) {
+	public constructor( private shopService: ShopService, modalService: ModalService, private userService: UserService ) {
 		super( modalService );
 		this.subscriptions.push( this.shopService.currentCart.subscribe( async newCart => {
 			const promises = newCart.items.map( async cartItem => {
@@ -48,5 +50,21 @@ export class CartComponent extends ModalComponent {
 			const item =
 			return ShopService.getTotalPrice( cartItem.item.product, cartItem.item.attributeUids );l;
 		}*/
+	}
+
+	public buy() {
+		const subscription =  this.userService.token.subscribe( token => {
+			if ( !token ) {
+				this.modalService.open( LoginComponent, { isMobile: false }, {} );
+			} else {
+				// Let the subscription's first execution finish before unsubscribing it.
+				setTimeout( () => subscription.unsubscribe() );
+				this.doBuy();
+			}
+		} );
+	}
+
+	private doBuy() {
+		console.log( 'Do buy' );
 	}
 }
