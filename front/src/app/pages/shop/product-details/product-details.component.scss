@@ -1,0 +1,33 @@
+@import '../../../../styles/sass/libs/vars';
+@import '../../../../styles/sass/breakpoints.scss';
+@import '../../../../styles/sass/libs/functions';
+
+.wide-only{
+	display: block;
+}
+table.wide-only{
+	display: table;
+}
+.small-only{
+	display: none;
+}
+
+@include breakpoint('<=small') {
+	.wide-only{
+		display: none!important;
+	}
+	.small-only{
+		display: block;
+	}
+}
+
+#customize-small > div{
+	border: solid 1px _palette(border);
+	border-left: 0;
+	border-right: 0;
+	padding: 15px 15px;
+
+	&:nth-child(2n + 1) {
+		background-color: _palette(border-bg);
+	}
+}

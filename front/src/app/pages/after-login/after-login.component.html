@@ -1,0 +1,11 @@
+<div [ngSwitch]="loginStatus | async">
+	<div *ngSwitchCase="ELoginStatus.LoggedIn">
+		You are now logged in!
+	</div>
+	<div *ngSwitchCase="ELoginStatus.NotLoggedIn">
+		Oops, we could not log you in...
+	</div>
+	<div *ngSwitchCase="ELoginStatus.ServerError">
+		Oops, something bad happened...
+	</div>
+</div> 

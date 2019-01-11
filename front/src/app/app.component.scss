@@ -1,0 +1,48 @@
+$pulse-size: 6em;
+$pulse-rest: 2em;
+#cart-icon {
+	font-size: 1em;
+	position: relative;
+	box-shadow: none;
+	.fas, .fa{
+		&:after {
+			background-color: #cccccc;
+			content: '';
+			width: $pulse-rest;
+			height: $pulse-rest;
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			border-radius: 100%;
+			opacity: 0;
+			z-index: -1;
+		}
+	}
+	&.pulse{
+		.fas, .fa{
+			:after {
+				animation: pulse ease-in-out .5s normal;
+			}
+		}
+	}
+}
+
+@keyframes pulse {
+	0% {
+		width: $pulse-rest;
+		height: $pulse-rest;
+		opacity: 0;
+	}
+	25% {
+		width: $pulse-size;
+		height: $pulse-size;
+		opacity: 1;
+	}
+	100% {
+		width: $pulse-rest;
+		height: $pulse-rest;
+		opacity: 0;
+	}
+}

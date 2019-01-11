@@ -1,0 +1,16 @@
+[
+    {   
+        "basePrice": 200,
+        "title": "Nutmix",
+        "image": "",
+        "productUrl": "nut",
+        "category": "DIY Kits"
+    },
+    {
+        "basePrice": 400,
+        "title": "Neon Mango",
+        "image": "",
+        "productUrl": "mango",
+        "category": "DIY Kits"
+    }
+]    

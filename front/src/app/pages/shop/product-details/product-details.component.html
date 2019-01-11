@@ -1,0 +1,85 @@
+<div *ngIf="(product | async) as productResolved; else unresolved" id="main">
+	<section id="banner" style="background-position: center 0px; background-image: url(&quot;images/pic07.jpg&quot;);" class="style5">
+		<div class="inner">
+			<header class="major">
+				<h1>{{ productResolved?.name }}</h1>
+			</header>
+			<showdown [value]="productResolved?.summary" class="content"></showdown>
+		</div>
+	</section>
+	
+	
+	<!-- One -->
+	<section id="one">
+		<div class="inner">
+			<header class="major">
+				<h2>Product infos</h2>
+			</header>
+			<showdown [src]="productResolved?.pathProductPage">Oops, we could not load the detail content !</showdown>
+		</div>
+	</section>
+	
+	<section id="two">
+		<div class="inner">
+			<ng-container *ngIf="productResolved?.customizableParts.length > 0">
+				<header class="major">
+					<h2>Customize your {{productResolved?.name}}</h2>
+				</header>
+				
+				<table class="wide-only">
+					<tr>
+						<td>Base of <em>{{productResolved?.name}}</em></td>
+						<td class="smallest">1</td>
+						<td style="text-align:right">{{productResolved?.basePrice | currency:'€':'symbol':'1.2-2'}}</td>
+						<td class="smallest"></td>
+					</tr>
+					<tr *ngFor="let part of productResolved?.customizableParts">
+						<td>{{part.name}} ({{part.category.name}})</td>
+						<td class="smallest">{{part.factor}}</td>
+						<td><ng-container [ngTemplateOutlet]="attrSelect" [ngTemplateOutletContext]="{part:part}"></ng-container></td>
+						<td class="smallest"><ng-container [ngTemplateOutlet]="addAttrToCart" [ngTemplateOutletContext]="{part:part}"></ng-container></td>
+					</tr>
+				</table>
+			</ng-container>
+			
+			<section class="small-only" id="customize-small">
+				<div>
+					<p>1 * base of <em>{{productResolved?.name}}</em></p>
+					<p>{{productResolved?.basePrice | currency:'€':'symbol':'1.2-2'}}</p>
+				</div>
+				<div *ngFor="let part of productResolved?.customizableParts">
+					<p>{{part.factor}} * {{part.name}} ({{part.category.name}})</p>
+					<p><ng-container [ngTemplateOutlet]="attrSelect" [ngTemplateOutletContext]="{part:part}"></ng-container></p>
+					<ng-container [ngTemplateOutlet]="addAttrToCart" [ngTemplateOutletContext]="{part:part}"></ng-container>
+				</div>
+			</section>
+			
+			<button class="button primary fit" (click)="addProductToCart()" *ngIf="allAttrsSelected | async; else disabledButton">Add to cart (<em>{{totalPrice | currency:'€':'symbol':'1.2-2'}}</em>)</button>
+			<ng-template #disabledButton><button class="button primary fit" disabled>Add to cart (<em>Please select all attributes first</em>)</button></ng-template>
+		</div>
+	</section>
+</div>
+
+<ng-template #unresolved>
+	<div id="main">
+		<section id="one">
+			<div class="inner">
+				<header class="major">
+					<h2>Loading product</h2>
+				</header>
+				<p>Just wait for it...</p>
+			</div>
+		</section>
+	</div>
+</ng-template>
+
+<ng-template #attrSelect let-part="part">
+	<select [(ngModel)]="choosenAttributes[part.name]" (ngModelChange)="refreshAllProductsSelected()">
+		<option disabled value="">Please select</option>
+		<option *ngFor="let attribute of part.category.attributes" [value]="attribute.uid">{{attribute.name}} ({{attribute.price * part.factor | currency:'€':'symbol':'1.2-2'}})</option>
+	</select>
+</ng-template>
+
+<ng-template #addAttrToCart let-part="part">
+	<button class="button" (click)="addSeparatePartToCart(part)" [disabled]="!choosenAttributes[part.name]">Buy separately</button>
+</ng-template>

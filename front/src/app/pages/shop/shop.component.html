@@ -1,0 +1,43 @@
+<!-- Main -->
+<section id="main">
+	<!-- Banner -->
+	<!-- Note: The "styleN" class below should match that of the header element. -->
+	<section id="banner" class="style2">
+		<div class="inner">
+			<span class="image">
+				<img src="assets/images/pic07.jpg" alt="" />
+			</span>
+			<header class="major">
+				<h1>Shop</h1>
+			</header>
+			<div class="content">
+				<p>This is the Shop !</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- One -->
+	<section id="one">
+		<div class="inner">
+			<header class="major">
+				<h2>Pi Modules/Assembly</h2>
+			</header>
+			<p>PiModules</p>
+		</div>
+	</section>
+
+	<!-- Two -->
+	<section id="two" class="spotlights">
+		<app-product *ngFor="let product of products | async" [product]="product"></app-product>
+	</section>
+	
+	<!-- Three -->
+	<section id="three">
+		<div class="inner">
+			<header class="major">
+				<h2>Accessories</h2>
+			</header>
+			<p>Accessories *Category Separation*</p>
+		</div>
+	</section>
+</section>

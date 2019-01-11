@@ -1,0 +1,14 @@
+<!-- Menu -->
+<nav class="inner" id="menu">
+	<ul class="links">
+		<li><a [routerLink]="['index']">Home</a></li>
+		<li><a [routerLink]="['shop']">Products</a></li>
+		<li><a [routerLink]="['blog']">Blog</a></li>
+		<li><a [routerLink]="['contact']">Contact</a></li>
+	</ul>
+	<ul class="actions stacked">
+		<li><a href="#" class="button primary fit">Get Started</a></li>
+		<li><button (click)="openLoginModal()" class="button fit">Log In</button></li>
+	</ul>
+</nav>
+<button class="close no-border no-hover" (click)="close()">Close</button>

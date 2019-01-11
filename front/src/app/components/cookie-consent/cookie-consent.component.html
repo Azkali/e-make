@@ -1,0 +1,35 @@
+<div class="cookie-law-wrapper"
+[@transition]="transition"
+(@transition.done)="afterDismissAnimation($event)"
+[ngStyle]="{bottom:bottomPos}">
+
+<div class="copy" #copy>
+	<span>
+		This website requests to store informations in your browser.
+		<a (click)="showDetails = !showDetails" class="showDetails">Read more</a>
+	</span>
+	
+	<div class="button-group">
+		<button role="button" (click)="applyPreferences()" [innerHTML]="acceptLabel"></button>
+		<button role="button" class="dismiss" (click)="dismiss()">Dismiss</button>
+	</div>
+</div>
+
+<div id="details" #details>
+	<section>
+		<input type="checkbox" checked disabled id="cookie-session"/><label for="cookie-session">Session</label>
+		<p class="desc">Keeps informations about your session (this is required to log in)</p>
+	</section>
+	<section>
+		<input type="checkbox" [(ngModel)]="consentMatrice.localCart" id="cookie-localCart"/><label for="cookie-localCart">Local Cart</label>
+		<p class="desc">Store the cart in the browser while you are not connected</p>
+	</section>
+	<section>
+		<input type="checkbox" [(ngModel)]="consentMatrice.tracking" id="cookie-tracking"/><label for="cookie-tracking">Tracking</label>
+		<p class="desc">Use a tracker to analyze your navigation. It may help us to know which part of the site to work on in priority.</p>
+	</section>
+	<section>
+		<input type="checkbox" [(ngModel)]="consentMatrice.doNotBother" id="cookie-bother"/><label for="cookie-bother">Save preferences</label>
+		<p class="desc">If all optional cookies above are disabled, this option saves an extra cookie to disable the display of this cookie prompt.</p>
+	</section>
+</div>
