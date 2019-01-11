@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node --files src/main.ts",
+    "start": "ts-node src/main.ts",
+    "watch": "ts-node-dev src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -32,6 +33,7 @@
     "@types/passport": "^0.4.7",
     "@types/passport-google-oauth": "^1.0.39",
     "ts-node": "^7.0.1",
+    "ts-node-dev": "^1.0.0-pre.32",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6"
   }
