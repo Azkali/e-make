@@ -42,7 +42,7 @@ export class MarkdownScrapperService {
 
 	private static parseSummaryFileContent( summary: string ) {
 		return summary
-		.split( /^-+$/m )
+		.split( /^-{3,}$/m )
 		.filter( articleSummary => !!articleSummary )
 		.map( articleSummary => {
 			const summaryNameMatch = articleSummary.match( /^#\s*(.+)\s*$/m );

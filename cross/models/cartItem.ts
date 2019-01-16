@@ -7,11 +7,11 @@ export interface ICartItem{
 	unitPrice: number;
 	count: number;
 	item: {
-		attributeUid: string
-		attribute?: IAttribute
+		attributeUid: string;
+		attribute?: IAttribute;
 	} | {
-		productUid: string,
-		product?: IProduct,
+		productUid: string;
+		product?: IProduct;
 		attributesUids: _.Dictionary<string>;
 		attributes?: _.Dictionary<IAttribute>;
 	}
@@ -20,11 +20,11 @@ export interface ICartItem{
 export const cartItem: Raw.IAttributesDescription = {
 	unitPrice: {
 		type: EFieldType.FLOAT,
-		required: true
+		required: true,
 	},
 	count: {
 		type: EFieldType.INTEGER,
-		required: true
+		required: true,
 	},
 	item: {
 		type: EFieldType.OBJECT,
@@ -33,7 +33,7 @@ export const cartItem: Raw.IAttributesDescription = {
 				attributeUid: {
 					type: EFieldType.STRING,
 					required: true,
-				}
+				},
 			},
 			{
 				productUid: {
@@ -43,9 +43,9 @@ export const cartItem: Raw.IAttributesDescription = {
 				attributesUids: {
 					type: EFieldType.OBJECT,
 					required: true,
-				}
-			}
+				},
+			},
 		] as any, // TODO fix object OR declaration
-		required: true
+		required: true,
 	}
 };
