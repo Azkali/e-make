@@ -95,7 +95,8 @@ export class MarkdownScrapperService {
 				} else {
 					return undefined;
 				}
-			} ) )
+				} ).filter( entry => entry )
+			)
 		);
 	}
 
