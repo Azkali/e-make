@@ -3,8 +3,9 @@
 import {Injectable} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 
+import { environment } from '~environments/environment';
+
 import { ACookieDependentService } from './../ICookieDependentService';
-import { environment } from './../../../../environments/environment';
 
 @Injectable()
 export class GoogleAnalyticsService extends ACookieDependentService {

@@ -1,5 +1,8 @@
 {
     "extends": ["tslint-angular", "../tslint.json"],
+    "linterOptions": {
+      "project": "./tsconfig.app.json"
+    },
     "rules": {
         "directive-selector": [
             true,

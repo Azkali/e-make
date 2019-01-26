@@ -1,15 +1,16 @@
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Component } from '@angular/core';
-import { ShopService } from '../../../shared/services/shop/shop.service';
-import { ITempCart, ICart } from '../../../../../../cross/models/cart';
-import { skip, first } from 'rxjs/operators';
-import { ModalService } from '../../../shared/services/modal/modal.service';
-import { IAttribute } from '../../../../../../cross/models/attribute';
-import { ICartItem } from '../../../../../../cross/models/cartItem';
-import { ModalComponent } from '../../../components/modal/modal.component';
-import { UserService } from '../../../shared/services/user/user.service';
-import { LoginComponent } from '../../login/login.component';
+
+import { ITempCart } from '~models/cart';
+import { ICartItem } from '~models/cartItem';
+
+import { ModalComponent } from '~modals/modal.component';
+import { LoginComponent } from '~modals/login/login.component';
+
+import { UserService } from '~services/user/user.service';
+import { ShopService } from '~services/shop/shop.service';
+import { ModalService } from '~services/modal/modal.service';
 
 @Component( {
 	selector: 'app-cart',

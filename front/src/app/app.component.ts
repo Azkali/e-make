@@ -1,15 +1,18 @@
 import { BehaviorSubject, zip } from 'rxjs';
 import { Component } from '@angular/core';
-import { ShopService } from './shared/services/shop/shop.service';
-import { ICart, ITempCart } from '../../../cross/models/cart';
 import { skip, map } from 'rxjs/operators';
-import { CartComponent } from './pages/shop/cart/cart.component';
-import { ModalService } from './shared/services/modal/modal.service';
-import { HeaderService } from './shared/services/header/header.service';
-import { hideShowOpacity, hideShowDisplay, EModalAnimation } from './components/modal/modal.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { assign } from 'lodash';
-import { UserService } from './shared/services/user/user.service';
+
+import { ITempCart } from '~models/cart';
+
+import { ShopService } from '~services/shop/shop.service';
+import { UserService } from '~services/user/user.service';
+import { ModalService } from '~services/modal/modal.service';
+import { HeaderService } from '~services/header/header.service';
+
+import { hideShowOpacity, hideShowDisplay, EModalAnimation } from '~modals/modal.component';
+import { CartComponent } from '~modals/cart/cart.component';
+import { MenuComponent } from '~modals/menu/menu.component';
 
 @Component( {
 	selector: 'app-root',
@@ -68,6 +71,6 @@ export class AppComponent {
 		this.modalService.open( CartComponent, { isMobile: false }, {} );
 	}
 	public openMenuModal() {
-		this.modalService.open( NavbarComponent, { isMobile: false }, {} );
+		this.modalService.open( MenuComponent, { isMobile: false }, {} );
 	}
 }

@@ -1,6 +1,7 @@
-import { ModalService } from './../../shared/services/modal/modal.service';
 import { AnimationTriggerMetadata, style, state, trigger, transition, animate } from '@angular/animations';
 import { Subscription } from 'rxjs';
+
+import { ModalService } from '~services/modal/modal.service';
 
 export enum EModalAnimation {
 	Shown = 'shown',

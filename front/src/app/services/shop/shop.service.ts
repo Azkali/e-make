@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Diaspora, Model, Adapter, Set, EntityUid, Entity } from '@diaspora/diaspora';
+import { Diaspora, Model, Adapter, Set, EntityUid } from '@diaspora/diaspora';
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import DataAccessLayer = Adapter.DataAccessLayer;
 import { from, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import * as _ from 'lodash';
 
-import { IProductViewModel } from './shop.service';
 import { IEntry } from '../../models/markdown-config';
-import { environment } from '../../../../environments/environment';
-import { MarkdownScrapperService, IProductArticle, IArticle } from '../markdown-scrapper/markdown-scrapper.service';
-import { loadMocks } from '../../../../../../cross/mocks/loadMocks';
 
-import { IProduct, product as ProductAttributes } from '../../../../../../cross/models/product';
-import { IAttribute, attribute as AttributeAttributes } from '../../../../../../cross/models/attribute';
-import { IAttributeCategory, attributeCategory as AttributeCategoryAttributes } from '../../../../../../cross/models/attributeCategory';
-import { ICart, cart as CartAttributes, ITempCart } from '../../../../../../cross/models/cart';
-import { ICartItem, cartItem as CartItemAttributes } from '../../../../../../cross/models/cartItem';
+import { MarkdownScrapperService, IProductArticle, IArticle } from '~services/markdown-scrapper/markdown-scrapper.service';
+
+import { environment } from '~environments/environment';
+
+import { loadMocks } from '~cross/mocks/loadMocks';
+
 import { ACookieDependentService } from '../ICookieDependentService';
+
+import { IAttributeCategory, attributeCategory as AttributeCategoryAttributes } from '~models/attributeCategory';
+import { IProduct, product as ProductAttributes } from '~models/product';
+import { IAttribute, attribute as AttributeAttributes } from '~models/attribute';
+import { ICart, cart as CartAttributes, ITempCart } from '~models/cart';
+import { ICartItem, cartItem as CartItemAttributes } from '~models/cartItem';
 
 const serverDataSourceName = 'remote';
 const localDataSourceName = 'local';
@@ -157,7 +160,8 @@ export class ShopService extends ACookieDependentService {
 					this.Attribute.findMany( { categoryId: part.categoryId} ),
 				] ) ) ) ).map( ( [part, attributeCategory, attributes] ) => {
 					const attributeCategoryAttributes = _.assign( attributeCategory.getProperties( serverDataSourceName ), {
-						attributes: attributes.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName ).value(),
+						attributes: attributes.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName )
+							.value() as Array<IAttribute | IEntityProperties>,
 					} );
 					return _.assign( part, {
 						category: attributeCategoryAttributes,
@@ -186,7 +190,7 @@ export class ShopService extends ACookieDependentService {
 				return part.factor * cheapestAttribute.price;
 			} ),
 			customizableParts,
-		} );
+		} ) as any; // TODO: Remove that `any` cast
 		return output;
 	}
 
@@ -218,7 +222,7 @@ export class ShopService extends ACookieDependentService {
 						.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName )
 						.map( props => this.assembleProductViewModel( props, productArticles.entries, productArticles.summaries ) )
 						.value()
-					);
+					) as any; // TODO: Remove that `any` cast
 					allProductsObservable.next( allProducts );
 					allProductsObservable.complete();
 				} );
@@ -296,7 +300,7 @@ export class ShopService extends ACookieDependentService {
 	private async refreshCart() {
 		const cartItems = ( await this.CartItem.findMany( undefined, undefined, this.cartDataSource ) )
 			.toChainable( Set.ETransformationMode.PROPERTIES, this.cartDataSource )
-			.value();
+			.value() as any[]; // TODO: Remove that `any` cast
 		console.log( {cartItems} );
 		const cartObject = {
 			totalSum: _.sumBy( cartItems, item => item.unitPrice * item.count ),

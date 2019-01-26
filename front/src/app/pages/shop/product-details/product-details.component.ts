@@ -1,14 +1,15 @@
-import { HeaderService } from '../../../shared/services/header/header.service';
-import { IEntityProperties, EntityUid } from '@diaspora/diaspora/dist/types/types/entity';
+import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, AsyncSubject } from 'rxjs';
 import * as _ from 'lodash';
 
-import { IProductViewModel } from '../../../shared/services/shop/shop.service';
-import { ShopService } from '../../../shared/services/shop/shop.service';
-import { IAttribute } from '../../../../../../cross/models/attribute';
-import { IProduct } from '../../../../../../cross/models/product';
+import { IAttribute } from '~models/attribute';
+import { IProduct } from '~models/product';
+
+import { IProductViewModel } from '~services/shop/shop.service';
+import { ShopService } from '~services/shop/shop.service';
+import { HeaderService } from '~services/header/header.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component( {
 	selector: 'app-product-details',

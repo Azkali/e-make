@@ -1,12 +1,10 @@
 import { AsyncSubject } from 'rxjs/AsyncSubject';
-import { WindowRef } from './../../shared/window-ref/window-ref.service';
-import { environment } from './../../../environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { UserService } from './../../shared/services/user/user.service';
 import { Component, OnInit } from '@angular/core';
-import { makeAbsoluteUrl } from '../../../../../cross/config/utils';
-import { first } from 'rxjs/operators';
 import { timer } from 'rxjs';
+
+import { WindowRef } from '~services/window-ref/window-ref.service';
+import { UserService } from '~services/user/user.service';
 
 enum ELoginStatus {
 	LoggedIn,

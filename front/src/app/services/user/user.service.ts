@@ -4,8 +4,8 @@ import { of, BehaviorSubject } from 'rxjs';
 import { first, map, catchError } from 'rxjs/operators';
 import { Dictionary } from 'lodash';
 
-import { makeAbsoluteUrl } from '../../../../../../cross/config/utils';
-import { environment } from '../../../../environments/environment';
+import { makeAbsoluteUrl } from '~cross/config/utils';
+import { environment } from '~environments/environment';
 
 const BroadcastChannelPolyfill = require( 'broadcast-channel' ).default as {new( name: string ): BroadcastChannel};
 

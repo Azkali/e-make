@@ -1,4 +1,3 @@
-import { ModalService } from './shared/services/modal/modal.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -8,25 +7,27 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppRoutingModule } from './app-routing.module';
 import { ShowdownModule } from 'ngx-showdown';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
+import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
+
 import { AdminComponent } from './pages/admin/admin.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ShopComponent } from './pages/shop/shop.component';
-import { CartComponent } from './pages/shop/cart/cart.component';
 import { ProductComponent } from './pages/shop/product/product.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 import { IndexComponent } from './pages/index/index.component';
-import { LoginComponent } from './pages/login/login.component';
 import { BlogComponent } from './pages/blog/blog.component';
 import { ArticleComponent } from './pages/blog/article/article.component';
 import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
-import { ShopService } from './shared/services/shop/shop.service';
-import { WindowRef } from './shared/window-ref/window-ref.service';
+import { WindowRef } from './services/window-ref/window-ref.service';
 import { AfterLoginComponent } from './pages/after-login/after-login.component';
+
+import { CartComponent } from '~modals/cart/cart.component';
+import { MenuComponent } from '~modals/menu/menu.component';
+import { LoginComponent } from '~modals/login/login.component';
 
 @NgModule( {
 	declarations: [
@@ -37,7 +38,7 @@ import { AfterLoginComponent } from './pages/after-login/after-login.component';
 		ShopComponent,
 		ProductComponent,
 		CartComponent,
-		NavbarComponent,
+		MenuComponent,
 		IndexComponent,
 		LoginComponent,
 		BlogComponent,
@@ -59,7 +60,7 @@ import { AfterLoginComponent } from './pages/after-login/after-login.component';
 		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent, LoginComponent, NavbarComponent],
+	entryComponents: [CartComponent, LoginComponent, MenuComponent],
 	providers: [WindowRef],
 	bootstrap: [AppComponent],
 } )

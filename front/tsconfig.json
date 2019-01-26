@@ -15,6 +15,15 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+        "~app/*": ["./src/app/*"],
+        "~services/*": ["./src/app/services/*"],
+        "~pages/*": ["./src/app/pages/*"],
+        "~modals/*": ["./src/app/modals/*"],
+        "~environments/*": ["./src/environments/*"],
+        "~models/*": ["../cross/models/*"],
+        "~cross/*": ["../cross/*"]
+    }
   }
 }

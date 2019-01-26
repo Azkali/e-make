@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { IndexComponent } from './pages/index/index.component';
 import { ContactComponent } from './pages/contact/contact.component';
-import { CartComponent } from './pages/shop/cart/cart.component';
 import { ShopComponent } from './pages/shop/shop.component';
 import { BlogComponent } from './pages/blog/blog.component';
 import { AfterLoginComponent } from './pages/after-login/after-login.component';
@@ -17,7 +16,6 @@ const routes: Routes = [
 	{ path: 'shop', component: ShopComponent, data: {classes: 'style2', styles: {backgroundColor: '#8d82c4'} } },
 	{ path: 'shop/:identifier', component: ProductDetailsComponent, data: {classes: 'style5', styles: {backgroundColor: '#8ea9e8'}}},
 	{ path: 'contact', component: ContactComponent },
-	{ path: 'cart', component: CartComponent },
 	{ path: environment.common.front.afterAuthRoute, component: AfterLoginComponent },
 ];
 

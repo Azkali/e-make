@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IProductViewModel } from '../../../shared/services/shop/shop.service';
+
+import { IProductViewModel } from '~services/shop/shop.service';
 
 @Component( {
 	selector: 'app-product',

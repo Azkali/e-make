@@ -1,12 +1,14 @@
-import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IRepositoryTreeResponse, IEntry } from '../../models/markdown-config';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { retry, tap, map } from 'rxjs/operators';
+import { retry, map } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { environment } from '../../../../environments/environment';
+
+import { environment } from '~environments/environment';
+
+import { IRepositoryTreeResponse, IEntry } from '../../models/markdown-config';
 
 const branch = 'master';
 const repo = 'Azkali/e-make-articles';
