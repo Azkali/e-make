@@ -3,6 +3,7 @@ import { DomService } from '../dom/dom.service';
 import { BehaviorSubject } from 'rxjs';
 import { skip, first, filter } from 'rxjs/operators';
 import { isUndefined } from 'lodash';
+import { Router, RouterEvent, GuardsCheckStart } from '@angular/router';
 
 const BLUR_BACK_CLASS = 'blurred';
 
@@ -14,7 +15,7 @@ export class ModalService {
 	public modalVisibleState = this.modalVisibleStateSource.asObservable();
 	private currentModal = new BehaviorSubject<undefined | ComponentRef<any>>( undefined );
 
-	public constructor( private domService: DomService ) {}
+	public constructor( private router: Router , private domService: DomService ) {}
 
 	public backgroundBlurred = new BehaviorSubject( false );
 
@@ -40,6 +41,7 @@ export class ModalService {
 	public close() {
 		this.backgroundBlurred.next( false );
 		this.modalVisibleStateSource.next( false );
+		//this.router.events.subscribe( RouterEvent => { onchange() } );
 	}
 
 	public removeModalElement() {

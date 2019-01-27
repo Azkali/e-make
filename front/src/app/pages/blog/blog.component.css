@@ -1,0 +1,15 @@
+header {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+showdown {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+ul.pagination {
+	text-align: center;
+	list-style: inside;
+}

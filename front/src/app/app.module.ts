@@ -24,6 +24,7 @@ import { ArticleComponent } from './pages/blog/article/article.component';
 import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
 import { WindowRef } from './services/window-ref/window-ref.service';
 import { AfterLoginComponent } from './pages/after-login/after-login.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 import { CartComponent } from '~modals/cart/cart.component';
 import { MenuComponent } from '~modals/menu/menu.component';
@@ -46,6 +47,7 @@ import { LoginComponent } from '~modals/login/login.component';
 		ProductDetailsComponent,
 		CookieConsentComponent,
 		AfterLoginComponent,
+		FooterComponent,
 
 	],
 	imports: [
