@@ -1,16 +1,16 @@
+import { AnimationEvent } from '@angular/animations';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { BehaviorSubject, zip } from 'rxjs';
-import { Component } from '@angular/core';
-import { skip, map } from 'rxjs/operators';
+import { skip, map, filter } from 'rxjs/operators';
 import { assign } from 'lodash';
 
 import { ITempCart } from '~models/cart';
 
 import { ShopService } from '~services/shop/shop.service';
-import { UserService } from '~services/user/user.service';
-import { ModalService } from '~services/modal/modal.service';
+import { ModalService, EModalAnimation } from '~services/modal/modal.service';
 import { HeaderService } from '~services/header/header.service';
 
-import { hideShowOpacity, hideShowDisplay, EModalAnimation } from '~modals/modal.component';
+import { hideShowOpacity, hideShowDisplay } from '~modals/modal.component';
 import { CartComponent } from '~modals/cart/cart.component';
 import { MenuComponent } from '~modals/menu/menu.component';
 
@@ -37,33 +37,32 @@ export class AppComponent {
 		private modalService: ModalService,
 		private shopService: ShopService,
 		private headerService: HeaderService,
-		private userService: UserService
+		private ref: ChangeDetectorRef
 	) {
 		this.cartInfos = this.shopService.currentCart;
 		this.cartInfos.pipe( skip( 1 ) ).subscribe( newCart => {
 			this.cartFlash = true;
 			setTimeout( () => this.cartFlash = false, 500 );
 		} );
-		this.modalService.modalVisibleState.subscribe( visible => {
-			this.changeState( visible ? EModalAnimation.Shown : EModalAnimation.Hidden );
-		} );
+
+		// Manual changes detection to fix problem with animation state change not detected.
+		this.modalService.modalVisibleState
+			.pipe( skip( 1 ), filter( vs => !vs.done ) )
+			.subscribe( () => setTimeout( () => this.ref.detectChanges(), 0 ) );
 	}
+
 	public title = 'app';
 
 	public cartFlash = false;
 
-	public state = EModalAnimation.Hidden;
+	public get state() {
+		return this.modalService.modalVisibleState;
+	}
+
 	public cartInfos: BehaviorSubject<ITempCart>;
 
-
-
-	private changeState( newState: EModalAnimation ) {
-		this.state = newState;
-	}
-	public modalAnimDone( event ) {
-		if ( event.fromState === EModalAnimation.Shown && event.toState === EModalAnimation.Hidden ) {
-			this.modalService.removeModalElement();
-		}
+	public modalAnimDone( event: AnimationEvent ) {
+		this.modalService.modalAnimDone( event );
 	}
 
 

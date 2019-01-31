@@ -24,19 +24,14 @@ export class AfterLoginComponent implements OnInit {
 	public constructor( private userService: UserService, private winRef: WindowRef ) { }
 
 	public ngOnInit() {
-		this.userService.checkLogin().subscribe( ( [token, error] ) => {
+		this.userService.checkLogin().subscribe( token => {
 			if ( token ) {
 				this.loginStatus.next( ELoginStatus.LoggedIn );
 				timer( 3000 ).subscribe( () => {
 					this.winRef.nativeWindow.close();
 				} );
-			}
-			if ( error instanceof HttpErrorResponse ) {
-				if ( error.status === 401 ) {
-					this.loginStatus.next( ELoginStatus.NotLoggedIn );
-				} else {
-					this.loginStatus.next( ELoginStatus.ServerError );
-				}
+			} else {
+				this.loginStatus.next( ELoginStatus.NotLoggedIn );
 			}
 			this.loginStatus.complete();
 		} );

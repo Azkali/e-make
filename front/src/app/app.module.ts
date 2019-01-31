@@ -28,6 +28,7 @@ import { AfterLoginComponent } from './pages/after-login/after-login.component';
 import { CartComponent } from '~modals/cart/cart.component';
 import { MenuComponent } from '~modals/menu/menu.component';
 import { LoginComponent } from '~modals/login/login.component';
+import { OrderFormComponent } from './modals/order-form/order-form.component';
 
 @NgModule( {
 	declarations: [
@@ -46,6 +47,7 @@ import { LoginComponent } from '~modals/login/login.component';
 		ProductDetailsComponent,
 		CookieConsentComponent,
 		AfterLoginComponent,
+		OrderFormComponent,
 
 	],
 	imports: [
@@ -60,7 +62,7 @@ import { LoginComponent } from '~modals/login/login.component';
 		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent, LoginComponent, MenuComponent],
+	entryComponents: [CartComponent, LoginComponent, MenuComponent, OrderFormComponent],
 	providers: [WindowRef],
 	bootstrap: [AppComponent],
 } )

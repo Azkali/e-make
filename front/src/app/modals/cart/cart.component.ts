@@ -11,6 +11,7 @@ import { LoginComponent } from '~modals/login/login.component';
 import { UserService } from '~services/user/user.service';
 import { ShopService } from '~services/shop/shop.service';
 import { ModalService } from '~services/modal/modal.service';
+import { OrderFormComponent } from '../order-form/order-form.component';
 
 @Component( {
 	selector: 'app-cart',
@@ -54,18 +55,28 @@ export class CartComponent extends ModalComponent {
 	}
 
 	public buy() {
-		const subscription =  this.userService.token.subscribe( token => {
-			if ( !token ) {
-				this.modalService.open( LoginComponent, { isMobile: false }, {} );
-			} else {
-				// Let the subscription's first execution finish before unsubscribing it.
-				setTimeout( () => subscription.unsubscribe() );
-				this.doBuy();
-			}
-		} );
+		const subscription =  this.userService.checkLogin()
+			.subscribe( token => {
+				console.log( token );
+				if ( !token ) {
+					this.openLoginModal();
+				} else {
+					setTimeout( () => {
+						this.subscriptions = this.subscriptions.filter( sub => sub !== subscription );
+						subscription.unsubscribe();
+					},          0 );
+					this.doBuy();
+				}
+			} );
+		this.subscriptions.push( subscription );
+	}
+
+	private openLoginModal() {
+		this.modalService.open( LoginComponent, { isMobile: false }, {} );
 	}
 
 	private doBuy() {
-		console.log( 'Do buy' );
+		console.log( 'do Buy' );
+		this.modalService.open( OrderFormComponent, { isMobile: false }, {} );
 	}
 }
