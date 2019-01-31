@@ -185,7 +185,6 @@ export class ShopService extends ACookieDependentService {
 			pathProductPage: MarkdownScrapperService.getRawContentUrl( `products/${productAttributes.name}/product-page.md` ),
 			pathArticle: MarkdownScrapperService.getRawContentUrl( `products/${productAttributes.name}/article.md` ),
 			minimumPrice: productAttributes.basePrice + _.sumBy( customizableParts, part => {
-				console.log( part );
 				const cheapestAttribute = _.chain( part.category.attributes ).minBy( 'price' ).value();
 				return part.factor * cheapestAttribute.price;
 			} ),
@@ -241,7 +240,6 @@ export class ShopService extends ACookieDependentService {
 		attribute?: IAttribute;
 		attributeUid: string;
 	} ) {
-		console.log( 'Fetching attr', item );
 		const fetchedAttribute = await this.Attribute.find( {uid: item.attributeUid} );
 		return {
 			attributeUid: item.attributeUid,
@@ -301,7 +299,6 @@ export class ShopService extends ACookieDependentService {
 		const cartItems = ( await this.CartItem.findMany( undefined, undefined, this.cartDataSource ) )
 			.toChainable( Set.ETransformationMode.PROPERTIES, this.cartDataSource )
 			.value() as any[]; // TODO: Remove that `any` cast
-		console.log( {cartItems} );
 		const cartObject = {
 			totalSum: _.sumBy( cartItems, item => item.unitPrice * item.count ),
 			totalCount: _.sumBy( cartItems, item => item.count ),
