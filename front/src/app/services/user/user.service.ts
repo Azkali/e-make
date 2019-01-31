@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of, BehaviorSubject } from 'rxjs';
-import { first, map, catchError } from 'rxjs/operators';
+import { first, map, catchError, skip } from 'rxjs/operators';
 import { Dictionary } from 'lodash';
 
 import { makeAbsoluteUrl } from '~cross/config/utils';
 import { environment } from '~environments/environment';
 
-const BroadcastChannelPolyfill = require( 'broadcast-channel' ).default as {new( name: string ): BroadcastChannel};
+const BroadcastChannelPolyfill = require( 'broadcast-channel' ).default as new( name: string ) => BroadcastChannel;
 
 @Injectable( {
 	providedIn: 'root',
@@ -34,14 +34,15 @@ export class UserService {
 
 	public checkLogin() {
 		const statusUrl = `${makeAbsoluteUrl( environment.common.back )}${environment.common.back.auth.baseAuthRoute}/status`;
-		return this.httpClient.get( statusUrl, { withCredentials: true } )
-			.pipe(
-				first(),
-				map( ( res: {token: string} ) => {
-					this.loginBroadcastEmit.postMessage( { action: 'login', token: res.token } );
-					return [res.token, undefined];
-				} ),
-				catchError( err => of( [undefined, err] ) )
-			);
+		this.httpClient.get( statusUrl, { withCredentials: true } )
+			.pipe( first() )
+			.subscribe(
+				( res: {token: string} ) =>  this.loginBroadcastEmit.postMessage( { action: 'login', token: res.token } ),
+				err => {
+					console.error( 'Error during login check:', err );
+					this.tokenSubject.next( undefined );
+				} );
+		return this.token.pipe( skip( 1 ) );
 	}
 }
+
