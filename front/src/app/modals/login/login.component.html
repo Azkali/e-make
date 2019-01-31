@@ -5,16 +5,16 @@
 	</div>
 	
 	<div class="modal-text">
-		<a [href]="getLoginUrl('google')" target="_blank"><i class="alt fab fa-google"></i></a>
-		<label><b>Username</b></label>
-		<input type="text" placeholder="Enter Username" name="usrname" required>
-		<label><b>Password</b></label>
-		<input type="password" placeholder="Enter Password" name="psw" required>
-		<button type="submit">Login</button>
-		<input type="checkbox" checked="checked"> Remember me
-		<div>
-			<button (click)="close()" type="button">Cancel</button>
-			<span>Forgot <a href="#">password?</a></span>
+		<p>For now, you can only log in using one of the social medias bellow. Choose your favorite method to continue.</p>
+		<p>
+			<a (click)="openLoginPopup('google')" [href]="getLoginUrl('google')" target="popup"><i class="alt fab fa-google"></i></a>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<div class="modal-close">
+			<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
 		</div>
 	</div>
 </div>
+
+<button class="close no-border no-hover" (click)="close()">Close</button>

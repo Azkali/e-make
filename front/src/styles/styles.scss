@@ -1,4 +1,6 @@
-button{
+button, .button{
+    box-sizing: border-box;
+    
 	&.no-border{
 		font-size: 1em;
 		position: relative;
@@ -47,4 +49,8 @@ button{
 
 .text-center {
 	text-align: center;
+}
+
+#modal .inner{
+	box-sizing: content-box;
 }

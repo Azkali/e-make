@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="modal-text">
-		<div class="table-wrapper">
+		<div class="table-wrapper" *ngIf="(cartInfos | async).totalCount > 0; else emptyCart">
 			<table>
 				<thead>
 					<tr>
@@ -23,7 +23,7 @@
 							<td><input [(ngModel)]="cartItem.count" type="number" min="1" (change)="setCartItemCount(cartItem, cartItem.count)" /></td>
 							<td>{{cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
 							<td>{{cartItem.count * cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
-							<td><button class="button" title="Remove this item" (click)="deleteCartItem(cartItem)"><i class="icon fa-times"></i></button></td>
+							<td><button class="button" title="Remove this item" (click)="deleteCartItem(cartItem)"><i class="fa fa-times"></i></button></td>
 						</tr>
 						<ng-container *ngIf="cartItem.item.productUid">
 							<tr *ngFor="let attribute of cartItem.item.attributes | keyvalue" class="sub-attr-row">
@@ -44,18 +44,19 @@
 				</tfoot>
 			</table>
 		</div>
+		<ng-template #emptyCart><p>Your cart is empty. Go to the <a [routerLink]="['/shop']">shop</a> to find what you want !</p></ng-template>
 	</div>
 	<div class="modal-footer">
 		<div class="modal-close">
 			<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
 		</div>
 		<div class="modal-add">
-			<button type="button" class="btn btn-outline-dark" (click)="buy()">Buy</button>
+			<button type="button" [disabled]="(cartInfos | async).totalCount === 0" class="btn btn-outline-dark" (click)="buy()">Buy</button>
 		</div>
 	</div>
 </div>
 <button class="close no-border no-hover" (click)="close()">Close</button>
 
 <ng-template #brokenRef>
-	<td><i class="icon fa-times"></i> Broken reference...</td>
+	<td><i class="fa fa-times"></i> Broken reference...</td>
 </ng-template>
