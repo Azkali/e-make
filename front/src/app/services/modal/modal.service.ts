@@ -1,49 +1,82 @@
-import { Injectable, Inject, EventEmitter, ComponentRef } from '@angular/core';
+import { StackSubject } from 'stack-subject';
+import { Injectable, ComponentRef, Type } from '@angular/core';
+import { AnimationEvent } from '@angular/animations';
 import { DomService } from '../dom/dom.service';
 import { BehaviorSubject } from 'rxjs';
-import { skip, first, filter } from 'rxjs/operators';
-import { isUndefined } from 'lodash';
+import { first, filter } from 'rxjs/operators';
+import { values } from 'lodash';
 
 const BLUR_BACK_CLASS = 'blurred';
+
+export enum EModalAnimation {
+	Shown = 'shown',
+	Hidden = 'hidden',
+}
+export interface IVisibleState {
+	visibilityState: EModalAnimation;
+	done: boolean;
+}
 
 @Injectable( {
 	providedIn: 'root',
 } )
 export class ModalService {
-	private modalVisibleStateSource = new BehaviorSubject<boolean>( false );
-	public modalVisibleState = this.modalVisibleStateSource.asObservable();
-	private currentModal = new BehaviorSubject<undefined | ComponentRef<any>>( undefined );
 
-	public constructor( private domService: DomService ) {}
+	public constructor( private domService: DomService ) {
+		// this.modalsSubject.subscribe( console.info.bind( console, 'ModalService => New modalsSubject value' ) );
+		// this.modalVisibleState.subscribe( console.info.bind( console, 'ModalService => New modalVisibleState value' ) );
+	}
+	private modalVisibleStateSource = new BehaviorSubject<IVisibleState>( {visibilityState: EModalAnimation.Hidden, done: true} );
+	public modalVisibleState = this.modalVisibleStateSource.asObservable();
+
+	private modalsSubject = new StackSubject<ComponentRef<any>>();
 
 	public backgroundBlurred = new BehaviorSubject( false );
 
-	private modalElemId = 'modal';
-	public open( component: any, inputs: object, outputs: object ) {
-		if ( this.modalVisibleStateSource.value === true ) {
-			console.log( 'delay' );
-			this.currentModal.pipe( filter( val => isUndefined( val ) ), first() ).subscribe( () => this.open( component, inputs, outputs ) );
-			this.close();
+	private readonly modalElemId = 'modal';
+
+	private changeVisibilityState( newState: EModalAnimation ) {
+		this.modalVisibleStateSource.next( {visibilityState: newState, done: false} );
+	}
+
+	public modalAnimDone( event: AnimationEvent ): any {
+		if ( event.fromState === EModalAnimation.Shown && event.toState === EModalAnimation.Hidden ) {
+			this.domService.removeComponent( this.modalsSubject.value );
+			this.modalsSubject.pop();
+		}
+		if ( values( EModalAnimation ).indexOf( event.toState ) === -1 ) {
+			throw new Error( `Invalid end state ${event.toState}` );
+		}
+		this.modalVisibleStateSource.next( {visibilityState: ( event.toState as EModalAnimation ), done: true} );
+	}
+
+	public open( component: Type<any> , inputs: object, outputs: object, closePrevious = 0 ) {
+		if ( this.modalVisibleStateSource.value.visibilityState === EModalAnimation.Shown && this.modalVisibleStateSource.value.done ) {
+			this.changeVisibilityState( EModalAnimation.Hidden );
+		}
+		if ( !this.modalVisibleStateSource.value.done ) {
+			this.modalVisibleState
+				.pipe( filter( val => val.done ), first() )
+				.subscribe( () => this.open( component, inputs, outputs, closePrevious ) );
 			return;
 		}
-		console.log( 'do' );
+
 		const componentConfig = {
 			inputs: inputs,
 			outputs: outputs,
 		};
 
-		this.currentModal.next( this.domService.appendComponentTo( this.modalElemId, component, componentConfig ) );
+		const modalElementRef = this.domService.appendComponentTo( this.modalElemId, component, componentConfig );
+		this.modalsSubject.push( modalElementRef );
 		this.backgroundBlurred.next( true );
-		this.modalVisibleStateSource.next( true );
+		this.changeVisibilityState( EModalAnimation.Shown );
 	}
 
 	public close() {
 		this.backgroundBlurred.next( false );
-		this.modalVisibleStateSource.next( false );
-	}
-
-	public removeModalElement() {
-		this.domService.removeComponent( this.currentModal.value );
-		this.currentModal.next( undefined );
+		this.changeVisibilityState( EModalAnimation.Hidden );
+		this.modalVisibleStateSource
+			.pipe( filter( vs => vs.visibilityState === EModalAnimation.Hidden && vs.done ), first() )
+			.subscribe( () => this.modalsSubject.pop( this.modalsSubject.length ) );
 	}
 }
