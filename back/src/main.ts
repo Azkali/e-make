@@ -1,43 +1,19 @@
-import { logger } from './logger';
-import { Entity } from '@diaspora/diaspora/dist/types';
-import { initializePassport } from './authentication';
-import { ExpressApiGenerator } from '@diaspora/plugin-server';
-import express = require( 'express' );
-import './models';
-import { IUser, EAuthorization } from '../../cross/models';
-import { mainDataSource } from './models';
-import { backConfig } from '../../cross/config/local/back';
-import { makeAbsoluteUrl } from '../../cross/config/utils';
-
-
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressSession from 'express-session';
 import { castArray } from 'lodash';
-import { config } from '../../cross/config/local/common';
-const isAuthenticated = ( req: express.Request, res: express.Response, next: () => void ) => {
-	console.log( 'Checking authenticated' );
-	if ( !req.isAuthenticated() || !req.user ){
-		return res.sendStatus( 403 );
-	}
-	return next();
-};
-const isAdmin = ( req: express.Request, res: express.Response, next: () => void ) => {
-	isAuthenticated( req, res, () => {
-		console.log( 'Checking admin' );
-		const user = ( req.user as Entity<IUser> ).attributes as IUser;
-		if ( ( user.authorizations & EAuthorization.Admin ) !== EAuthorization.Admin ){
-			return res.sendStatus( 403 );
-		}
-		return next();
-	} );
-};
+import { ExpressApiGenerator } from '@diaspora/plugin-server';
 
-const writeOnlyForAdmin = {
-	insert: isAdmin,
-	update: isAdmin,
-	delete: isAdmin,
-};
+import './models';
+import { logger } from './logger';
+import { initializePassport } from './authentication';
+import { mainDataSource } from './models';
+import { writeOnlyForAdmin, allOnlyAsAuthorOrAdminMiddleware } from './security';
+import { backConfig } from '../../cross/config/local/back';
+import { makeAbsoluteUrl } from '../../cross/config/utils';
+import { config } from '../../cross/config/local/common';
+
 
 const apiMiddleware = new ExpressApiGenerator( {
 	webserverType: 'express',
@@ -54,6 +30,13 @@ const apiMiddleware = new ExpressApiGenerator( {
 		},
 		Attribute: {
 			middlewares: writeOnlyForAdmin,
+		},
+		Address: {
+			plural: 'addresses',
+			middlewares: allOnlyAsAuthorOrAdminMiddleware,
+		},
+		Quote: {
+			middlewares: allOnlyAsAuthorOrAdminMiddleware,
 		},
 	},
 } );

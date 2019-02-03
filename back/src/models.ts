@@ -1,5 +1,5 @@
 import { Diaspora } from '@diaspora/diaspora';
-import {product, user, attributeCategory, attribute, IProduct, IUser, IAttributeCategory, IAttribute} from '../../cross/models';
+import {product, user, attributeCategory, attribute, IProduct, IUser, IAttributeCategory, IAttribute, IQuote, quote, IAddress, address} from '../../cross/models';
 
 export const mainDataSource = Diaspora.createNamedDataSource( 'main', 'inMemory' );
 export const Product = Diaspora.declareModel<IProduct>( 'Product', {
@@ -17,4 +17,12 @@ export const AttributeCategory = Diaspora.declareModel<IAttributeCategory>( 'Att
 export const Attribute = Diaspora.declareModel<IAttribute>( 'Attribute', {
 	sources: 'main',
 	attributes: attribute,
+} );
+export const Address = Diaspora.declareModel<IAddress>( 'Address', {
+	sources: 'main',
+	attributes: address,
+} );
+export const Quote = Diaspora.declareModel<IQuote>( 'Quote', {
+	sources: 'main',
+	attributes: quote,
 } );
