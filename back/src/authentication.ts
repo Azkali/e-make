@@ -1,3 +1,5 @@
+/// <reference path="./types/index.d.ts"/>
+
 import {backConfig} from '../../cross/config//local/back';
 import passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';

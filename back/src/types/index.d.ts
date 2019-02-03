@@ -11,7 +11,9 @@ declare global {
 			};
 			token?: string;
 			//user?: Entity<IUser>;
-			session: object;
+			session: object & {
+				token?: string;
+			};
 		}
 	}
 }
