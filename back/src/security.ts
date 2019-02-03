@@ -11,7 +11,7 @@ import { EQueryAction } from '@diaspora/plugin-server/lib/utils';
 
 const getUserId = ( req: express.Request ) => ( ( req.user as Entity<IUser> ).getProperties( 'main' ) as ( IUser & IEntityProperties ) ).id;
 
-const isAuthenticated = ( req: express.Request ) => !req.isAuthenticated() || !req.user;
+const isAuthenticated = ( req: express.Request ) => req.isAuthenticated() && req.user && ( req.user as Entity<IUser> ).getProperties( 'main' );
 const isAdmin = ( req: express.Request ) =>
 	( ( ( req.user as Entity<IUser> ).attributes as IUser ).authorizations & EAuthorization.Admin ) === EAuthorization.Admin;
 const onlyAsUser = ( req: express.Request, queryObject: any ) =>
@@ -40,7 +40,7 @@ const onlyAsAuthorOrAdminMiddleware = ( req: IDiasporaApiRequest<any, IDiasporaA
 		logger.warn( 'Logged out user tried to post user data.' );
 		return res.status( 401 ).send( 'Please log in to post this user data' );
 	}
-	const userId = getUserId( req.user );
+	const userId = getUserId( req );
 
 	// Filter on no body
 	if ( isAdmin( req ) ){
