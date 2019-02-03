@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@diaspora/diaspora": "^0.3.1",
+    "@diaspora/diaspora": "^0.3.3",
     "@diaspora/plugin-server": "^0.2.0-alpha.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
