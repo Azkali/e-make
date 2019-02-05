@@ -23,16 +23,19 @@
 				<h2 class="text-center">Your cart</h2>
 			</header>
 			<p>Review your cart</p>
+			<app-cart-review></app-cart-review>
 		</div>
 	</section>
 	
 	<!-- Two -->
 	<section id="three">
 		<div class="inner">
-			<div class="row gtr-uniform">
+			<div [class]="'row gtr-uniform' + (isSync ? ' sync' : '')" id="order-infos">
 				<div class="col-6 col-12-xsmall">
 					<header class="major">
 						<h2 class="text-center">Billing infos</h2>
+
+						<span *ngIf="isSync" id="sync-marker"><i class="fas fa-arrow-circle-right"></i></span>
 					</header>
 					
 					<div class="row gtr-uniform">

@@ -32,6 +32,7 @@ import { LoginComponent } from '~modals/login/login.component';
 import { MenuComponent } from '~modals/menu/menu.component';
 
 import { WindowRef } from '~services/window-ref/window-ref.service';
+import { CartReviewComponent } from './components/cart-review/cart-review.component';
 
 @NgModule( {
 	declarations: [
@@ -53,6 +54,7 @@ import { WindowRef } from '~services/window-ref/window-ref.service';
 		FooterComponent,
 		OrderFormComponent,
 		FieldComponent,
+		CartReviewComponent,
 
 	],
 	imports: [
