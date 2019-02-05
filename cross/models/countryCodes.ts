@@ -1,5 +1,5 @@
 export enum ECountryCode {
-    AFGHANISTAN = "AF",
+	AFGHANISTAN = "AF",
 	ANDORRA = "AD",
 	UNITED_ARAB_EMIRATES = "AE",
 	ANTIGUA_AND_BARBUDA = "AG",

@@ -1,0 +1,109 @@
+<!-- Main -->
+<form id="main" (ngSubmit)="send()">
+	<!-- Banner -->
+	<!-- Note: The "styleN" class below should match that of the header element. -->
+	<section id="banner" class="style2">
+		<div class="inner">
+			<span class="image">
+				<img src="assets/images/pic07.jpg" alt="" />
+			</span>
+			<header class="major">
+				<h1 class="text-center">Finalize your quotation demand</h1>
+			</header>
+			<div class="content">
+				<p>Fill the form to ask for a quote.</p>
+			</div>
+		</div>
+	</section>
+	
+	<!-- One -->
+	<section id="one">
+		<div class="inner">
+			<header class="major">
+				<h2 class="text-center">Your cart</h2>
+			</header>
+			<p>Review your cart</p>
+		</div>
+	</section>
+	
+	<!-- Two -->
+	<section id="three">
+		<div class="inner">
+			<div class="row gtr-uniform">
+				<div class="col-6 col-12-xsmall">
+					<header class="major">
+						<h2 class="text-center">Billing infos</h2>
+					</header>
+					
+					<div class="row gtr-uniform">
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsBilling.firstname" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsBilling.lastname" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsBilling.email" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsBilling.phone" [form]="formBilling"></app-field>
+						</div>
+						
+						<div class="col-12">
+							<app-field [field]="fieldsBilling.addr1" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsBilling.addr2" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsBilling.city" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsBilling.postalCode" [form]="formBilling"></app-field>
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsBilling.country" [form]="formBilling"></app-field>
+						</div>
+					</div>
+				</div>
+				<div class="col-6 col-12-xsmall">
+					<header class="major">
+						<h2 class="text-center">Shipping infos</h2>
+					</header>
+					
+					<div class="row gtr-uniform">
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsShipping.firstname" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsShipping.lastname" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsShipping.email" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsShipping.phone" [form]="formShipping"></app-field>
+						</div>
+						
+						<div class="col-12">
+							<app-field [field]="fieldsShipping.addr1" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsShipping.addr2" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-12">
+							<app-field [field]="fieldsShipping.city" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsShipping.postalCode" [form]="formShipping"></app-field>
+						</div>
+						<div class="col-6 col-12-xsmall">
+							<app-field [field]="fieldsShipping.country" [form]="formShipping"></app-field>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</form>
+

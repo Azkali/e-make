@@ -11,7 +11,7 @@ import { LoginComponent } from '~modals/login/login.component';
 import { UserService } from '~services/user/user.service';
 import { ShopService } from '~services/shop/shop.service';
 import { ModalService } from '~services/modal/modal.service';
-import { OrderFormComponent } from '../order-form/order-form.component';
+import { Router } from '@angular/router';
 
 @Component( {
 	selector: 'app-cart',
@@ -20,7 +20,12 @@ import { OrderFormComponent } from '../order-form/order-form.component';
 } )
 export class CartComponent extends ModalComponent {
 
-	public constructor( private shopService: ShopService, modalService: ModalService, private userService: UserService ) {
+	public constructor(
+		modalService: ModalService,
+		private shopService: ShopService,
+		private userService: UserService,
+		private router: Router
+	) {
 		super( modalService );
 		this.subscriptions.push( this.shopService.currentCart.subscribe( async newCart => {
 			const promises = newCart.items.map( async cartItem => {
@@ -77,6 +82,6 @@ export class CartComponent extends ModalComponent {
 
 	private doBuy() {
 		console.log( 'do Buy' );
-		this.modalService.open( OrderFormComponent, { isMobile: false }, {} );
+		this.router.navigate( ['order'] );
 	}
 }

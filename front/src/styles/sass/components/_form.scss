@@ -167,6 +167,8 @@
 			position: relative;
 
 			&:before {
+				font-family: "Font Awesome 5 Free";
+				font-weight: 900;
 				background: _palette(border-bg);
 				content: '';
 				display: inline-block;

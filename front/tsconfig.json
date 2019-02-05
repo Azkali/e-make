@@ -1,29 +1,32 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2017",
-      "dom"
-    ],
-    "paths": {
-        "~app/*": ["./src/app/*"],
-        "~services/*": ["./src/app/services/*"],
-        "~pages/*": ["./src/app/pages/*"],
-        "~modals/*": ["./src/app/modals/*"],
-        "~environments/*": ["./src/environments/*"],
-        "~models/*": ["../cross/models/*"],
-        "~cross/*": ["../cross/*"]
-    }
-  }
+	"compileOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./",
+		"outDir": "./dist/out-tsc",
+		"sourceMap": true,
+		"declaration": false,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"target": "es5",
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"es2017",
+			"dom"
+		],
+		"paths": {
+			"~app/*": ["./src/app/*"],
+			"~components/*": ["./src/app/components/*"],
+			"~modals/*": ["./src/app/modals/*"],
+			"~pages/*": ["./src/app/pages/*"],
+			"~services/*": ["./src/app/services/*"],
+			
+			"~environments/*": ["./src/environments/*"],
+			
+			"~cross/*": ["../cross/*"],
+			"~models/*": ["../cross/models/*"]
+		}
+	}
 }
