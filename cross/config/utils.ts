@@ -16,3 +16,14 @@ export const makeAbsoluteUrl = ( config: IUrlConfig ) => {
 	}
 	return url + (config.baseurl || '');
 }
+
+export interface IMailAccountConfig{
+	host: string;
+	user: string;
+	password: string;
+}
+
+export interface IMailAddress{
+	name: string;
+	email: string;
+}
