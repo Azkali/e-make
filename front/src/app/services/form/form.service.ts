@@ -11,7 +11,6 @@ export class FormService {
 	public constructor() { }
 
 	public toFormGroup( fields: Array<IFieldBase<any>> ) {
-		console.log( fields );
 		return new FormGroup( fields.reduce( ( acc, field ) => {
 			acc[field.key] = field.required ? new FormControl( field.value || '', Validators.required )
 			: new FormControl( field.value || '' );

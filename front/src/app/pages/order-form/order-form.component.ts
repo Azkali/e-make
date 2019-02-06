@@ -28,7 +28,6 @@ export class OrderFormComponent {
 	public isSync = true;
 
 	public constructor( private formService: FormService ) {
-		console.log( address );
 		const remappedFields = omitBy( mapValues( address, ( propType, propName ) => {
 			const extras = addressFormExtra[propName];
 			if ( !extras ) {
@@ -39,7 +38,6 @@ export class OrderFormComponent {
 				propType as Raw.ObjectFieldDescriptor;
 
 			if ( propDesc.enum ) {
-				console.log( propDesc.enum );
 				return {
 					value: '',
 					key: propName,
