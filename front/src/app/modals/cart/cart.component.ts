@@ -1,5 +1,6 @@
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { Component } from '@angular/core';
 
 import { ITempCart } from '~models/cart';
@@ -77,7 +78,7 @@ export class CartComponent extends ModalComponent {
 	}
 
 	private openLoginModal() {
-		this.modalService.open( LoginComponent, { isMobile: false }, {} );
+		this.userService.openLogin().pipe( first() ).subscribe();
 	}
 
 	private doBuy() {

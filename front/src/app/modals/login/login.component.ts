@@ -8,6 +8,8 @@ import { ModalComponent } from '~modals/modal.component';
 
 import { ModalService } from '~services/modal/modal.service';
 import { WindowRef } from '~app/services/window-ref/window-ref.service';
+import { UserService } from '~app/services/user/user.service';
+import { BehaviorSubject } from 'rxjs';
 
 enum EAuthProvider {
 	Google = 'google',
@@ -19,6 +21,8 @@ enum EAuthProvider {
 	styleUrls: ['./login.component.scss'],
 } )
 export class LoginComponent extends ModalComponent {
+	public static closeLoginModal = new BehaviorSubject<void>( undefined );
+
 	public getLoginUrl( method: EAuthProvider ) {
 		if ( environment.common.back.auth.availableMethods.indexOf( method ) === -1 ) {
 			throw new Error( 'Unconfigured method ' + method );
@@ -28,6 +32,7 @@ export class LoginComponent extends ModalComponent {
 
 	public constructor( modalService: ModalService, private windowRef: WindowRef ) {
 		super( modalService );
+		this.subscriptions.push( LoginComponent.closeLoginModal.subscribe( () => this.close() ) );
 	}
 
 	public openLoginPopup( method: EAuthProvider ) {

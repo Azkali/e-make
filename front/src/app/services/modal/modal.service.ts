@@ -1,9 +1,9 @@
 import { StackSubject } from 'stack-subject';
-import { Injectable, ComponentRef, Type } from '@angular/core';
+import { Injectable, ComponentRef, Type, ChangeDetectorRef } from '@angular/core';
 import { AnimationEvent } from '@angular/animations';
 import { DomService } from '../dom/dom.service';
-import { BehaviorSubject } from 'rxjs';
-import { first, filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { first, filter, switchMap } from 'rxjs/operators';
 import { values } from 'lodash';
 
 const BLUR_BACK_CLASS = 'blurred';
@@ -21,11 +21,7 @@ export interface IVisibleState {
 	providedIn: 'root',
 } )
 export class ModalService {
-
-	public constructor( private domService: DomService ) {
-		// this.modalsSubject.subscribe( console.info.bind( console, 'ModalService => New modalsSubject value' ) );
-		// this.modalVisibleState.subscribe( console.info.bind( console, 'ModalService => New modalVisibleState value' ) );
-	}
+	public constructor( private domService: DomService ) {}
 	private modalVisibleStateSource = new BehaviorSubject<IVisibleState>( {visibilityState: EModalAnimation.Hidden, done: true} );
 	public modalVisibleState = this.modalVisibleStateSource.asObservable();
 
@@ -35,12 +31,12 @@ export class ModalService {
 
 	private readonly modalElemId = 'modal';
 
-	private changeVisibilityState( newState: EModalAnimation ) {
-		this.modalVisibleStateSource.next( {visibilityState: newState, done: false} );
+	private changeVisibilityState( newState: EModalAnimation, immediate = false ) {
+		this.modalVisibleStateSource.next( {visibilityState: newState, done: immediate} );
 	}
 
-	public modalAnimDone( event: AnimationEvent ): any {
-		if ( event.fromState === EModalAnimation.Shown && event.toState === EModalAnimation.Hidden ) {
+	public modalAnimDone( event: AnimationEvent ) {
+		if ( event.fromState === EModalAnimation.Shown && event.toState === EModalAnimation.Hidden && this.modalsSubject.value ) {
 			this.domService.removeComponent( this.modalsSubject.value );
 			this.modalsSubject.pop();
 		}
@@ -50,15 +46,16 @@ export class ModalService {
 		this.modalVisibleStateSource.next( {visibilityState: ( event.toState as EModalAnimation ), done: true} );
 	}
 
-	public open( component: Type<any> , inputs: object, outputs: object, closePrevious = 0 ) {
-		if ( this.modalVisibleStateSource.value.visibilityState === EModalAnimation.Shown && this.modalVisibleStateSource.value.done ) {
+	public open( component: Type<any> , inputs: object = {}, outputs: object = {}, closePrevious = 0, immediate = false ): Observable<void> {
+		if ( this.modalVisibleStateSource.value.visibilityState === EModalAnimation.Shown ) {
 			this.changeVisibilityState( EModalAnimation.Hidden );
 		}
 		if ( !this.modalVisibleStateSource.value.done ) {
-			this.modalVisibleState
-				.pipe( filter( val => val.done ), first() )
-				.subscribe( () => this.open( component, inputs, outputs, closePrevious ) );
-			return;
+			return this.modalVisibleState
+				.pipe(
+					filter( val => val.done ),
+					first(),
+					switchMap( () => this.open( component, inputs, outputs, closePrevious ) ) );
 		}
 
 		const componentConfig = {
@@ -69,7 +66,12 @@ export class ModalService {
 		const modalElementRef = this.domService.appendComponentTo( this.modalElemId, component, componentConfig );
 		this.modalsSubject.push( modalElementRef );
 		this.backgroundBlurred.next( true );
-		this.changeVisibilityState( EModalAnimation.Shown );
+		this.changeVisibilityState( EModalAnimation.Shown, immediate );
+		return this.modalVisibleState
+			.pipe(
+				filter( visibleState => visibleState.done ),
+				switchMap( () => of() )
+			);
 	}
 
 	public close() {

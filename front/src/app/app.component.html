@@ -13,8 +13,8 @@
 		<router-outlet></router-outlet>
 	</div>
 	<div id="modal"
-	[@changeStateOpacity]="(state | async).visibilityState"
-	[@changeStateDisplay]="(state | async).visibilityState"
+	[@changeStateOpacity]="(state | async)?.visibilityState || 'hidden'"
+	[@changeStateDisplay]="(state | async)?.visibilityState || 'hidden'"
 	(@changeStateOpacity.done)="modalAnimDone($event)"></div>
 </div>
 <app-footer></app-footer>

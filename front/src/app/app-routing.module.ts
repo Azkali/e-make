@@ -10,6 +10,7 @@ import { ContactComponent } from '~pages/contact/contact.component';
 import { IndexComponent } from '~pages/index/index.component';
 import { OrderFormComponent } from '~pages/order-form/order-form.component';
 import { ShopComponent } from '~pages/shop/shop.component';
+import { LoggedInGuard } from '~guards/logged-in/logged-in.guard';
 
 const routes: Routes = [
 	{ path: '', redirectTo: '/index', pathMatch: 'full' },
@@ -18,7 +19,7 @@ const routes: Routes = [
 	{ path: 'shop', component: ShopComponent, data: {classes: 'style2', styles: {backgroundColor: '#8d82c4'} } },
 	{ path: 'shop/:identifier', component: ProductDetailsComponent, data: {classes: 'style5', styles: {backgroundColor: '#8ea9e8'}}},
 	{ path: 'contact', component: ContactComponent },
-	{ path: 'order', component: OrderFormComponent },
+	{ path: 'order', component: OrderFormComponent, canActivate: [LoggedInGuard] },
 	{ path: environment.common.front.afterAuthRoute, component: AfterLoginComponent },
 ];
 

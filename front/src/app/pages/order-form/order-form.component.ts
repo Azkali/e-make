@@ -81,5 +81,11 @@ export class OrderFormComponent {
 
 	public send() {
 		console.log( 'Sending form' );
+		const sendableData = assign( {/*userId*/}, this.isSync ? {
+			address: this.formBilling.value,
+		} : {
+			billingAddress: this.formBilling.value,
+			shippingAddress: this.formShipping.value,
+		} );
 	}
 }

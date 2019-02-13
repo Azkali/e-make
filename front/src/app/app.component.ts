@@ -1,13 +1,14 @@
+import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { AnimationEvent } from '@angular/animations';
-import { Component, ChangeDetectorRef } from '@angular/core';
-import { BehaviorSubject, zip } from 'rxjs';
-import { skip, map, filter } from 'rxjs/operators';
+import { Component, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { BehaviorSubject, zip, Observable } from 'rxjs';
+import { skip, map, filter, first, delayWhen, tap } from 'rxjs/operators';
 import { assign } from 'lodash';
 
 import { ITempCart } from '~models/cart';
 
 import { ShopService } from '~services/shop/shop.service';
-import { ModalService, EModalAnimation } from '~services/modal/modal.service';
+import { ModalService, IVisibleState } from '~services/modal/modal.service';
 import { HeaderService } from '~services/header/header.service';
 
 import { hideShowOpacity, hideShowDisplay } from '~modals/modal.component';
@@ -21,7 +22,8 @@ import { MenuComponent } from '~modals/menu/menu.component';
 	providers: [HeaderService],
 	animations: [hideShowOpacity, hideShowDisplay],
 } )
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+	private initialized = new AsyncSubject<void>();
 
 	public get headerClasses() {
 		return zip( this.headerService.headerClasses, this.modalService.backgroundBlurred )
@@ -49,15 +51,18 @@ export class AppComponent {
 		this.modalService.modalVisibleState
 			.pipe( skip( 1 ), filter( vs => !vs.done ) )
 			.subscribe( () => setTimeout( () => this.ref.detectChanges(), 0 ) );
+
+		// try to fix `Expression has changed after it was checked`
+		// this.initialized.subscribe( () => setTimeout( () => this.ref.detectChanges(), 0 ) );
+		this.state = this.modalService.modalVisibleState
+			.pipe( skip( 1 ), delayWhen( () => this.initialized ) );
 	}
 
 	public title = 'app';
 
 	public cartFlash = false;
 
-	public get state() {
-		return this.modalService.modalVisibleState;
-	}
+	public state: Observable<IVisibleState>;
 
 	public cartInfos: BehaviorSubject<ITempCart>;
 
@@ -67,9 +72,13 @@ export class AppComponent {
 
 
 	public openCartModal() {
-		this.modalService.open( CartComponent, { isMobile: false }, {} );
+		this.modalService.open( CartComponent, { isMobile: false }, {} ).pipe( first() ).subscribe();
 	}
 	public openMenuModal() {
-		this.modalService.open( MenuComponent, { isMobile: false }, {} );
+		this.modalService.open( MenuComponent, { isMobile: false }, {} ).pipe( first() ).subscribe();
+	}
+
+	public ngAfterViewInit() {
+		this.initialized.complete();
 	}
 }

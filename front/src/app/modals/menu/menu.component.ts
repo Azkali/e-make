@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
+import { first } from 'rxjs/operators';
 
 import { ModalComponent } from '~modals/modal.component';
 import { LoginComponent } from '~modals/login/login.component';
 
 import { ModalService } from '~services/modal/modal.service';
+import { UserService } from '~services/user/user.service';
 
 @Component( {
 	selector: 'app-navbar',
@@ -12,11 +14,11 @@ import { ModalService } from '~services/modal/modal.service';
 } )
 export class MenuComponent extends ModalComponent {
 
-	public constructor( modalService: ModalService ) {
+	public constructor( modalService: ModalService, private userService: UserService ) {
 		super( modalService );
 	}
 
 	public openLoginModal() {
-		this.modalService.open( LoginComponent, { isMobile: false }, {} );
+		this.userService.openLogin().pipe( first() ).subscribe();
 	}
 }
