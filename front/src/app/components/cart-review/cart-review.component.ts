@@ -21,7 +21,6 @@ export class CartReviewComponent {
 				cartItem.item = await shopService.fetchCartItemContent( cartItem.item );
 			} );
 			await Promise.all( promises );
-			console.log( newCart );
 			this.cartInfos.next( newCart );
 		} );
 	}

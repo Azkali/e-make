@@ -344,4 +344,9 @@ export class ShopService extends ACookieDependentService {
 		await this.CartItem.delete( cartItem.id, undefined, this.cartDataSource );
 		return this.refreshCart();
 	}
+
+	public async emptyCart() {
+		await this.CartItem.deleteMany( undefined, undefined, this.cartDataSource );
+		return this.refreshCart();
+	}
 }

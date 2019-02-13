@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { isObject, assign, mapValues, values, omitBy, isNil, isEqual } from 'lodash';
+import { isObject, assign, mapValues, values, omitBy, isNil, isEqual, omit, pick } from 'lodash';
 import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
 
 import { EControlType, IFieldBase } from '~app/components/forms/field-base';
@@ -10,6 +11,11 @@ import { IFieldDropdown } from '~app/components/forms/field-dropdown';
 
 import { address, IAddress } from '~models/address';
 import { addressFormExtra } from '~app/models/address-form';
+import { ShopService } from '~app/services/shop/shop.service';
+import { retry, first, switchMap, catchError, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, throwError } from 'rxjs';
+import { environment } from '~environments/environment';
+import { makeAbsoluteUrl } from '~cross/config/utils';
 
 type AddressFields = {[prop in keyof IAddress]: IFieldBase<any>};
 
@@ -27,7 +33,14 @@ export class OrderFormComponent {
 
 	public isSync = true;
 
-	public constructor( private formService: FormService ) {
+	private formSendStateSubject = new BehaviorSubject<boolean | undefined>( undefined );
+	public formSendState = this.formSendStateSubject.asObservable();
+
+	public constructor(
+		private formService: FormService,
+		private shopService: ShopService,
+		private httpClient: HttpClient,
+		private ref: ChangeDetectorRef ) {
 		const remappedFields = omitBy( mapValues( address, ( propType, propName ) => {
 			const extras = addressFormExtra[propName];
 			if ( !extras ) {
@@ -77,15 +90,50 @@ export class OrderFormComponent {
 		this.formShipping.valueChanges.subscribe( v => {
 			this.isSync = isEqual( v, this.formBilling.value );
 		} );
+		this.formSendState.subscribe( s => console.log( 'formSendState', s ) );
 	}
 
 	public send() {
 		console.log( 'Sending form' );
-		const sendableData = assign( {/*userId*/}, this.isSync ? {
-			address: this.formBilling.value,
-		} : {
-			billingAddress: this.formBilling.value,
-			shippingAddress: this.formShipping.value,
-		} );
+
+		this.formSendStateSubject.next( undefined );
+		this.ref.detectChanges();
+		this.shopService.currentCart
+			.pipe(
+				first(),
+				switchMap( cart => {
+					const filteredCart = assign(
+						omit( cart, ['totalCount', 'items'] ),
+						{ items: cart.items
+								.map( cartItem => assign(
+									pick( cartItem, ['unitPrice', 'count'] ),
+									{ item: pick( cartItem.item, ['attributeUid', 'productUid', 'attributesUids'] ) } ) ) }
+					);
+
+					const sendableData = assign(
+						{ cart: filteredCart },
+						this.isSync ? {
+							address: this.formBilling.value,
+						} : {
+							billingAddress: this.formBilling.value,
+							shippingAddress: this.formShipping.value,
+						}
+					);
+					console.log( sendableData );
+					return this.httpClient.post<any>( `${makeAbsoluteUrl( environment.common.back )}/quote`, sendableData, {withCredentials: true} )
+						.pipe(
+							retry( 3 ),
+							first() );
+				} )
+			).subscribe( async success => {
+				console.info( 'Success!', success );
+				this.formSendStateSubject.next( true );
+				await this.shopService.emptyCart();
+				this.ref.detectChanges();
+			},           error => {
+				console.error( error );
+				this.formSendStateSubject.next( false );
+				this.ref.detectChanges();
+			} );
 	}
 }
