@@ -1,3 +1,4 @@
+import { quoteAction } from './quoteAction';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -9,7 +10,7 @@ import './models';
 import { logger } from './logger';
 import { initializePassport } from './authentication';
 import { mainDataSource } from './models';
-import { writeOnlyForAdmin, allOnlyAsAuthorOrAdminMiddleware } from './security';
+import { writeOnlyForAdmin } from './security';
 import { backConfig } from '../../cross/config/local/back';
 import { makeAbsoluteUrl } from '../../cross/config/utils';
 import { config } from '../../cross/config/local/common';
@@ -30,13 +31,6 @@ const apiMiddleware = new ExpressApiGenerator( {
 		},
 		Attribute: {
 			middlewares: writeOnlyForAdmin,
-		},
-		Address: {
-			plural: 'addresses',
-			middlewares: allOnlyAsAuthorOrAdminMiddleware,
-		},
-		Quote: {
-			middlewares: allOnlyAsAuthorOrAdminMiddleware,
 		},
 	},
 } );
@@ -91,3 +85,5 @@ mainDataSource.waitReady().then( () => {
 		logger.info( `Example app listening on ${backConfig.host}:${backConfig.common.back.port || 80}!` );
 	} );
 } );
+
+app.post( '/quote', [bodyParser.json(), quoteAction] );

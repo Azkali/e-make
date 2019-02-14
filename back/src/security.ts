@@ -9,9 +9,9 @@ import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import { EQueryAction } from '@diaspora/plugin-server/lib/utils';
 
 
-const getUserId = ( req: express.Request ) => ( ( req.user as Entity<IUser> ).getProperties( 'main' ) as ( IUser & IEntityProperties ) ).id;
+export const getUserId = ( req: express.Request ) => ( ( req.user as Entity<IUser> ).getProperties( 'main' ) as ( IUser & IEntityProperties ) ).id;
 
-const isAuthenticated = ( req: express.Request ) => req.isAuthenticated() && req.user && ( req.user as Entity<IUser> ).getProperties( 'main' );
+export const isAuthenticated = ( req: express.Request ) => req.isAuthenticated() && req.user && ( req.user as Entity<IUser> ).getProperties( 'main' );
 const isAdmin = ( req: express.Request ) =>
 	( ( ( req.user as Entity<IUser> ).attributes as IUser ).authorizations & EAuthorization.Admin ) === EAuthorization.Admin;
 const onlyAsUser = ( req: express.Request, queryObject: any ) =>
