@@ -7,6 +7,7 @@ import { Address, Quote, Cart, CartItem } from './models';
 import { Entity } from '@diaspora/diaspora/dist/types';
 import { ICart } from '../../cross/models/cart';
 import { inspect } from 'util';
+import { sendQuoteMails } from './mailer';
 
 interface IAddressHash{
 	billingAddress: Entity<IAddress>;
@@ -80,5 +81,6 @@ export const quoteAction: express.RequestHandler = async ( req, res, next ) => {
 		user: ( req.user as Entity<IUser> ).getAttributes( 'main' ),
 	};
 	console.log( inspect( fullQuote, {colors: true, depth: 10} ) );
+	await sendQuoteMails( fullQuote as any );
 	return res.status( 501 ).send( 'Not implemented ' + insertedQuote.getId( 'main' ) );
 };

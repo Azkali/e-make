@@ -35,7 +35,7 @@ const isAdminMiddleware = ( req: express.Request, res: express.Response, next: (
 	}
 	return next();
 };
-const onlyAsAuthorOrAdminMiddleware = ( req: IDiasporaApiRequest<any, IDiasporaApiRequestDescriptor<any>>, res: express.Response, next: express.NextFunction ) => {
+export const onlyAsAuthorOrAdminMiddleware = ( req: IDiasporaApiRequest<any, IDiasporaApiRequestDescriptor<any>>, res: express.Response, next: express.NextFunction ) => {
 	if ( !isAuthenticated( req ) ){
 		logger.warn( 'Logged out user tried to post user data.' );
 		return res.status( 401 ).send( 'Please log in to post this user data' );
