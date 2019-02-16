@@ -4,3 +4,5 @@ node_modules/
 cross/config/local/
 
 back/logs/
+
+cross/config/test/

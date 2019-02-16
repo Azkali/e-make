@@ -1,6 +1,6 @@
-import { EScheme } from "../utils";
+import { ICommonConfig, EScheme } from './../config-types';
 
-export const config = {
+export const config: ICommonConfig = {
 	back: {
 		scheme: EScheme.Http,
 		fqdn: "api.e-make.io",
@@ -8,7 +8,7 @@ export const config = {
 		auth:{
 			baseAuthRoute: '/auth',
 			availableMethods: ['google'],
-		}
+		},
 	},
 	front: {
 		scheme: EScheme.Http,

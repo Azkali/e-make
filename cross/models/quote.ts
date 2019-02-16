@@ -13,7 +13,8 @@ export interface IQuote {
 	shippingAddressId: EntityUid;
 	shipping?: IAddress,
 	cartId: EntityUid;
-	cart?: ICart
+	cart?: ICart;
+	message?: string;
 }
 export const quote: Raw.IAttributesDescription = {
 	userId: {
@@ -31,5 +32,8 @@ export const quote: Raw.IAttributesDescription = {
 	cartId: {
 		type: EFieldType.STRING,
 		required: true,
+	},
+	message: {
+		type: EFieldType.STRING,
 	},
 }
