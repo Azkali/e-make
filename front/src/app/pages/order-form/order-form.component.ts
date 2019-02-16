@@ -28,6 +28,11 @@ interface IAddressFields {
 	postalCode: IFieldBase<string>;
 	country: IFieldBase<ECountryCode>;
 }
+interface IExtraFields {
+	copyToUser: IFieldCheckbox;
+	subscribeNews: IFieldCheckbox;
+	message: IFieldTextarea;
+}
 @Component( {
 	selector: 'app-order-form',
 	templateUrl: './order-form.component.html',
@@ -40,10 +45,19 @@ export class OrderFormComponent {
 	public fieldsShipping: IAddressFields;
 	public formShipping: FormGroup;
 
+	public fieldsExtra: IExtraFields;
+	public formExtra: FormGroup;
+
 	public isSync = true;
 
 	private formSendStateSubject = new BehaviorSubject<boolean | undefined>( undefined );
 	public formSendState = this.formSendStateSubject.asObservable();
+
+	public copyToUser = true;
+	public subscribeNews = false;
+	public message = '';
+
+	public readonly maxLength = 255;
 
 	public constructor(
 		private formService: FormService,
@@ -87,6 +101,33 @@ export class OrderFormComponent {
 		this.fieldsShipping = mapValues( remappedFields, v => assign( {}, v ) ) as IAddressFields;
 		this.formShipping = this.formService.toFormGroup( remappedFields );
 
+		this.fieldsExtra = {
+			copyToUser: {
+				value: true,
+				label: 'Send me a copy',
+				required: false,
+				order: 1,
+				controlType: EControlType.Input,
+				type: 'checkbox',
+			} as IFieldCheckbox,
+			subscribeNews: {
+				value: false,
+				label: 'Subscribe to our news !',
+				required: false,
+				order: 1,
+				controlType: EControlType.Input,
+				type: 'checkbox',
+			} as IFieldCheckbox,
+			message: {
+				value: '',
+				label: 'Leave a message',
+				required: false,
+				order: 1,
+				controlType: EControlType.Textarea,
+			} as IFieldTextarea,
+		};
+		this.formExtra = this.formService.toFormGroup( this.fieldsExtra );
+
 		// Bind inject billing to shipping
 		this.formBilling.valueChanges.subscribe( v => {
 			if ( this.isSync ) {
@@ -118,6 +159,7 @@ export class OrderFormComponent {
 
 					const sendableData = assign(
 						{ cart: filteredCart },
+						this.formExtra.value,
 						this.isSync ? {
 							address: this.formBilling.value,
 						} : {
