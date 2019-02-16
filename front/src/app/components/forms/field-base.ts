@@ -1,11 +1,11 @@
 export enum EControlType {
-	Input,
-	Dropdown,
+	Input = 'Input',
+	Dropdown = 'Dropdown',
+	Textarea = 'Textarea',
 }
 
 export interface IFieldBase<T> {
 	value: T;
-	key: string;
 	label: string;
 	required: boolean;
 	order: number;

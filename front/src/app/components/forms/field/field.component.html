@@ -1,20 +1,36 @@
 <div [formGroup]="form">
-	<label [attr.for]="field.key">{{field.label}}</label>
-	
-	<div [ngSwitch]="field.controlType">
+	<ng-container *ngIf="invertLabelAndInput; else stdInput">
+		<input [formControlName]="key" [id]="key" [type]="fieldInput.type"/>
+		<label [attr.for]="key">{{field.label}}</label>
+	</ng-container>
+	<ng-template #stdInput>
+		<label [attr.for]="key">{{field.label}}</label>
 		
-		<input *ngSwitchCase="EControlType.Input" [formControlName]="field.key"
-		[id]="field.key" [type]="fieldInput.type" [placeholder]="field.label"
-		[attr.minlength]="fieldInput.validations?.minLength"
-		[attr.maxlength]="fieldInput.validations?.maxLength"
-		[attr.pattern]="fieldInput.validations?.pattern?.toString()">
-		
-		<select *ngSwitchCase="EControlType.Dropdown" [id]="field.key" [formControlName]="field.key">
-			<option selected disabled value=''>Please select</option>
-			<option *ngFor="let opt of fieldDropdown.options" [value]="opt.value">{{opt.label || opt.value}}</option>
-		</select>
-		
-	</div> 
+		<div [ngSwitch]="field.controlType">
+            
+            <ng-container *ngSwitchCase="EControlType.Input">
+                <input *ngSwitchCase="EControlType.Input" [formControlName]="key"
+                [id]="key" [type]="fieldInput.type" [placeholder]="field.label"
+                [attr.minlength]="fieldTextual.validations?.minLength"
+                [attr.maxlength]="fieldTextual.validations?.maxLength"
+                [attr.pattern]="fieldTextual.validations?.pattern?.toString()"/>
+            </ng-container>
+			
+			<select *ngSwitchCase="EControlType.Dropdown" [id]="key" [formControlName]="key">
+				<option selected disabled value=''>Please select</option>
+				<option *ngFor="let opt of fieldDropdown.options" [value]="opt.value">{{opt.label || opt.value}}</option>
+			</select>
+			
+			<ng-container *ngSwitchCase="EControlType.Textarea">
+				<textarea [formControlName]="key"
+				[id]="key" [placeholder]="field.label"
+				[attr.minlength]="fieldTextarea.validations?.minLength"
+				[attr.maxlength]="fieldTextarea.validations?.maxLength"
+				[attr.pattern]="fieldTextarea.validations?.pattern?.toString()"></textarea>
+				<p *ngIf="fieldTextarea.validations?.maxLength">{{ fieldTextarea.validations.maxLength - fieldTextarea.value.length }} characters left.</p>
+			</ng-container>
+		</div> 
+	</ng-template>
 	
 	<div class="errorMessage" *ngIf="!isValid">{{field.label}} is required</div>
 </div>

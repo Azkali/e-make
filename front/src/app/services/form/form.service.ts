@@ -1,8 +1,10 @@
+
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Dictionary } from 'lodash';
+import { transform } from 'lodash';
 
 import { IFieldBase } from '~app/components/forms/field-base';
+import { isBoolean } from 'util';
 
 @Injectable( {
 	providedIn: 'root',
@@ -10,11 +12,14 @@ import { IFieldBase } from '~app/components/forms/field-base';
 export class FormService {
 	public constructor() { }
 
-	public toFormGroup( fields: Array<IFieldBase<any>> ) {
-		return new FormGroup( fields.reduce( ( acc, field ) => {
-			acc[field.key] = field.required ? new FormControl( field.value || '', Validators.required )
-			: new FormControl( field.value || '' );
-			return acc;
-		},                                   {} as Dictionary<FormControl | undefined> ) );
+	public toFormGroup<TKeys extends string>( fields: {[key in TKeys]: IFieldBase<any>} ) {
+		return new FormGroup( transform(
+			fields,
+			( acc, field: IFieldBase<any>, key ) => {
+				const fieldVal = isBoolean( field.value ) ? field.value : ( field.value || '' );
+				acc[key] = field.required ? new FormControl( fieldVal, Validators.required ) : new FormControl( fieldVal );
+				return acc;
+			},
+			{} ) );
 	}
 }

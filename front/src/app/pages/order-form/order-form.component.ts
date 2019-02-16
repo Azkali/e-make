@@ -1,34 +1,43 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { isObject, assign, mapValues, values, omitBy, isNil, isEqual, omit, pick } from 'lodash';
+import { isObject, assign, mapValues, omitBy, isNil, isEqual, omit, pick } from 'lodash';
 import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
 
 import { EControlType, IFieldBase } from '~app/components/forms/field-base';
 import { FormService } from '~app/services/form/form.service';
-import { IFieldInput } from '~app/components/forms/field-input';
-import { IFieldDropdown } from '~app/components/forms/field-dropdown';
+import { IFieldTextual, IFieldDropdown, IFieldTextarea, IFieldCheckbox } from '~app/components/forms';
 
-import { address, IAddress } from '~models/address';
+import { address } from '~models/address';
 import { addressFormExtra } from '~app/models/address-form';
 import { ShopService } from '~app/services/shop/shop.service';
-import { retry, first, switchMap, catchError, mergeMap } from 'rxjs/operators';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { retry, first, switchMap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '~environments/environment';
+import { ECountryCode } from '~cross/models/countryCodes';
 import { makeAbsoluteUrl } from '~cross/config/utils';
 
-type AddressFields = {[prop in keyof IAddress]: IFieldBase<any>};
-
+interface IAddressFields {
+	firstname: IFieldBase<string>;
+	lastname: IFieldBase<string>;
+	email: IFieldBase<string>;
+	phone: IFieldBase<string>;
+	addr1: IFieldBase<string>;
+	addr2: IFieldBase<string>;
+	city: IFieldBase<string>;
+	postalCode: IFieldBase<string>;
+	country: IFieldBase<ECountryCode>;
+}
 @Component( {
 	selector: 'app-order-form',
 	templateUrl: './order-form.component.html',
 	styleUrls: ['./order-form.component.scss'],
 } )
 export class OrderFormComponent {
-	public fieldsBilling: AddressFields;
+	public fieldsBilling: IAddressFields;
 	public formBilling: FormGroup;
 
-	public fieldsShipping: AddressFields;
+	public fieldsShipping: IAddressFields;
 	public formShipping: FormGroup;
 
 	public isSync = true;
@@ -53,33 +62,30 @@ export class OrderFormComponent {
 			if ( propDesc.enum ) {
 				return {
 					value: '',
-					key: propName,
 					label: extras.label,
 					required: propDesc.required,
 					order: 1,
 					controlType: EControlType.Dropdown,
-					type: extras.controlType,
 					options: extras.options,
 				} as IFieldDropdown;
 			} else {
 				return {
 					value: '',
-					key: propName,
 					label: extras.label,
 					required: propDesc.required,
 					order: 1,
 					controlType: EControlType.Input,
 					type: extras.controlType,
 					validations: extras.validation,
-				} as IFieldInput;
+				} as IFieldTextual;
 			}
-		} ),                           isNil ) as any as AddressFields;
+		} ),                           isNil ) as any as IAddressFields;
 
-		this.fieldsBilling = mapValues( remappedFields, v => assign( {}, v ) ) as AddressFields;
-		this.formBilling = this.formService.toFormGroup( values( remappedFields ) );
+		this.fieldsBilling = mapValues( remappedFields, v => assign( {}, v ) ) as IAddressFields;
+		this.formBilling = this.formService.toFormGroup( remappedFields );
 
-		this.fieldsShipping = mapValues( remappedFields, v => assign( {}, v ) ) as AddressFields;
-		this.formShipping = this.formService.toFormGroup( values( remappedFields ) );
+		this.fieldsShipping = mapValues( remappedFields, v => assign( {}, v ) ) as IAddressFields;
+		this.formShipping = this.formService.toFormGroup( remappedFields );
 
 		// Bind inject billing to shipping
 		this.formBilling.valueChanges.subscribe( v => {
