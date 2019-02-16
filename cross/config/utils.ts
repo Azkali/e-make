@@ -1,13 +1,4 @@
-export enum EScheme{
-	Http = 'http',
-	Https = 'https',
-}
-export interface IUrlConfig{
-	fqdn: string;
-	scheme: EScheme;
-	port?: number,
-	baseurl?: string;
-};
+import { IUrlConfig } from './config-types';
 
 export const makeAbsoluteUrl = ( config: IUrlConfig ) => {
 	let url = `${config.scheme}://${config.fqdn}`;
@@ -15,15 +6,4 @@ export const makeAbsoluteUrl = ( config: IUrlConfig ) => {
 		url += `:${config.port}`;
 	}
 	return url + (config.baseurl || '');
-}
-
-export interface IMailAccountConfig{
-	host: string;
-	user: string;
-	password: string;
-}
-
-export interface IMailAddress{
-	name: string;
-	email: string;
 }
