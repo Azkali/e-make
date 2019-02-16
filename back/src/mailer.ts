@@ -1,13 +1,16 @@
 import nodemailer, { SendMailOptions } from 'nodemailer';
-import { toPairs, map, castArray, mapValues, values } from 'lodash';
-import { Entity } from '@diaspora/diaspora/dist/types';
+import { toPairs, map, castArray, mapValues, values, compact, Dictionary } from 'lodash';
 import nunjucks from 'nunjucks';
 
 import { logger } from './logger';
 import { IQuote } from '../../cross/models';
 import { backConfig } from '../../cross/config/local/back';
-import { IMailAccountConfig, IMailAddress } from '../../cross/config/utils';
+import { makeAbsoluteUrl } from '../../cross/config/utils';
 import { join, resolve } from 'path';
+import { assign } from 'nodemailer/lib/shared';
+import { config } from '../../cross/config/local/common';
+import { inspect } from 'util';
+import { IBackConfig } from '../../cross/config/config-types';
 
 nunjucks.configure( resolve( __dirname, '../templates' ),  {
 	autoescape: true,
@@ -15,8 +18,9 @@ nunjucks.configure( resolve( __dirname, '../templates' ),  {
 	noCache: !backConfig.common.production,
 } );
 
-const generateTransport = async ( mailerConfig: IMailAccountConfig ) => nodemailer.createTransport( {
+const generateTransport = async ( mailerConfig: IBackConfig.IMailConfig.IMailAccountConfig ) => nodemailer.createTransport( {
 	host: mailerConfig.host,
+	port: mailerConfig.port || 587,
 	secure: false, // true for 465, false for other ports
 	auth: {
 		user: mailerConfig.user,
@@ -45,28 +49,34 @@ const generateTestTransport = async () =>
 			} ) );
 		 } ) );
 
-const getEnvTransport = async () => backConfig.common.production ?
-	generateTransport( /* backConfig.host */ {} as any ) :
+const getEnvTransport = async () => backConfig.mail.smtpAuth ?
+	generateTransport( backConfig.mail.smtpAuth ) :
 	generateTestTransport();
 
 
 const generateSenderLine = ( name: string, email: string ) =>
 	`"${name}" <${email}>`;
 	
-const sendMail = async ( transport: nodemailer.Transporter, to: IMailAddress[], templateName: string, templateArgs: any ) => {
+const sendMail = async ( transport: nodemailer.Transporter, to: IBackConfig.IMailConfig.IMailAddress[], templateName: string, templateArgs: Dictionary<any> ) => {
+	const preparedTemplateArgs = assign( {config, makeAbsoluteUrl}, templateArgs ) as Dictionary<any>;
+	preparedTemplateArgs.title = nunjucks.render( join( templateName, 'subject.txt' ), preparedTemplateArgs ).trim();
+	console.log( inspect( preparedTemplateArgs, {colors: true, depth: 15} ) );
+
+	// Render all templates
 	const mailOptions = {
 		to: values( mapValues( to, ( { name, email } ) => generateSenderLine( name, email ) ) ),
 		from: generateSenderLine( backConfig.mail.mailBot.name, backConfig.mail.mailBot.email ),
-		subject: nunjucks.render( join( templateName, 'subject.txt' ), templateArgs ).trim(),
-		text: nunjucks.render( join( templateName, 'mail.txt' ), templateArgs ).trim(),
-		html: nunjucks.render( join( templateName, 'mail.html' ), templateArgs ).trim(),
+		subject: preparedTemplateArgs.title,
+		text: nunjucks.render( join( templateName, 'mail.txt' ), preparedTemplateArgs ).trim(),
+		html: nunjucks.render( join( templateName, 'mail.html' ), preparedTemplateArgs ).trim(),
 	};
 	try{
 		const resInfos = await new Promise<any>( ( resolve,reject ) =>
 			transport.sendMail( mailOptions, ( err, info ) => err ? reject( err ) : resolve( info ) ) );
 		const recipients = castArray( mailOptions.to ).join( ', ' );
 		const previewUrl = nodemailer.getTestMessageUrl( resInfos );
-		logger.debug( `Succesfully sent mail "${mailOptions.subject}" to ${recipients}. Preview url: ${previewUrl}` );
+		logger.debug( `Succesfully sent mail "${mailOptions.subject}" to ${recipients}.` +
+			( backConfig.mail.smtpAuth ? '' : ` Preview url: ${previewUrl}` ) );
 		return resInfos;
 	} catch ( e ){
 		logger.error( 'An error occured while sending a mail:', e.message );
@@ -74,18 +84,17 @@ const sendMail = async ( transport: nodemailer.Transporter, to: IMailAddress[], 
 	}
 };
 
-export const sendQuoteMails = async ( quote: IQuote ) => {
+export const sendQuoteMails = async ( quote: IQuote, copyToUser: boolean ) => {
 	const transport = await getEnvTransport();
-	const sentMails = await Promise.all( [
+	await Promise.all( compact( [
 		sendQuoteMail( 'quote-admin', quote, transport ),
-		sendQuoteMail( 'quote-user', quote, transport ),
-	] );
+		copyToUser ? sendQuoteMail( 'quote-user', quote, transport ) : undefined,
+	] ) );
 	transport.close();
 };
 export const sendQuoteMail = async ( templateName: 'quote-admin' | 'quote-user', quote: IQuote, transport?: nodemailer.Transporter ) => {
 	const defaultedTransport = transport ? transport : await getEnvTransport();
-	const recipients = map( toPairs( backConfig.mail.quoteRecipients ), ( [name, email] ) => ( {name, email} ) );
-	const infos = await sendMail( defaultedTransport, recipients, templateName, {quote} );
+	const infos = await sendMail( defaultedTransport, backConfig.mail.quoteRecipients, templateName, {quote} );
 	if ( !transport ){
 		defaultedTransport.close();
 	}

@@ -8,6 +8,7 @@ import { Entity } from '@diaspora/diaspora/dist/types';
 import { ICart } from '../../cross/models/cart';
 import { inspect } from 'util';
 import { sendQuoteMails } from './mailer';
+import { subscribeUserToNewsletter } from './mailing-list';
 
 interface IAddressHash{
 	billingAddress: Entity<IAddress>;
@@ -15,23 +16,25 @@ interface IAddressHash{
 }
 
 const insertAddresses = async ( body: any, userId: any ) => {
-	const addresses = mapValues<any, IAddress>(
-		pick<IAddress, any>( body, ['address', 'billingAddress', 'shippingAddress'] ),
-		( address: IAddress ) => {
-			address.userId = userId;
-			return address;
-		} );
-	const addressesInserted = zipObject(
-		keys( addresses ),
-		( await Address.insertMany(
-			compact( [addresses.address, addresses.billingAddress, addresses.shippingAddress] ) ) ).entities );
-	if ( keys( addressesInserted ).length === 1 ){
+	const pickedAddresses = pick<IAddress, any>( body, ['address', 'billingAddress', 'shippingAddress'] );
+	const addresses = mapValues<any, IAddress>( pickedAddresses, ( address: IAddress ) => {
+		address.userId = userId;
+		return address;
+	} );
+	
+	const insertedAddresses = await Address.insertMany( compact( [
+		addresses.address,
+		addresses.billingAddress,
+		addresses.shippingAddress,
+	] ) );
+	const insertedAddressesObject = zipObject( keys( addresses ), insertedAddresses.entities );
+	if ( keys( insertedAddressesObject ).length === 1 ){
 		return {
-			billingAddress: addressesInserted.address,
-			shippingAddress: addressesInserted.address,
+			billingAddress: insertedAddressesObject.address,
+			shippingAddress: insertedAddressesObject.address,
 		} as IAddressHash;
 	} else {
-		return addressesInserted as any as IAddressHash;
+		return insertedAddressesObject as any as IAddressHash;
 	}
 };
 const insertCart = async ( body: any, userId: any ) => {
@@ -39,28 +42,22 @@ const insertCart = async ( body: any, userId: any ) => {
 		.toChainable()
 		.map( entity => entity.getId( 'main' ) )
 		.value();
-	const cart = assign(
-		{},
-		omit( body.cart, 'items' ),
-		{userId, itemIds} );
+	const cart = assign( {}, omit( body.cart, 'items' ), {userId, itemIds} );
 	const cartInserted = await Cart.insert( cart );
 	return cartInserted;
 };
-const insertAddressesAndCart = async ( body: any, userId: any ) =>
-	zipObject(
-		['addresses', 'cart'],
-		await Promise.all( [
-			insertAddresses( body, userId ),
-			insertCart( body, userId ),
-		] ) ) as {addresses: IAddressHash; cart: Entity<ICart>};
+const insertAddressesAndCart = async ( body: any, userId: any ) => {
+	const promisesResolutions = await Promise.all( [
+		insertAddresses( body, userId ),
+		insertCart( body, userId ),
+	] );
+	return zipObject( ['addresses', 'cart'], promisesResolutions ) as {addresses: IAddressHash; cart: Entity<ICart>};
+};
 
-export const quoteAction: express.RequestHandler = async ( req, res, next ) => {
-	if ( !isAuthenticated( req ) ){
-		return res.status( 401 ).send( 'You need to log in.' );
-	}
+const saveAndSaveQuote = async ( req: express.Request ) => {
 	const userId = getUserId( req );
 	const body = req.body;
-
+	
 	const {addresses, cart} = await insertAddressesAndCart( body, userId );
 	const quote = {
 		billingAddressId: addresses.billingAddress.getId( 'main' ) as any,
@@ -69,18 +66,35 @@ export const quoteAction: express.RequestHandler = async ( req, res, next ) => {
 		userId,
 	};
 	const insertedQuote = await Quote.insert( quote ) as Entity<IQuote>;
-
+	
 	// TODO: Deep populate
+	const cartNoId = omitBy( cart.getAttributes( 'main' ), ( val, key ) => key.endsWith( 'Id' ) );
 	const fullQuote = {
+		id: insertedQuote.getId( 'main' ),
 		billingAddress: addresses.billingAddress.getAttributes( 'main' ),
 		shippingAddress: addresses.shippingAddress.getAttributes( 'main' ),
-		cart: assign(
-			omitBy( cart.getAttributes( 'main' ), ( val, key ) => key.endsWith( 'Id' ) ),
-			{ items: body.cart.items }
-		),
+		cart: assign( cartNoId, { items: body.cart.items } ),
 		user: ( req.user as Entity<IUser> ).getAttributes( 'main' ),
-	};
+		message: body.message,
+	} as any as IQuote;
 	console.log( inspect( fullQuote, {colors: true, depth: 10} ) );
-	await sendQuoteMails( fullQuote as any );
-	return res.status( 501 ).send( 'Not implemented ' + insertedQuote.getId( 'main' ) );
+	await sendQuoteMails( fullQuote, body.copyToUser );
+	
+	return insertedQuote;
 };
+
+
+
+export const quoteAction: express.RequestHandler = async ( req, res, next ) => {
+	if ( !isAuthenticated( req ) ){
+		return res.status( 401 ).send( 'You need to log in.' );
+	}
+	
+	const [insertedQuote] = await ( req.body.subscribeNews ?
+		Promise.all( [ saveAndSaveQuote( req ), subscribeUserToNewsletter( req ) ] ) :
+		Promise.all( [ saveAndSaveQuote( req ) ] ) );
+	
+	return res.status( 201 ).send( { quoteId: insertedQuote.getId( 'main' ) } );
+};
+
+
