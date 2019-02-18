@@ -1,22 +1,42 @@
 import nodemailer, { SendMailOptions } from 'nodemailer';
 import { toPairs, map, castArray, mapValues, values, compact, Dictionary } from 'lodash';
 import nunjucks from 'nunjucks';
+import { join, resolve } from 'path';
+import numeral from 'numeral';
 
 import { logger } from './logger';
 import { IQuote } from '../../cross/models';
 import { backConfig } from '../../cross/config/local/back';
 import { makeAbsoluteUrl } from '../../cross/config/utils';
-import { join, resolve } from 'path';
 import { assign } from 'nodemailer/lib/shared';
 import { config } from '../../cross/config/local/common';
-import { inspect } from 'util';
+import { inspect, isNullOrUndefined } from 'util';
 import { IBackConfig } from '../../cross/config/config-types';
 
-nunjucks.configure( resolve( __dirname, '../templates' ),  {
-	autoescape: true,
-	trimBlocks: true,
-	noCache: !backConfig.common.production,
+const env = new nunjucks.Environment(
+	new nunjucks.FileSystemLoader(
+		resolve( __dirname, '../templates' ),
+		{ noCache: !backConfig.common.production }
+	),
+	{ autoescape: true, trimBlocks: true, noCache: !backConfig.common.production }
+);
+
+env.addFilter( 'fitPad', ( input: unknown, size: number, {pad = ' ', keepWord = true, ellipsis = '...'} = {} ) => {
+	const str = `${input}`;
+	if ( str.length + ellipsis.length > size ){
+		return ( env.getFilter( 'truncate' ) as any )( str, size, keepWord, ellipsis );
+	} else {
+		return str + pad.repeat( size - str.length );
+	}
 } );
+const defaultFormat = '$0,0.00';
+env.addFilter( 'currency', ( value: number, format?: string ) => {
+	if ( !format ){
+		format = defaultFormat;
+	}
+	return numeral( value ).format( format );
+} );
+
 
 const generateTransport = async ( mailerConfig: IBackConfig.IMailConfig.IMailAccountConfig ) => nodemailer.createTransport( {
 	host: mailerConfig.host,
@@ -56,10 +76,10 @@ const getEnvTransport = async () => backConfig.mail.smtpAuth ?
 
 const generateSenderLine = ( name: string, email: string ) =>
 	`"${name}" <${email}>`;
-	
+
 const sendMail = async ( transport: nodemailer.Transporter, to: IBackConfig.IMailConfig.IMailAddress[], templateName: string, templateArgs: Dictionary<any> ) => {
 	const preparedTemplateArgs = assign( {config, makeAbsoluteUrl}, templateArgs ) as Dictionary<any>;
-	preparedTemplateArgs.title = nunjucks.render( join( templateName, 'subject.txt' ), preparedTemplateArgs ).trim();
+	preparedTemplateArgs.title = env.render( join( templateName, 'subject.txt' ), preparedTemplateArgs ).trim();
 	console.log( inspect( preparedTemplateArgs, {colors: true, depth: 15} ) );
 
 	// Render all templates
@@ -67,8 +87,8 @@ const sendMail = async ( transport: nodemailer.Transporter, to: IBackConfig.IMai
 		to: values( mapValues( to, ( { name, email } ) => generateSenderLine( name, email ) ) ),
 		from: generateSenderLine( backConfig.mail.mailBot.name, backConfig.mail.mailBot.email ),
 		subject: preparedTemplateArgs.title,
-		text: nunjucks.render( join( templateName, 'mail.txt' ), preparedTemplateArgs ).trim(),
-		html: nunjucks.render( join( templateName, 'mail.html' ), preparedTemplateArgs ).trim(),
+		text: env.render( join( templateName, 'mail.txt' ), preparedTemplateArgs ).trim(),
+		html: env.render( join( templateName, 'mail.html' ), preparedTemplateArgs ).trim(),
 	};
 	try{
 		const resInfos = await new Promise<any>( ( resolve,reject ) =>

@@ -1,0 +1,38 @@
+{% extends '../base.html' %}
+
+{% import '../quote-cart.html' as quoteCart %}
+
+{% block intro %}
+<p>A user requested a quote.</p>
+{% endblock %}
+
+{% block content %}
+<section class="bg-color-1">
+    <div class="container">
+        <h3>Quote summary</h3>
+        {{ quoteCart.cart(quote.cart) }}
+    </div>
+</section>
+
+<section class="bg-color-2">
+    <div class="container">
+        <h3>Order informations</h3>
+        {{ quoteCart.cart(quote.cart) }}
+    </div>
+</section>
+
+{% if quote.message %}
+<section class="bg-color-3">
+    <div class="container">
+        <h3>Message</h3>
+        <p>{{ quote.message | striptags(true) | escape | nl2br }}</p>
+    </div>
+</section>
+{% endif %}
+
+<section class="bg-color-1">
+    <h3>Other infos</h3>
+    <p>User ID: {{ quote.userId }}</p>
+    <p>Quote ID: {{ quote.id }}</p>
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends '../base.txt' %}
+
+{% import '../quote-cart.txt' as quoteCart %}
+
+{% block intro %}
+A user sent you a quote !
+{% endblock %}
+
+{% block content %}
+{{ 'Quote summary' | center(75) }}
+---------------------------------------------------------------------------
+
+{{ quoteCart.cart(quote.cart) }}
+
+
+
+
+{{ 'Order informations' | center(75) }}
+---------------------------------------------------------------------------
+
+> Billing infos
+
+Name:    {{ quote.billingAddress.firstname }} {{ quote.billingAddress.lastname }}
+Email:   {{ quote.billingAddress.email }}
+Phone:   {{ quote.billingAddress.phone }}
+Address: {{ quote.billingAddress.addr1 }}
+         {% if quote.billingAddress.addr2 %}{{ quote.billingAddress.addr2 }}
+         {% endif %}{{ quote.billingAddress.postalCode }} {{ quote.billingAddress.city }}, {{ quote.billingAddress.country }}
+
+> Shipping infos
+
+Name:    {{ quote.shippingAddress.firstname }} {{ quote.shippingAddress.lastname }}
+Email:   {{ quote.shippingAddress.email }}
+Phone:   {{ quote.shippingAddress.phone }}
+Address: {{ quote.shippingAddress.addr1 }}
+         {% if quote.shippingAddress.addr2 %}{{ quote.shippingAddress.addr2 }}
+         {% endif %}{{ quote.shippingAddress.postalCode }} {{ quote.shippingAddress.city }}, {{ quote.shippingAddress.country }}
+
+
+{%- if quote.message %}
+
+
+
+{{ 'Your message' | center(75) }}
+---------------------------------------------------------------------------
+
+{{ quote.message }}
+{% endif %}
+{% endblock %}
