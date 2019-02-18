@@ -1,0 +1,29 @@
+{% macro cart(cartContent) %}
+┌──────────────────────────────────────┬───────┬────────────┬─────────────┐
+│ {{ 'Name' | center(36) }} │ Count │ Unit price │ Total price │
+╠══════════════════════════════════════╬═══════╬════════════╬═════════════╣
+{% for cartItem in cartContent.items %}
+│{{ ( cartItem.item.productUid or cartItem.item.attributeUid ) | fitPad(38) }}│{{ cartItem.count | fitPad(7) }}│{{ cartItem.unitPrice | currency | fitPad(12) }}│{{ ( cartItem.count * cartItem.unitPrice ) | currency | fitPad(13) }}│
+{% if ( cartItem.item.attributesUids | length ) > 0 %}
+├──────────────────────────────────────┴───────┼────────────┼─────────────┤
+{% for attributeName, attributeType in cartItem.item.attributesUids %}
+│{{ (attributeName + ': ' + attributeType + 'x1') | fitPad(46) }}│{{ 'TODO' | fitPad(12) }}│             │
+{% if not loop.last %}├──────────────────────────────────────────────┼────────────┼─────────────┤
+{% endif %}
+{% endfor %}
+{% if loop.last %}
+╠══════════════════════════════════════════════╬════════════╬═════════════╣
+{% else %}
+╠══════════════════════════════════════╦═══════╬════════════╬═════════════╣
+{% endif %}
+{% else %}
+{% if loop.last %}
+╠══════════════════════════════════════╩═══════╩════════════╬═════════════╣
+{% else %}
+╠══════════════════════════════════════╬═══════╬════════════╬═════════════╣
+{% endif %}
+{% endif %}
+{% endfor %}
+│                                                           │{{ cartContent.totalSum | currency | fitPad(13) }}│
+└───────────────────────────────────────────────────────────┴─────────────┘
+{% endmacro %}

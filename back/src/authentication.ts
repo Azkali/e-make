@@ -1,3 +1,5 @@
+/// <reference path="./types/index.d.ts"/>
+
 import {backConfig} from '../../cross/config//local/back';
 import passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
@@ -25,34 +27,36 @@ passport.deserializeUser( async ( user: IUser & {id: any}, done: ( err: Error | 
 const oauthConfig = backConfig.oauth;
 
 // Load configs
-passport.use( new GoogleStrategy(
-	{
-		clientID: oauthConfig.google.appId,
-		clientSecret: oauthConfig.google.appSecret,
-		callbackURL: makeAbsoluteUrl( backConfig.common.back ) + oauthConfig.google.redirectUrl,
-	},
-	async ( accessToken, refreshToken, profile, done ) => {
-		console.log( {accessToken, refreshToken, profile} );
-		const user = await User.find( { googleId: profile.id } );
-		logger.info( 'Logging in user for Google ID: ' + profile.id );
-		if ( user ){
-			logger.silly( `Retrieved user ${user.getId( 'main' )} for Google ID ${profile.id}` );
-			return done( undefined, user );
-		} else {
-			try{
-				const createdUser = await User.insert( { googleId: profile.id, authorizations: EAuthorization.User } );
-				if ( !createdUser ){
-					throw new Error( 'Could not create a new user' );
+if ( oauthConfig.google ){
+	passport.use( new GoogleStrategy(
+		{
+			clientID: oauthConfig.google.appId,
+			clientSecret: oauthConfig.google.appSecret,
+			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + oauthConfig.google.redirectUrl,
+		},
+		async ( accessToken, refreshToken, profile, done ) => {
+			console.log( {accessToken, refreshToken, profile} );
+			const user = await User.find( { googleId: profile.id } );
+			logger.info( 'Logging in user for Google ID: ' + profile.id );
+			if ( user ){
+				logger.silly( `Retrieved user ${user.getId( 'main' )} for Google ID ${profile.id}` );
+				return done( undefined, user );
+			} else {
+				try{
+					const createdUser = await User.insert( { googleId: profile.id, authorizations: EAuthorization.User } );
+					if ( !createdUser ){
+						throw new Error( 'Could not create a new user' );
+					}
+					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Google ID ${profile.id}` );
+					return done( undefined, createdUser );
+				} catch ( e ){
+					logger.error( `An error occured when creating user for Google ID ${profile.id}: ${e.message}` );
+					return done( e, undefined );
 				}
-				logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Google ID ${profile.id}` );
-				return done( undefined, createdUser );
-			} catch ( e ){
-				logger.error( `An error occured when creating user for Google ID ${profile.id}: ${e.message}` );
-				return done( e, undefined );
 			}
 		}
-	}
-) );
+	) );
+}
 
 const createToken = ( auth: any ) =>
 	sign(
@@ -107,27 +111,29 @@ export const initializePassport = ( app: express.Express ) => {
 		] } )
 	);
 	
-	// GET /auth/google/callback
-	//   Use passport.authenticate() as route middleware to authenticate the
-	//   request.  If authentication fails, the user will be redirected back to the
-	//   login page.  Otherwise, the primary route function function will be called,
-	//   which, in this example, will redirect the user to the home page.
-	app.get(
-		oauthConfig.google.redirectUrl,
-		passport.authenticate( 'google', { failureRedirect: '/login' } ),
-		( req, res, next ) => {
-			if ( !req.user ) {
-				return res.sendStatus( 401 );
-			}
+	if ( oauthConfig.google ){
+		// GET /auth/google/callback
+		//   Use passport.authenticate() as route middleware to authenticate the
+		//   request.  If authentication fails, the user will be redirected back to the
+		//   login page.  Otherwise, the primary route function function will be called,
+		//   which, in this example, will redirect the user to the home page.
+		app.get(
+			oauthConfig.google.redirectUrl,
+			passport.authenticate( 'google', { failureRedirect: '/login' } ),
+			( req, res, next ) => {
+				if ( !req.user ) {
+					return res.sendStatus( 401 );
+				}
 
-			// prepare token for API
-			req.auth = {
-				id: req.user.getId( 'main' ),
-			};
-		
-			next();
-		},
-		generateToken,
-		sendToken
-	);
+				// prepare token for API
+				req.auth = {
+					id: req.user.getId( 'main' ),
+				};
+			
+				next();
+			},
+			generateToken,
+			sendToken
+		);
+	}
 };

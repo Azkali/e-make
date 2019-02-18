@@ -1,0 +1,37 @@
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Unit price</th>
+            <th>Total price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cartItem in quote.cart.items %}
+        <tr>
+            <td>{{ cartItem.item.productUid or cartItem.item.attributeUid }}</td>
+            <td>{{ cartItem.count }}</td>
+            <td>{{ cartItem.unitPrice }}</td>
+            <td>{{ cartItem.count * cartItem.unitPrice }}</td>
+        </tr>
+        {% if cartItem.item.product %}
+        {% for attributeName, attributeType in cartItem.item.attributesUids %}
+        <tr>
+            <td>{{ attributeName }}</td>
+            <td>{{ attributeType }}</td>
+            <td>{{ 'TODO' }}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3"></td>
+            <td>{{ quote.cart.totalSum }}</td>
+        </tr>
+    </tfoot>
+</table>

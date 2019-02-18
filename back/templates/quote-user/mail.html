@@ -1,0 +1,125 @@
+{% extends '../base.html' %}
+
+{% block intro %}
+<p>Thank you for your quote request on <b>E-Make</b>. We'll process it and establish a definitive quote as soon as possible (but it may take some days, we are busy guys you know...).</p>
+<p>You will find a summary of your quote request bellow.</p>
+{% endblock %}
+
+{% block content %}
+<section class="bg-color-1">
+    <div class="container">
+        <h3>Quote summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Count</th>
+                    <th>Unit price</th>
+                    <th>Total price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cartItem in quote.cart.items %}
+                <tr>
+                    <td>{{ cartItem.item.productUid or cartItem.item.attributeUid }}</td>
+                    <td>{{ cartItem.count }}</td>
+                    <td>{{ cartItem.unitPrice | currency }}</td>
+                    <td>{{ ( cartItem.count * cartItem.unitPrice ) | currency }}</td>
+                </tr>
+                {% if cartItem.item.product %}
+                {% for attributeName, attributeType in cartItem.item.attributesUids %}
+                <tr>
+                    <td>{{ attributeName }}</td>
+                    <td>{{ attributeType }}</td>
+                    <td>{{ 'TODO' }}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"></td>
+                    <td>{{ quote.cart.totalSum | currency }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</section>
+
+<section class="bg-color-2">
+    <div class="container">
+        <h3>Order informations</h3>
+        <div>
+            <h4>Billing infos</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{quote.billingAddress.firstname}} {{quote.billingAddress.lastname}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{quote.billingAddress.email}}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{quote.billingAddress.phone}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>
+                            {{ quote.billingAddress.addr1 }}{% if quote.billingAddress.addr2 %}<br/>
+                            {{ quote.billingAddress.addr2 }}{% endif %}<br/>
+                            {{ quote.billingAddress.postalCode }} {{ quote.billingAddress.city }}, {{ quote.billingAddress.country }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h4>Shipping infos</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{quote.shippingAddress.firstname}} {{quote.shippingAddress.lastname}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{quote.shippingAddress.email}}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{quote.shippingAddress.phone}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>
+                            {{ quote.shippingAddress.addr1 }}{% if quote.shippingAddress.addr2 %}<br/>
+                            {{ quote.shippingAddress.addr2 }}{% endif %}<br/>
+                            {{ quote.shippingAddress.postalCode }} {{ quote.shippingAddress.city }}, {{ quote.shippingAddress.country }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{% if quote.message %}
+<section class="bg-color-3">
+    <div class="container">
+        <h3>Your message</h3>
+        <p>{{ quote.message | striptags(true) | escape | nl2br }}</p>
+    </div>
+</section>
+{% endif %}
+
+<section class="main">
+    <div class="container">
+        <p>For any further requests, please contact <a href="mailto:{{ config.contactEmail }}">{{ config.contactEmail }}</a>.</p>
+    </div>
+</section>
+{% endblock %}
