@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MarkdownScrapperService, IArticle, IBlogArticle } from '../../shared/services/markdown-scrapper/markdown-scrapper.service';
-import { IRepositoryTreeResponse, IEntry } from '../../shared/models/markdown-config';
 import { BehaviorSubject, Observable } from 'rxjs';
+
+import { MarkdownScrapperService, IArticle, IBlogArticle } from '~services/markdown-scrapper/markdown-scrapper.service';
+import { IRepositoryTreeResponse, IEntry } from '../../models/markdown-config';
 
 @Component( {
 	selector: 'app-blog',

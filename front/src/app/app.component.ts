@@ -1,15 +1,19 @@
-import { BehaviorSubject, zip } from 'rxjs';
-import { Component } from '@angular/core';
-import { ShopService } from './shared/services/shop/shop.service';
-import { ICart, ITempCart } from '../../../cross/models/cart';
-import { skip, map } from 'rxjs/operators';
-import { CartComponent } from './pages/shop/cart/cart.component';
-import { ModalService } from './shared/services/modal/modal.service';
-import { HeaderService } from './shared/services/header/header.service';
-import { hideShowOpacity, hideShowDisplay, EModalAnimation } from './components/modal/modal.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
+import { AsyncSubject } from 'rxjs/AsyncSubject';
+import { AnimationEvent } from '@angular/animations';
+import { Component, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { BehaviorSubject, zip, Observable } from 'rxjs';
+import { skip, map, filter, first, delayWhen, tap } from 'rxjs/operators';
 import { assign } from 'lodash';
-import { UserService } from './shared/services/user/user.service';
+
+import { ITempCart } from '~models/cart';
+
+import { ShopService } from '~services/shop/shop.service';
+import { ModalService, IVisibleState } from '~services/modal/modal.service';
+import { HeaderService } from '~services/header/header.service';
+
+import { hideShowOpacity, hideShowDisplay } from '~modals/modal.component';
+import { CartComponent } from '~modals/cart/cart.component';
+import { MenuComponent } from '~modals/menu/menu.component';
 
 @Component( {
 	selector: 'app-root',
@@ -18,7 +22,8 @@ import { UserService } from './shared/services/user/user.service';
 	providers: [HeaderService],
 	animations: [hideShowOpacity, hideShowDisplay],
 } )
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+	private initialized = new AsyncSubject<void>();
 
 	public get headerClasses() {
 		return zip( this.headerService.headerClasses, this.modalService.backgroundBlurred )
@@ -34,40 +39,46 @@ export class AppComponent {
 		private modalService: ModalService,
 		private shopService: ShopService,
 		private headerService: HeaderService,
-		private userService: UserService
+		private ref: ChangeDetectorRef
 	) {
 		this.cartInfos = this.shopService.currentCart;
 		this.cartInfos.pipe( skip( 1 ) ).subscribe( newCart => {
 			this.cartFlash = true;
 			setTimeout( () => this.cartFlash = false, 500 );
 		} );
-		this.modalService.modalVisibleState.subscribe( visible => {
-			this.changeState( visible ? EModalAnimation.Shown : EModalAnimation.Hidden );
-		} );
+
+		// Manual changes detection to fix problem with animation state change not detected.
+		this.modalService.modalVisibleState
+			.pipe( skip( 1 ), filter( vs => !vs.done ) )
+			.subscribe( () => setTimeout( () => this.ref.detectChanges(), 0 ) );
+
+		// try to fix `Expression has changed after it was checked`
+		// this.initialized.subscribe( () => setTimeout( () => this.ref.detectChanges(), 0 ) );
+		this.state = this.modalService.modalVisibleState
+			.pipe( skip( 1 ), delayWhen( () => this.initialized ) );
 	}
+
 	public title = 'app';
 
 	public cartFlash = false;
 
-	public state = EModalAnimation.Hidden;
+	public state: Observable<IVisibleState>;
+
 	public cartInfos: BehaviorSubject<ITempCart>;
 
-
-
-	private changeState( newState: EModalAnimation ) {
-		this.state = newState;
-	}
-	public modalAnimDone( event ) {
-		if ( event.fromState === EModalAnimation.Shown && event.toState === EModalAnimation.Hidden ) {
-			this.modalService.removeModalElement();
-		}
+	public modalAnimDone( event: AnimationEvent ) {
+		this.modalService.modalAnimDone( event );
 	}
 
 
 	public openCartModal() {
-		this.modalService.open( CartComponent, { isMobile: false }, {} );
+		this.modalService.open( CartComponent, { isMobile: false }, {} ).pipe( first() ).subscribe();
 	}
 	public openMenuModal() {
-		this.modalService.open( NavbarComponent, { isMobile: false }, {} );
+		this.modalService.open( MenuComponent, { isMobile: false }, {} ).pipe( first() ).subscribe();
+	}
+
+	public ngAfterViewInit() {
+		this.initialized.complete();
 	}
 }

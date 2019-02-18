@@ -1,32 +1,38 @@
-import { ModalService } from './shared/services/modal/modal.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
-import { AppRoutingModule } from './app-routing.module';
 import { ShowdownModule } from 'ngx-showdown';
 
-import { AppComponent } from './app.component';
-import { AdminComponent } from './pages/admin/admin.component';
-import { ContactComponent } from './pages/contact/contact.component';
-import { ShopComponent } from './pages/shop/shop.component';
-import { CartComponent } from './pages/shop/cart/cart.component';
-import { ProductComponent } from './pages/shop/product/product.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
-import { IndexComponent } from './pages/index/index.component';
-import { LoginComponent } from './pages/login/login.component';
-import { BlogComponent } from './pages/blog/blog.component';
-import { ArticleComponent } from './pages/blog/article/article.component';
-import { ProductDetailsComponent } from './pages/shop/product-details/product-details.component';
-import { ShopService } from './shared/services/shop/shop.service';
-import { WindowRef } from './shared/window-ref/window-ref.service';
-import { AfterLoginComponent } from './pages/after-login/after-login.component';
+
+import { AppRoutingModule } from '~app/app-routing.module';
+import { AppComponent } from '~app/app.component';
+
+import { CookieConsentComponent } from '~components/cookie-consent/cookie-consent.component';
+import { FieldComponent } from '~components/forms/field/field.component';
+import { FooterComponent } from '~components/footer/footer.component';
+
+import { AdminComponent } from '~pages/admin/admin.component';
+import { AfterLoginComponent } from '~pages/after-login/after-login.component';
+import { ArticleComponent } from '~pages/blog/article/article.component';
+import { BlogComponent } from '~pages/blog/blog.component';
+import { ContactComponent } from '~pages/contact/contact.component';
+import { IndexComponent } from '~pages/index/index.component';
+import { OrderFormComponent } from '~pages/order-form/order-form.component';
+import { ProductComponent } from '~pages/shop/product/product.component';
+import { ProductDetailsComponent } from '~pages/shop/product-details/product-details.component';
+import { ShopComponent } from '~pages/shop/shop.component';
+
+import { CartComponent } from '~modals/cart/cart.component';
+import { LoginComponent } from '~modals/login/login.component';
+import { MenuComponent } from '~modals/menu/menu.component';
+
+import { WindowRef } from '~services/window-ref/window-ref.service';
+import { CartReviewComponent } from './components/cart-review/cart-review.component';
 
 @NgModule( {
 	declarations: [
@@ -37,7 +43,7 @@ import { AfterLoginComponent } from './pages/after-login/after-login.component';
 		ShopComponent,
 		ProductComponent,
 		CartComponent,
-		NavbarComponent,
+		MenuComponent,
 		IndexComponent,
 		LoginComponent,
 		BlogComponent,
@@ -45,10 +51,15 @@ import { AfterLoginComponent } from './pages/after-login/after-login.component';
 		ProductDetailsComponent,
 		CookieConsentComponent,
 		AfterLoginComponent,
+		FooterComponent,
+		OrderFormComponent,
+		FieldComponent,
+		CartReviewComponent,
 
 	],
 	imports: [
 		BrowserModule,
+		ReactiveFormsModule,
 		FormsModule,
 		AppRoutingModule,
 		ShowdownModule,
@@ -59,7 +70,7 @@ import { AfterLoginComponent } from './pages/after-login/after-login.component';
 		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent, LoginComponent, NavbarComponent],
+	entryComponents: [CartComponent, LoginComponent, MenuComponent],
 	providers: [WindowRef],
 	bootstrap: [AppComponent],
 } )

@@ -26,7 +26,9 @@
         "no-console": false,
         "no-duplicate-variable": [true, "check-parameters"],
         "no-floating-promises": true,
-        "no-implicit-dependencies": true,
+        "no-implicit-dependencies": [true,
+            ["~app", "~services", "~pages", "~modals", "~environments", "~models", "~cross", "~components", "~guards"]
+        ],
         "no-inferred-empty-object-type": true,
         "no-invalid-template-strings": true,
         "no-irregular-whitespace": true,

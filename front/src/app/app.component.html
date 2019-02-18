@@ -13,8 +13,9 @@
 		<router-outlet></router-outlet>
 	</div>
 	<div id="modal"
-	[@changeStateOpacity]="state"
-	[@changeStateDisplay]="state"
+	[@changeStateOpacity]="(state | async)?.visibilityState || 'hidden'"
+	[@changeStateDisplay]="(state | async)?.visibilityState || 'hidden'"
 	(@changeStateOpacity.done)="modalAnimDone($event)"></div>
 </div>
+<app-footer></app-footer>
 <app-cookie-consent></app-cookie-consent>

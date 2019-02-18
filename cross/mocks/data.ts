@@ -40,9 +40,9 @@ export const attributes: IAttribute[] = [
 
 export const products: IProduct[] = [
 	{
-		uid: 'mango',
-		name: 'Mango',
-		images: ['https://via.placeholder.com/576x515.png?text=Mango'],
+		uid: 'espio',
+		name: 'ESPIO',
+		images: ['https://via.placeholder.com/576x515.png?text=ESPIO'],
 		customizableParts: [
 			{
 				name: 'Main DAC',
@@ -64,12 +64,5 @@ export const products: IProduct[] = [
 		name: 'Banana',
 		images: ['https://via.placeholder.com/576x515.png?text=Banana'],
 		basePrice: 10,
-	},
-	{
-		uid: 'espio',
-		name: 'ESPIO',
-		images: ['https://via.placeholder.com/576x515.png?text=ESPIO'],
-		customizableParts: [],
-		basePrice: 15,
 	},
 ]

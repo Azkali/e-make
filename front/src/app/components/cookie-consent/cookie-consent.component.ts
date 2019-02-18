@@ -2,9 +2,9 @@ import { Component, ElementRef, ViewChild, AfterViewInit, EventEmitter, Output, 
 import { trigger, state, style, animate, transition, AnimationTriggerMetadata } from '@angular/animations';
 import * as _ from 'lodash';
 
-import { ACookieDependentService } from '../../shared/services/ICookieDependentService';
-import { GoogleAnalyticsService } from './../../shared/services/google-analytics/google-analytics.service';
-import { ShopService } from '../../shared/services/shop/shop.service';
+import { ACookieDependentService } from '~services/ICookieDependentService';
+import { GoogleAnalyticsService } from '~services/google-analytics/google-analytics.service';
+import { ShopService } from '~services/shop/shop.service';
 
 export type CookieLawPosition = 'top' | 'bottom';
 export type CookieLawAnimation = 'topIn' | 'bottomIn' | 'topOut' | 'bottomOut';
