@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -p . && cp -r templates lib/back",
     "start": "LOG_DIRECTORY='./logs' ts-node src/main.ts",
     "watch": "LOG_DIRECTORY='./logs' ts-node-dev src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
