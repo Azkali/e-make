@@ -13,11 +13,12 @@ export interface IUrlConfig{
 export interface ICommonConfig{
 	back: IUrlConfig & {
 		auth: ICommonConfig.IBackAuthPathConfig;
-	},
+		apiBaseUrl: string;
+	};
 	front: IUrlConfig & {
-		afterAuthRoute: string,
-	},
-	production: boolean,
+		afterAuthRoute: string;
+	};
+	production: boolean;
 }
 export namespace ICommonConfig{
 	export interface IBackAuthPathConfig{

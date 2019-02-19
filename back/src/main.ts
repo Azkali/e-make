@@ -9,12 +9,12 @@ import { ExpressApiGenerator } from '@diaspora/plugin-server';
 import './models';
 import { logger } from './logger';
 import { initializePassport } from './authentication';
-import { mainDataSource } from './models';
+import { mainDataSource, AttributeCategory, Product, Attribute } from './models';
 import { writeOnlyForAdmin } from './security';
 import { backConfig } from '../../cross/config/local/back';
 import { makeAbsoluteUrl } from '../../cross/config/utils';
 import { config } from '../../cross/config/local/common';
-
+import { loadMocks } from '../../cross/mocks/loadMocks';
 
 const apiMiddleware = new ExpressApiGenerator( {
 	webserverType: 'express',
@@ -69,7 +69,10 @@ const getCorsHost = ( req: express.Request ) => {
 };
 app.use( ( req, res, next ) => {
 	res.header( 'Access-Control-Allow-Credentials', 'true' );
-	res.header( 'Access-Control-Allow-Origin', getCorsHost( req ) );
+	const corsHost = getCorsHost( req );
+	if ( corsHost ){
+		res.header( 'Access-Control-Allow-Origin', corsHost );
+	}
 	res.header( 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE' );
 	res.header( 'Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept' );
 	next();
@@ -78,7 +81,7 @@ app.use( ( req, res, next ) => {
 // Auth routes
 initializePassport( app );
 // Initialize the API
-app.use( '/api', apiMiddleware.middleware );
+app.use( backConfig.common.back.apiBaseUrl, apiMiddleware.middleware );
 
 mainDataSource.waitReady().then( () => {
 	const httpServer = app.listen( backConfig.common.back.port || 80, backConfig.host, () => {

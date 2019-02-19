@@ -63,18 +63,13 @@ export class ShopService extends ACookieDependentService {
 
 		this.readyState = new AsyncSubject<any>();
 
-		if ( environment.common.production === true ) {
-			this.serverDataSource = Diaspora.createNamedDataSource( serverDataSourceName, 'webApi', {
-				host: 'TODO',
-				port: 8000,
-				path: 'TODO',
-			} );
-			this.localDataSource = Diaspora.createNamedDataSource( localDataSourceName, 'webStorage' );
-		} else {
-			( window as any ).Diaspora = Diaspora;
-			this.serverDataSource = Diaspora.createNamedDataSource( serverDataSourceName, 'inMemory' );
-			this.localDataSource = Diaspora.createNamedDataSource( localDataSourceName, 'webStorage' );
-		}
+		this.serverDataSource = Diaspora.createNamedDataSource( serverDataSourceName, 'webApi', {
+			host: environment.common.back.fqdn,
+			port: environment.common.back.port,
+			path: environment.common.back.apiBaseUrl,
+			pluralApis: { AttributeCategory: 'attributecategories' },
+		} );
+		this.localDataSource = Diaspora.createNamedDataSource( localDataSourceName, 'webStorage' );
 		this.tempDataSource = Diaspora.createNamedDataSource( tempDataSourceName, 'inMemory' );
 
 		this.Product = Diaspora.declareModel<IProduct>( 'Product', {
@@ -102,9 +97,6 @@ export class ShopService extends ACookieDependentService {
 			this.serverDataSource.waitReady(),
 			this.localDataSource.waitReady(),
 		] ).then( async () => {
-			if ( environment.common.production === false ) {
-				await loadMocks( serverDataSourceName, this.AttributeCategory, this.Attribute, this.Product );
-			}
 			await this.refreshCart();
 		} );
 		waitInitPromise
