@@ -1,5 +1,7 @@
 {% extends '../base.html' %}
 
+{% import '../quote-cart.html' as quoteCart %}
+
 {% block intro %}
 <p>Thank you for your quote request on <b>E-Make</b>. We'll process it and establish a definitive quote as soon as possible (but it may take some days, we are busy guys you know...).</p>
 <p>You will find a summary of your quote request bellow.</p>
@@ -9,42 +11,7 @@
 <section class="bg-color-1">
     <div class="container">
         <h3>Quote summary</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Count</th>
-                    <th>Unit price</th>
-                    <th>Total price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cartItem in quote.cart.items %}
-                <tr>
-                    <td>{{ cartItem.item.productUid or cartItem.item.attributeUid }}</td>
-                    <td>{{ cartItem.count }}</td>
-                    <td>{{ cartItem.unitPrice | currency }}</td>
-                    <td>{{ ( cartItem.count * cartItem.unitPrice ) | currency }}</td>
-                </tr>
-                {% if cartItem.item.product %}
-                {% for attributeName, attributeType in cartItem.item.attributesUids %}
-                <tr>
-                    <td>{{ attributeName }}</td>
-                    <td>{{ attributeType }}</td>
-                    <td>{{ 'TODO' }}</td>
-                    <td></td>
-                </tr>
-                {% endfor %}
-                {% endif %}
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3"></td>
-                    <td>{{ quote.cart.totalSum | currency }}</td>
-                </tr>
-            </tfoot>
-        </table>
+        {{ quoteCart.cart(quote.cart) }}
     </div>
 </section>
 
