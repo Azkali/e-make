@@ -28,7 +28,7 @@ export const loadMocks = async (
 				product.customizableParts = product.customizableParts.map( part => {
 					const attributeCategoryEntity = insertedAttributeCategories
 						.toChainable( Set.ETransformationMode.PROPERTIES, dataSourceName )
-						.find<Array<IAttributeCategory & IEntityProperties>>( {name: part.category.name} )
+						.find<Array<IAttributeCategory & IEntityProperties>>( {name: (part.category as IAttributeCategory).name} )
 						.value() as ( IAttributeCategory & IEntityProperties );
 					part.categoryId = attributeCategoryEntity.id;
 					delete part.category;
@@ -37,5 +37,6 @@ export const loadMocks = async (
 			}
 			return product;
 		} ) ),
-	] );
+    ] );
+    console.info('Mock data inserted!');
  }

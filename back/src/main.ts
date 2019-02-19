@@ -83,10 +83,12 @@ initializePassport( app );
 // Initialize the API
 app.use( backConfig.common.back.apiBaseUrl, apiMiddleware.middleware );
 
-mainDataSource.waitReady().then( () => {
-	const httpServer = app.listen( backConfig.common.back.port || 80, backConfig.host, () => {
-		logger.info( `Example app listening on ${backConfig.host}:${backConfig.common.back.port || 80}!` );
+mainDataSource.waitReady()
+	.then( () => loadMocks( 'main', AttributeCategory, Attribute, Product ) )
+	.then( () => {
+		const httpServer = app.listen( backConfig.common.back.port || 80, backConfig.host, () => {
+			logger.info( `Example app listening on ${backConfig.host}:${backConfig.common.back.port || 80}!` );
+		} );
 	} );
-} );
 
 app.post( '/quote', [bodyParser.json(), quoteAction] );
