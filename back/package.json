@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@diaspora/diaspora": "^0.3.3",
-    "@diaspora/plugin-server": "^0.2.0-alpha.3",
+    "@diaspora/diaspora": "git+https://github.com/diaspora-orm/diaspora.git#prerelease",
+    "@diaspora/plugin-server": "git+https://github.com/diaspora-orm/plugin-server.git#prerelease",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",

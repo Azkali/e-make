@@ -22,7 +22,7 @@
     "@angular/platform-browser": "^7.1.1",
     "@angular/platform-browser-dynamic": "^7.1.1",
     "@angular/router": "^7.1.1",
-    "@diaspora/diaspora": "^0.3.3",
+    "@diaspora/diaspora": "git+https://github.com/diaspora-orm/diaspora.git#prerelease",
     "@diaspora/webapi-provider-oauth2": "0.0.0",
     "@ng-bootstrap/ng-bootstrap": "^4.0.0",
     "angular-oauth2-oidc": "^5.0.2",
