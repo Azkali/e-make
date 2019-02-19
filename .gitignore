@@ -6,3 +6,5 @@ cross/config/local/
 back/logs/
 
 cross/config/test/
+
+back/lib/
