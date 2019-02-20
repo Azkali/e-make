@@ -34,6 +34,9 @@ export class AppComponent implements AfterViewInit {
 	public get headerStyles() {
 		return this.headerService.headerStyles;
 	}
+	public get backgroundBlurred(){
+		return this.modalService.backgroundBlurred;
+	}
 
 	public constructor(
 		private modalService: ModalService,

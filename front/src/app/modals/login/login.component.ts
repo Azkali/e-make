@@ -21,7 +21,8 @@ enum EAuthProvider {
 	styleUrls: ['./login.component.scss'],
 } )
 export class LoginComponent extends ModalComponent {
-	public static closeLoginModal = new BehaviorSubject<void>( undefined );
+    public static closeLoginModal = new BehaviorSubject<void>( undefined );
+    public EAuthProvider = EAuthProvider;
 
 	public getLoginUrl( method: EAuthProvider ) {
 		if ( environment.common.back.auth.availableMethods.indexOf( method ) === -1 ) {

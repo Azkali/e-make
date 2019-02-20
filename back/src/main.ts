@@ -1,12 +1,13 @@
-import { quoteAction } from './quoteAction';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressSession from 'express-session';
 import { castArray } from 'lodash';
+
 import { ExpressApiGenerator } from '@diaspora/plugin-server';
 
 import './models';
+import { quoteAction } from './quoteAction';
 import { logger } from './logger';
 import { initializePassport } from './authentication';
 import { mainDataSource, AttributeCategory, Product, Attribute } from './models';

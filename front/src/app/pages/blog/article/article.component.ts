@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
 	styleUrls: ['./article.component.css'],
 } )
 export class ArticleComponent implements OnInit {
+	public article: any;
+	public getRawContentUrl( article: any ) {}
 
 	public constructor() { }
 

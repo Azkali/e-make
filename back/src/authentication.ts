@@ -6,9 +6,11 @@ import express = require( 'express' );
 import { User } from './models';
 import { sign } from 'jsonwebtoken';
 
-import {assign} from 'lodash';
-import { logger } from './logger';
 import { Entity } from '@diaspora/diaspora/dist/types';
+
+import { assign } from 'lodash';
+import { logger } from './logger';
+
 import { backConfig } from '../cross/config/environments/loader';
 import { IUser, EAuthorization } from '../cross/models';
 import { makeAbsoluteUrl } from '../cross/config/utils';

@@ -3,6 +3,7 @@ import { toPairs, map, castArray, mapValues, values, compact, Dictionary } from 
 import nunjucks from 'nunjucks';
 import { join, resolve } from 'path';
 import numeral from 'numeral';
+import { assign } from 'nodemailer/lib/shared';
 
 import { logger } from './logger';
 import { inspect } from 'util';

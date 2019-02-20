@@ -1,10 +1,11 @@
 import express from 'express';
 import { pick, values, assign, mapValues, compact, zipObject, keys, omit, omitBy } from 'lodash';
+import { inspect } from 'util';
+
+import { Entity } from '@diaspora/diaspora/dist/types';
 
 import { isAuthenticated, getUserId } from './security';
 import { Address, Quote, Cart, CartItem } from './models';
-import { Entity } from '@diaspora/diaspora/dist/types';
-import { inspect } from 'util';
 import { sendQuoteMails } from './mailer';
 import { subscribeUserToNewsletter } from './mailing-list';
 

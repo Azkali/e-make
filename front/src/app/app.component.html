@@ -8,7 +8,7 @@
 			<button (click)="openMenuModal()" class="no-border no-hover" id="menu-button">Menu</button>
 		</nav>
 	</header>
-	<div id="wrapper" [ngClass]="{blurred: modalService.backgroundBlurred | async, blurrable: true}">
+	<div id="wrapper" [ngClass]="{blurred: backgroundBlurred | async, blurrable: true}">
 		<!-- Header -->
 		<router-outlet></router-outlet>
 	</div>
