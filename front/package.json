@@ -7,7 +7,13 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    
+    "build:prod": "ng build --prod",
+    "build:prod+docker": "npm run build:prod && npm run docker:build",
+    "build:preprod": "ng build --configuration=preprod",
+    "build:preprod+docker": "npm run build:preprod && npm run docker:build",
+    "docker:build": "docker image build -t gerkin/e-make-front ."
   },
   "private": true,
   "dependencies": {

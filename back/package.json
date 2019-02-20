@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf lib && tsc -p . && cp -r templates lib/back && rm -rf lib/back/cross/config/environments",
-    "start": "LOG_DIRECTORY='./logs' ts-node src/main.ts",
-    "watch": "LOG_DIRECTORY='./logs' ts-node-dev src/main.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "ts-node src/main.ts",
+    "watch:dev": "ts-node-dev src/main.ts",
+    "start": "node src/main.js",
+    "build:app+docker": "npm run build && npm run docker:build",
+    "docker:build": "docker image build -t gerkin/e-make-back ."
   },
   "author": "",
   "license": "ISC",
@@ -41,6 +44,7 @@
     "@types/nunjucks": "^3.1.0",
     "@types/passport": "^0.4.7",
     "@types/passport-google-oauth": "^1.0.39",
+    "rimraf": "^2.6.3",
     "ts-node": "^7.0.1",
     "ts-node-dev": "^1.0.0-pre.32",
     "tslint": "^5.11.0",
