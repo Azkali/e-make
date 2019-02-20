@@ -1,11 +1,11 @@
 export enum EScheme{
-	Http = 'http',
-	Https = 'https',
+	Http = 1,
+	Https = 2,
 }
 export interface IUrlConfig{
 	fqdn: string;
 	scheme: EScheme;
-	port?: number,
+	port?: number;
 	baseurl?: string;
 };
 

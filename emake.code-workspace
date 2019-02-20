@@ -1,18 +1,15 @@
 {
 	"folders": [
-		{
-			"path": "front"
-		},
-		{
-			"path": "back"
-		},
-		{
-			"path": "cross"
-		},
-		{
-			"path": "/mnt/shared/Work/nodejs/@diaspora/plugin-server"
-		}
-	],
+        {
+            "path": "front"
+        },
+        {
+            "path": "back"
+        },
+        {
+            "path": "cross"
+        }
+    ],
 	"settings": {
 		"typescript.tsdk": "front/node_modules/typescript/lib"
 	}
