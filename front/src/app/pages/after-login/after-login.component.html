@@ -1,0 +1,32 @@
+<div id="main">
+	<section class="major" id="banner" style="background-position: center 0px;">
+		<div class="inner">
+			<ng-container ng-container [ngSwitch]="loginStatus | async">
+				<ng-container *ngSwitchCase="ELoginStatus.LoggedIn">
+					<header class="major">
+						<h1 class="text-center"><i class="far fa-thumbs-up"></i> Yeaaaah !</h1>
+					</header>
+					<div class="content">
+						<p>You are now logged in !</p>
+						<ng-container [ngTemplateOutlet]="closeWindowBtn"></ng-container>
+					</div>
+				</ng-container>
+				<ng-container *ngSwitchCase="ELoginStatus.NotLoggedIn">
+					<header class="major">
+						<h1 class="text-center"><i class="fas fa-exclamation-triangle"></i> Oops...</h1>
+					</header>
+					<div class="content">
+						<p>We could not log you in...</p>
+						<ng-container [ngTemplateOutlet]="closeWindowBtn"></ng-container>
+					</div>
+				</ng-container>
+			</ng-container>
+		</div>
+	</section>
+</div>
+
+<ng-template #closeWindowBtn>
+	<ul class="actions">
+		<li><a class="button next scrolly">Close this window in {{countdown | async}}s...</a></li>
+	</ul>
+</ng-template>

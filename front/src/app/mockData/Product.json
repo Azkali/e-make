@@ -1,0 +1,16 @@
+[
+    {
+        "$key": "01",
+        "title": "Nutmix",
+        "price": 92,
+        "category": "Elec",
+        "imageUrl": ""
+    },
+    {
+        "$key": "02",
+        "title": "NeonMango",
+        "price": 400,
+        "category": "Elec",
+        "imageUrl": ""
+    }
+]

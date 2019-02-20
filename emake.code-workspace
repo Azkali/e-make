@@ -13,5 +13,7 @@
 			"path": "/mnt/shared/Work/nodejs/@diaspora/plugin-server"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"typescript.tsdk": "front/node_modules/typescript/lib"
+	}
 }

@@ -1,0 +1,19 @@
+<div class="modal-container inner">
+
+	<div class="modal-header">
+		<h4 class="modal-title">Your Cart</h4>
+	</div>
+
+	<div class="modal-text">
+		<app-cart-review></app-cart-review>
+	</div>
+	<div class="modal-footer">
+		<div class="modal-close">
+			<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+		</div>
+		<div class="modal-add">
+			<button type="button" [disabled]="(cartInfos | async).totalCount === 0" class="btn btn-outline-dark" (click)="buy()">Buy</button>
+		</div>
+	</div>
+</div>
+<button class="close no-border no-hover" (click)="close()">Close</button>

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{ title }} - E-Make</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0 " />
+	<style>
+		body{
+			color: #ffffff;
+			font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+			font-size: 17pt;
+			font-weight: 300;
+			letter-spacing: 0.025em;
+			line-height: 1.65;
+			background: #242943;
+			margin: 0;
+		}
+		.main{
+			background-color: #2a2f4a;
+			padding: 45px 20px;
+		}
+		.container{
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 15px;
+		}
+		hr{
+			border: 2px solid #ffffff;
+		}
+		h1{
+			color: #ffffff;
+			font-size: 3.25em;
+			line-height: 1.65;
+			margin: 0;
+		}
+		.uppercase{
+			text-transform: uppercase;
+		}
+		.bg-color-1{
+			background-color: #8d82c4;
+		}
+		.bg-color-2{
+			background-color: #6fc3df;
+		}
+		.bg-color-3{
+			background-color: #ec8d81;
+		}
+		table{
+			border-collapse: collapse;
+			width: 100%;
+		}
+		td{
+			text-align: right;
+		}
+	</style>
+</head>
+<body>
+	<section class="main">
+		<div class="container">
+			<header><a href="{{ makeAbsoluteUrl(config.front) }}"><h1>E-Make</h1></a></header>
+			<hr/>
+			<h2>{{ title }}</h2>
+			<div class="uppercase">
+                {% block intro %}{% endblock %}
+			</div>
+		</div>
+	</section>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
+

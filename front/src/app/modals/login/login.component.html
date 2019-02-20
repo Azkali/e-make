@@ -1,0 +1,20 @@
+
+<div class="modal-container inner">
+	<div class="modal-header">
+		<h4 class="modal-title">Log in</h4>
+	</div>
+	
+	<div class="modal-text">
+		<p>For now, you can only log in using one of the social medias bellow. Choose your favorite method to continue.</p>
+		<p>
+			<a (click)="openLoginPopup(EAuthProvider.Google)" [href]="getLoginUrl(EAuthProvider.Google)" target="popup"><i class="alt fab fa-google"></i></a>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<div class="modal-close">
+			<button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+		</div>
+	</div>
+</div>
+
+<button class="close no-border no-hover" (click)="close()">Close</button>

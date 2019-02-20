@@ -2,3 +2,13 @@ node_modules/
 .vscode
 
 cross/config/local/
+
+back/logs/
+
+cross/config/test/
+
+back/lib/
+
+cross/config/environments/*
+!cross/config/environments/loader.ts
+!cross/config/environments/example

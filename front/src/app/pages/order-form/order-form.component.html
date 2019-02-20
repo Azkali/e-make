@@ -1,0 +1,151 @@
+<!-- Main -->
+<form id="main" (ngSubmit)="send()">
+	<!-- Banner -->
+	<!-- Note: The "styleN" class below should match that of the header element. -->
+	<section id="banner" class="style2">
+		<div class="inner">
+			<span class="image">
+				<img src="assets/images/pic07.jpg" alt="" />
+			</span>
+			<header class="major">
+				<h1 class="text-center">Finalize your quotation demand</h1>
+			</header>
+			<div class="content">
+				<p>Fill the form to ask for a quote.</p>
+			</div>
+		</div>
+	</section>
+	
+	<ng-container *ngIf="(formSendState | async) !== true; else submitOk">
+		<!-- One -->
+		<section id="one">
+			<div class="inner">
+				<header class="major">
+					<h2 class="text-center">Your cart</h2>
+				</header>
+				<p>Review your cart</p>
+				<app-cart-review></app-cart-review>
+			</div>
+		</section>
+		
+		<!-- Two -->
+		<section id="two">
+			<div class="inner">
+				<div [class]="'row gtr-uniform' + (isSync ? ' sync' : '')" id="order-infos">
+					<div class="col-6 col-12-xsmall">
+						<header class="major">
+							<h2 class="text-center"><i class="fas fa-clipboard-list"></i> Billing infos</h2>
+							
+							<span *ngIf="isSync" id="sync-marker"><i class="fas fa-arrow-circle-right"></i></span>
+						</header>
+						
+						<div class="row gtr-uniform">
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsBilling.firstname" key="firstname" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsBilling.lastname" key="lastname" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsBilling.email" key="email" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsBilling.phone" key="phone" [form]="formBilling"></app-field>
+							</div>
+							
+							<div class="col-12">
+								<app-field [field]="fieldsBilling.addr1" key="addr1" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsBilling.addr2" key="addr2" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsBilling.city" key="city" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsBilling.postalCode" key="postalCode" [form]="formBilling"></app-field>
+							</div>
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsBilling.country" key="country" [form]="formBilling"></app-field>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-12-xsmall">
+						<header class="major">
+							<h2 class="text-center"><i class="fas fa-box-open"></i> Shipping infos</h2>
+						</header>
+						
+						<div class="row gtr-uniform">
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsShipping.firstname" key="firstname" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsShipping.lastname" key="lastname" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsShipping.email" key="email" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsShipping.phone" key="phone" [form]="formShipping"></app-field>
+							</div>
+							
+							<div class="col-12">
+								<app-field [field]="fieldsShipping.addr1" key="addr1" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsShipping.addr2" key="addr2" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-12">
+								<app-field [field]="fieldsShipping.city" key="city" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsShipping.postalCode" key="postalCode" [form]="formShipping"></app-field>
+							</div>
+							<div class="col-6 col-12-xsmall">
+								<app-field [field]="fieldsShipping.country" key="country" [form]="formShipping"></app-field>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="inner">
+				<div class="row gtr-uniform">
+					<div class="col-6">
+						<app-field [field]="fieldsExtra.copyToUser" key="copyToUser" [form]="formExtra"></app-field>
+					</div>
+					<div class="col-6">
+						<app-field [field]="fieldsExtra.subscribeNews" key="subscribeNews" [form]="formExtra"></app-field>
+					</div>
+				</div>
+			</div>
+			
+			<div class="inner">
+				<div class="row gtr-uniform">
+					<div class="col-12">
+						<app-field [field]="fieldsExtra.message" key="message" [form]="formExtra"></app-field>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="three">
+			<div class="inner">
+				<p *ngIf="(formSendState | async) === false">Form sending failed. Please retry later.</p>
+				<button class="button primary fit" [disabled]="!formBilling.valid || !formShipping.valid"><i class="fas fa-cubes"></i> Ask for a quote</button>
+			</div>
+		</section>
+	</ng-container>
+	<ng-template #submitOk>
+		<!-- One -->
+		<section id="one">
+			<div class="inner">
+				<header class="major">
+					<h2 class="text-center">Quote sent !</h2>
+				</header>
+				<p>Your quote request has been sent. We'll get back to you as soon as possible.</p>
+			</div>
+		</section>
+	</ng-template>
+</form>
+

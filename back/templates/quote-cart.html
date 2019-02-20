@@ -1,0 +1,38 @@
+{% macro cart(cartContent) %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Unit price</th>
+            <th>Total price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cartItem in cartContent.items %}
+        <tr>
+            <td>{{ cartItem.item.productUid or cartItem.item.attributeUid }}</td>
+            <td>{{ cartItem.count }}</td>
+            <td>{{ cartItem.unitPrice | currency }}</td>
+            <td>{{ ( cartItem.count * cartItem.unitPrice ) | currency }}</td>
+        </tr>
+        {% if cartItem.item.product %}
+        {% for attributeName, attributeType in cartItem.item.attributesUids %}
+        <tr>
+            <td>{{ attributeName }}</td>
+            <td>{{ attributeType }}</td>
+            <td>{{ 'TODO' }}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3"></td>
+            <td>{{ cartContent.totalSum | currency }}</td>
+        </tr>
+    </tfoot>
+</table>
+{% endmacro %}
