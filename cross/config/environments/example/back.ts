@@ -1,4 +1,4 @@
-import { IBackConfig } from './../config-types';
+import { IBackConfig } from '../../config-types';
 import { config } from './common';
 
 export const backConfig: IBackConfig = {

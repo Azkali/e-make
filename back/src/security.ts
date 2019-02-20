@@ -3,10 +3,11 @@ import { IDiasporaApiRequest, IDiasporaApiRequestDescriptor } from '@diaspora/pl
 import { Entity } from '@diaspora/diaspora/dist/types';
 import { isNil, assign } from 'lodash';
 
-import { IUser, EAuthorization } from '../../cross/models';
 import { logger } from './logger';
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import { EQueryAction } from '@diaspora/plugin-server/lib/utils';
+
+import { IUser, EAuthorization } from '../cross/models';
 
 
 export const getUserId = ( req: express.Request ) => ( ( req.user as Entity<IUser> ).getProperties( 'main' ) as ( IUser & IEntityProperties ) ).id;

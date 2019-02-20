@@ -5,13 +5,12 @@ import { join, resolve } from 'path';
 import numeral from 'numeral';
 
 import { logger } from './logger';
-import { IQuote } from '../../cross/models';
-import { backConfig } from '../../cross/config/local/back';
-import { makeAbsoluteUrl } from '../../cross/config/utils';
-import { assign } from 'nodemailer/lib/shared';
-import { config } from '../../cross/config/local/common';
-import { inspect, isNullOrUndefined } from 'util';
-import { IBackConfig } from '../../cross/config/config-types';
+import { inspect } from 'util';
+
+import { IQuote } from '../cross/models';
+import { backConfig } from '../cross/config/environments/loader';
+import { makeAbsoluteUrl } from '../cross/config/utils';
+import { IBackConfig } from '../cross/config/config-types';
 
 const env = new nunjucks.Environment(
 	new nunjucks.FileSystemLoader(
@@ -78,7 +77,7 @@ const generateSenderLine = ( name: string, email: string ) =>
 	`"${name}" <${email}>`;
 
 const sendMail = async ( transport: nodemailer.Transporter, to: IBackConfig.IMailConfig.IMailAddress[], templateName: string, templateArgs: Dictionary<any> ) => {
-	const preparedTemplateArgs = assign( {config, makeAbsoluteUrl}, templateArgs ) as Dictionary<any>;
+	const preparedTemplateArgs = assign( {config: backConfig.common.back, makeAbsoluteUrl}, templateArgs ) as Dictionary<any>;
 	preparedTemplateArgs.title = env.render( join( templateName, 'subject.txt' ), preparedTemplateArgs ).trim();
 	console.log( inspect( preparedTemplateArgs, {colors: true, depth: 15} ) );
 

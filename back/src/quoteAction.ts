@@ -2,13 +2,14 @@ import express from 'express';
 import { pick, values, assign, mapValues, compact, zipObject, keys, omit, omitBy } from 'lodash';
 
 import { isAuthenticated, getUserId } from './security';
-import { IAddress, IQuote, IUser } from '../../cross/models';
 import { Address, Quote, Cart, CartItem } from './models';
 import { Entity } from '@diaspora/diaspora/dist/types';
-import { ICart } from '../../cross/models/cart';
 import { inspect } from 'util';
 import { sendQuoteMails } from './mailer';
 import { subscribeUserToNewsletter } from './mailing-list';
+
+import { IAddress, IQuote, IUser } from '../cross/models';
+import { ICart } from '../cross/models/cart';
 
 interface IAddressHash{
 	billingAddress: Entity<IAddress>;

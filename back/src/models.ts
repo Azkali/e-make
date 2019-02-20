@@ -1,7 +1,8 @@
 import { Diaspora } from '@diaspora/diaspora';
-import {product, user, attributeCategory, attribute, IProduct, IUser, IAttributeCategory, IAttribute, IQuote, quote, IAddress, address} from '../../cross/models';
-import { cart, ICart } from '../../cross/models/cart';
-import { cartItem, ICartItem } from '../../cross/models/cartItem';
+
+import { product, user, attributeCategory, attribute, IProduct, IUser, IAttributeCategory, IAttribute, IQuote, quote, IAddress, address } from '../cross/models';
+import { cart, ICart } from '../cross/models/cart';
+import { cartItem, ICartItem } from '../cross/models/cartItem';
 
 export const mainDataSource = Diaspora.createNamedDataSource( 'main', 'inMemory' );
 export const Product = Diaspora.declareModel<IProduct>( 'Product', {

@@ -1,6 +1,5 @@
 import { Entity, EntityUid } from '@diaspora/diaspora';
-import { IUser } from '../../../cross/models';
-// import { IUser } from 'cross/models';
+import { IUser } from '../../cross/models';
 
 declare global {
 	namespace Express {

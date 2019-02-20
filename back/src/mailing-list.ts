@@ -1,7 +1,7 @@
 import express from 'express';
 const SibApiV3Sdk = require( 'sib-api-v3-sdk' );
-import { backConfig } from '../../cross/config/local/back';
-import { IAddress } from '../../cross/models';
+import { backConfig } from '../cross/config/environments/loader';
+import { IAddress } from '../cross/models';
 
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance;

@@ -11,10 +11,10 @@ import { logger } from './logger';
 import { initializePassport } from './authentication';
 import { mainDataSource, AttributeCategory, Product, Attribute } from './models';
 import { writeOnlyForAdmin } from './security';
-import { backConfig } from '../../cross/config/local/back';
-import { makeAbsoluteUrl } from '../../cross/config/utils';
-import { config } from '../../cross/config/local/common';
-import { loadMocks } from '../../cross/mocks/loadMocks';
+
+import { backConfig } from '../cross/config/environments/loader';
+import { makeAbsoluteUrl } from '../cross/config/utils';
+import { loadMocks } from '../cross/mocks/loadMocks';
 
 const apiMiddleware = new ExpressApiGenerator( {
 	webserverType: 'express',
@@ -58,7 +58,7 @@ app.use( expressSession( {
 
 const removeScheme = ( url:string ) => url.replace( /https?:\/\//, '' );
 
-const CORS_HOSTS = [makeAbsoluteUrl( config.front ), makeAbsoluteUrl( config.back )];
+const CORS_HOSTS = [makeAbsoluteUrl( backConfig.common.front ), makeAbsoluteUrl( backConfig.common.back )];
 const getCorsHost = ( req: express.Request ) => {
 	const reqHost = castArray( req.headers.origin )[0] || '';
 	const hostIndex = CORS_HOSTS.indexOf( reqHost );

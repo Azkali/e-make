@@ -1,18 +1,17 @@
 /// <reference path="./types/index.d.ts"/>
 
-import {backConfig} from '../../cross/config//local/back';
 import passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import express = require( 'express' );
 import { User } from './models';
-import { IUser, EAuthorization } from '../../cross/models';
 import { sign } from 'jsonwebtoken';
-import { makeAbsoluteUrl } from '../../cross/config/utils';
 
 import {assign} from 'lodash';
 import { logger } from './logger';
 import { Entity } from '@diaspora/diaspora/dist/types';
-import { config } from '../../cross/config/local/common';
+import { backConfig } from '../cross/config/environments/loader';
+import { IUser, EAuthorization } from '../cross/models';
+import { makeAbsoluteUrl } from '../cross/config/utils';
 
 
 
@@ -78,7 +77,7 @@ const sendToken = ( req: express.Request, res: express.Response ) => {
 	}
 	req.session = assign( req.session, {auth: req.auth, token: req.token} );
 	res.setHeader( 'x-auth-token', req.token );
-	res.redirect( `${makeAbsoluteUrl( backConfig.common.front )}/${config.front.afterAuthRoute}` );
+	res.redirect( `${makeAbsoluteUrl( backConfig.common.front )}/${backConfig.common.front.afterAuthRoute}` );
 };
 
 export const initializePassport = ( app: express.Express ) => {
@@ -104,7 +103,7 @@ export const initializePassport = ( app: express.Express ) => {
 	//   redirecting the user to google.com.  After authorization, Google
 	//   will redirect the user back to this application at /auth/google/callback
 	app.get(
-		`${config.back.auth.baseAuthRoute}/google`,
+		`${backConfig.common.back.auth.baseAuthRoute}/google`,
 		passport.authenticate( 'google', { scope: [
 			'email',
 			'profile',
