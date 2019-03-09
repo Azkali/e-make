@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
+    "@diaspora/dev-tslint": "^1.1.0",
     "@diaspora/diaspora": "git+https://github.com/diaspora-orm/diaspora.git#prerelease",
     "tslint": "^5.13.1"
   }
