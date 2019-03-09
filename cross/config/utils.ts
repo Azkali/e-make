@@ -9,7 +9,12 @@ export const makeAbsoluteUrl = ( config: IUrlConfig ) => {
 	} )[config.scheme];
 	let url = `${scheme}//${config.fqdn}`;
 	if ( typeof config.port !== 'undefined' ){
-		url += `:${config.port}`;
+		if ( !(
+			( config.scheme === EScheme.Http && config.port === 80 ) || // Skip default HTTP port
+			( config.scheme === EScheme.Https && config.port === 443 ) // Skip default HTTPS port
+		) ){
+			url += `:${config.port}`;
+		}
 	}
 	return url + ( config.baseurl || '' );
 };
