@@ -70,8 +70,7 @@ export class ModalService {
 		return this.modalVisibleState
 			.pipe(
 				filter( visibleState => visibleState.done ),
-				switchMap( () => of() )
-			);
+				switchMap( () => of<void>() ) );
 	}
 
 	public close() {
