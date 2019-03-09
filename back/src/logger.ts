@@ -3,9 +3,21 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import { resolve } from 'path';
 import { Diaspora } from '@diaspora/diaspora';
 import { NodeLogger } from '@diaspora/diaspora/dist/types/logger/nodeLogger';
+import { assign } from 'lodash';
 
 const baseLogDir = process.env.LOG_DIRECTORY || resolve( __dirname, 'logs' );
 
+const rotateErrBase = {
+	level: 'error',
+	zippedArchive: true,
+	maxSize: '100m',
+	maxFiles: '60d',
+};
+const rotateCombBase = {
+	zippedArchive: true,
+	maxSize: '50m',
+	maxFiles: '14d',
+};
 const diasporaLogger = ( ( Diaspora.logger as any ).logger as Logger );
 diasporaLogger.configure( {
 	level: 'silly',
@@ -15,19 +27,8 @@ diasporaLogger.configure( {
 		// - Write to all logs with level `info` and below to `combined.log` 
 		// - Write all logs error (and below) to `error.log`.
 		//
-		new DailyRotateFile( {
-			filename: resolve( baseLogDir, 'diaspora-%DATE%', 'error.log' ),
-			level: 'error',
-			zippedArchive: true,
-			maxSize: '100m',
-			maxFiles: '60d',
-		} ),
-		new DailyRotateFile( {
-			filename: resolve( baseLogDir, 'diaspora-%DATE%', 'combined.log' ),
-			zippedArchive: true,
-			maxSize: '50m',
-			maxFiles: '14d',
-		} ),
+		new DailyRotateFile( assign( { filename: resolve( baseLogDir, 'diaspora-%DATE%', 'error.log' )}, rotateErrBase ) ),
+		new DailyRotateFile( assign( { filename: resolve( baseLogDir, 'diaspora-%DATE%', 'combined.log' )}, rotateCombBase ) ),
 	],
 } );
 export const logger = createLogger( {
@@ -38,19 +39,8 @@ export const logger = createLogger( {
 		// - Write to all logs with level `info` and below to `combined.log` 
 		// - Write all logs error (and below) to `error.log`.
 		//
-		new DailyRotateFile( {
-			filename: resolve( baseLogDir, 'app-%DATE%', 'error.log' ),
-			level: 'error',
-			zippedArchive: true,
-			maxSize: '100m',
-			maxFiles: '60d',
-		} ),
-		new DailyRotateFile( {
-			filename: resolve( baseLogDir, 'app-%DATE%', 'combined.log' ),
-			zippedArchive: true,
-			maxSize: '50m',
-			maxFiles: '14d',
-		} ),
+		new DailyRotateFile( assign( { filename: resolve( baseLogDir, 'app-%DATE%', 'error.log' )}, rotateErrBase ) ),
+		new DailyRotateFile( assign( { filename: resolve( baseLogDir, 'app-%DATE%', 'combined.log' )}, rotateCombBase ) ),
 	],
 } );
 
