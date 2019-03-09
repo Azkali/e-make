@@ -1,19 +1,20 @@
 {
   "name": "front",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --public-host www.e-make.io --port $(ts-node -pe 'require(`../cross/config/local/common`).config.front.port')",
+    "start": "ng serve --public-host www.e-make.io --port $(ts-node -pe 'require(`../cross/config/environments/local/common`).config.front.port')",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    
     "build:prod": "ng build --prod",
     "build:prod+docker": "npm run build:prod && npm run docker:build",
     "build:preprod": "ng build --configuration=preprod",
     "build:preprod+docker": "npm run build:preprod && npm run docker:build",
-    "docker:build": "docker image build -t gerkin/e-make-front ."
+    "docker:build": "docker image build -t gerkin/e-make-front .",
+    "docker:tag": "docker tag gerkin/e-make-front gerkin/e-make-front:latest && docker tag gerkin/e-make-front gerkin/e-make-front:$(node -p 'require(`./package.json`).version')",
+    "docker:push": "docker push gerkin/e-make-front:latest && docker push gerkin/e-make-front:$(node -p 'require(`./package.json`).version')"
   },
   "private": true,
   "dependencies": {

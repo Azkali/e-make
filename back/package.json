@@ -1,6 +1,6 @@
 {
   "name": "emake-back",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,9 @@
     "watch:dev": "ts-node-dev src/main.ts",
     "start": "node src/main.js",
     "build:app+docker": "npm run build && npm run docker:build",
-    "docker:build": "docker image build -t gerkin/e-make-back ."
+    "docker:build": "docker image build -t gerkin/e-make-back .",
+    "docker:tag": "docker tag gerkin/e-make-back gerkin/e-make-back:latest && docker tag gerkin/e-make-back gerkin/e-make-back:$(node -p 'require(`./package.json`).version')",
+    "docker:push": "docker push gerkin/e-make-back:latest && docker push gerkin/e-make-back:$(node -p 'require(`./package.json`).version')"
   },
   "author": "",
   "license": "ISC",
