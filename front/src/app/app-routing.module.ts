@@ -6,6 +6,7 @@ import { environment } from '~environments/environment';
 
 import { AfterLoginComponent } from '~pages/after-login/after-login.component';
 import { BlogComponent } from '~pages/blog/blog.component';
+import { ArticleComponent } from '~pages/blog/article/article.component';
 import { ContactComponent } from '~pages/contact/contact.component';
 import { IndexComponent } from '~pages/index/index.component';
 import { OrderFormComponent } from '~pages/order-form/order-form.component';
@@ -16,6 +17,7 @@ const routes: Routes = [
 	{ path: '', redirectTo: '/index', pathMatch: 'full' },
 	{ path: 'index', component: IndexComponent },
 	{ path: 'blog', component: BlogComponent },
+	{ path: 'blog/:title', component: ArticleComponent},
 	{ path: 'shop', component: ShopComponent, data: {classes: 'style2', styles: {backgroundColor: '#8d82c4'} } },
 	{ path: 'shop/:identifier', component: ProductDetailsComponent, data: {classes: 'style5', styles: {backgroundColor: '#8ea9e8'}}},
 	{ path: 'contact', component: ContactComponent },

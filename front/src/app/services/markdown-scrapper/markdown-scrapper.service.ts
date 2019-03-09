@@ -115,5 +115,10 @@ export class MarkdownScrapperService {
 				entries: repoTree.tree.filter( item => item.path.startsWith( basePath ) ),
 				summaries,
 			} ) ) );
+		}
+	public getBlogArticle( title: string ) {
+		return this.getBlogArticles().pipe(
+			map( ( articles: IBlogArticle[] ) => articles.find( article => article.title === article.title ) )
+		);
 	}
 }

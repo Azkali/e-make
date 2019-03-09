@@ -7,7 +7,7 @@ export interface IUrlConfig{
 	scheme: EScheme;
 	port?: number;
 	baseurl?: string;
-};
+}
 
 
 export interface ICommonConfig{
@@ -22,18 +22,18 @@ export interface ICommonConfig{
 }
 export namespace ICommonConfig{
 	export interface IBackAuthPathConfig{
-		baseAuthRoute: string,
-		availableMethods: (keyof IBackConfig.IOAuthConfig)[],
+		baseAuthRoute: string;
+		availableMethods: Array<keyof IBackConfig.IOAuthConfig>;
 	}
 }
 
 export interface IBackConfig{
 	oauth: IBackConfig.IOAuthConfig;
-	host: string,
-	tokenSecret: string,
+	host: string;
+	tokenSecret: string;
 	
 	mail: IBackConfig.IMailConfig;
-	contactEmail: string,
+	contactEmail: string;
 	mailingList: IBackConfig.IMailingListConfig;
 	common: ICommonConfig;
 }
@@ -77,4 +77,4 @@ export namespace IBackConfig{
 export interface IFrontConfig{
 	googleAnalyticsKey: string | false;
 	common: ICommonConfig;
-};
+}

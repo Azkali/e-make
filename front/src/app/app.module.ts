@@ -7,6 +7,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShowdownModule } from 'ngx-showdown';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 import { AppRoutingModule } from '~app/app-routing.module';
@@ -30,6 +31,7 @@ import { ShopComponent } from '~pages/shop/shop.component';
 import { CartComponent } from '~modals/cart/cart.component';
 import { LoginComponent } from '~modals/login/login.component';
 import { MenuComponent } from '~modals/menu/menu.component';
+import { PagerService } from './services/pager/pager';
 
 import { WindowRef } from '~services/window-ref/window-ref.service';
 import { CartReviewComponent } from './components/cart-review/cart-review.component';
@@ -67,11 +69,12 @@ import { CartReviewComponent } from './components/cart-review/cart-review.compon
 		MatSidenavModule,
 		BrowserAnimationsModule,
 		MatDialogModule,
+		NgxPaginationModule,
 		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent, LoginComponent, MenuComponent],
-	providers: [WindowRef],
+	entryComponents: [CartComponent, LoginComponent, MenuComponent, OrderFormComponent],
+	providers: [WindowRef, PagerService],
 	bootstrap: [AppComponent],
 } )
 export class AppModule { }
