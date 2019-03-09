@@ -11,10 +11,10 @@ export class DomService {
 	private managedComponentRefs: Array<ComponentRef<any>> = [];
 
 	public constructor(
-		private componentFactoryResolver: ComponentFactoryResolver,
-		private appRef: ApplicationRef,
-		private injector: Injector,
-		@Inject( DOCUMENT ) private document: Document
+		private readonly componentFactoryResolver: ComponentFactoryResolver,
+		private readonly appRef: ApplicationRef,
+		private readonly injector: Injector,
+		@Inject( DOCUMENT ) private readonly document: Document
 	) { }
 
 	public appendComponentTo<T>( parentId: string, child: Type<T>, childConfig?: IChildConfig ) {
@@ -59,6 +59,10 @@ export class DomService {
 				componentRef.instance[key] = outputs[key];
 			}
 		}
+	}
+
+	public focusedElement() {
+		return this.document.activeElement;
 	}
 }
 

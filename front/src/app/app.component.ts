@@ -1,6 +1,6 @@
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { AnimationEvent } from '@angular/animations';
-import { Component, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectorRef, AfterViewInit, HostListener } from '@angular/core';
 import { BehaviorSubject, zip, Observable } from 'rxjs';
 import { skip, map, filter, first, delayWhen, tap } from 'rxjs/operators';
 import { assign } from 'lodash';
@@ -14,6 +14,8 @@ import { HeaderService } from '~services/header/header.service';
 import { hideShowOpacity, hideShowDisplay } from '~modals/modal.component';
 import { CartComponent } from '~modals/cart/cart.component';
 import { MenuComponent } from '~modals/menu/menu.component';
+import { DomService } from './services/dom/dom.service';
+import { Router, NavigationStart } from '@angular/router';
 
 @Component( {
 	selector: 'app-root',
@@ -23,7 +25,7 @@ import { MenuComponent } from '~modals/menu/menu.component';
 	animations: [hideShowOpacity, hideShowDisplay],
 } )
 export class AppComponent implements AfterViewInit {
-	private initialized = new AsyncSubject<void>();
+	private readonly initialized = new AsyncSubject<void>();
 
 	public get headerClasses() {
 		return zip( this.headerService.headerClasses, this.modalService.backgroundBlurred )
@@ -34,15 +36,17 @@ export class AppComponent implements AfterViewInit {
 	public get headerStyles() {
 		return this.headerService.headerStyles;
 	}
-	public get backgroundBlurred(){
+	public get backgroundBlurred() {
 		return this.modalService.backgroundBlurred;
 	}
 
 	public constructor(
-		private modalService: ModalService,
-		private shopService: ShopService,
-		private headerService: HeaderService,
-		private ref: ChangeDetectorRef
+		private readonly modalService: ModalService,
+		private readonly shopService: ShopService,
+		private readonly headerService: HeaderService,
+		private readonly domService: DomService,
+		private readonly router: Router,
+		private readonly ref: ChangeDetectorRef
 	) {
 		this.cartInfos = this.shopService.currentCart;
 		this.cartInfos.pipe( skip( 1 ) ).subscribe( newCart => {
@@ -59,6 +63,12 @@ export class AppComponent implements AfterViewInit {
 		// this.initialized.subscribe( () => setTimeout( () => this.ref.detectChanges(), 0 ) );
 		this.state = this.modalService.modalVisibleState
 			.pipe( skip( 1 ), delayWhen( () => this.initialized ) );
+
+		this.router.events
+			.pipe( filter( e => e instanceof NavigationStart ) )
+			.subscribe( event => {
+				this.modalService.close();
+			} );
 	}
 
 	public title = 'app';
@@ -83,5 +93,12 @@ export class AppComponent implements AfterViewInit {
 
 	public ngAfterViewInit() {
 		this.initialized.complete();
+	}
+
+	@HostListener( 'window:keyup', ['$event'] )
+	public keyEvent( event: KeyboardEvent ) {
+		if ( event.key === 'Escape' && this.domService.focusedElement !== null ) {
+			this.modalService.close();
+		}
 	}
 }
