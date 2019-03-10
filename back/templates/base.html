@@ -17,7 +17,6 @@
 			margin: 0;
 		}
 		.main{
-			background-color: #2a2f4a;
 			padding: 45px 20px;
 		}
 		.container{
@@ -36,6 +35,9 @@
 		}
 		.uppercase{
 			text-transform: uppercase;
+		}
+		.bg-color-default{
+			background-color: #2a2f4a;
 		}
 		.bg-color-1{
 			background-color: #8d82c4;
@@ -62,12 +64,12 @@
 			<hr/>
 			<h2>{{ title }}</h2>
 			<div class="uppercase">
-                {% block intro %}{% endblock %}
+				{% block intro %}{% endblock %}
 			</div>
 		</div>
 	</section>
 
-    {% block content %}{% endblock %}
+	{% block content %}{% endblock %}
 </body>
 </html>
 

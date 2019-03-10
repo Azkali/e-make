@@ -17,7 +17,60 @@
 <section class="bg-color-2">
     <div class="container">
         <h3>Order informations</h3>
-        {{ quoteCart.cart(quote.cart) }}
+        <div>
+            <h4>Billing infos</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{quote.billingAddress.firstname}} {{quote.billingAddress.lastname}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{quote.billingAddress.email}}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{quote.billingAddress.phone}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>
+                            {{ quote.billingAddress.addr1 }}{% if quote.billingAddress.addr2 %}<br/>
+                            {{ quote.billingAddress.addr2 }}{% endif %}<br/>
+                            {{ quote.billingAddress.postalCode }} {{ quote.billingAddress.city }}, {{ quote.billingAddress.country }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h4>Shipping infos</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{quote.shippingAddress.firstname}} {{quote.shippingAddress.lastname}}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{quote.shippingAddress.email}}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{quote.shippingAddress.phone}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>
+                            {{ quote.shippingAddress.addr1 }}{% if quote.shippingAddress.addr2 %}<br/>
+                            {{ quote.shippingAddress.addr2 }}{% endif %}<br/>
+                            {{ quote.shippingAddress.postalCode }} {{ quote.shippingAddress.city }}, {{ quote.shippingAddress.country }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 
@@ -30,9 +83,11 @@
 </section>
 {% endif %}
 
-<section class="bg-color-1">
-    <h3>Other infos</h3>
-    <p>User ID: {{ quote.userId }}</p>
-    <p>Quote ID: {{ quote.id }}</p>
+<section class="bg-color-default">
+    <div class="container">
+        <h3>Other infos</h3>
+        <p>User ID: {{ quote.userId }}</p>
+        <p>Quote ID: {{ quote.id }}</p>
+    </div>
 </section>
 {% endblock %}
