@@ -1,6 +1,6 @@
+import { IAttribute } from '../models/attribute';
 import { IAttributeCategory } from '../models/attributeCategory';
 import { IProduct } from '../models/product';
-import { IAttribute } from '../models/attribute';
 
 export const attributesCategories: IAttributeCategory[] = [
 	{

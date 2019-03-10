@@ -1,10 +1,10 @@
-import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Component, OnInit } from '@angular/core';
-import { interval, BehaviorSubject, concat, of } from 'rxjs';
+import { concat, interval, of } from 'rxjs';
+import { AsyncSubject } from 'rxjs/AsyncSubject';
 
-import { WindowRef } from '~services/window-ref/window-ref.service';
-import { UserService } from '~services/user/user.service';
 import { map, takeWhile } from 'rxjs/operators';
+import { UserService } from '~services/user/user.service';
+import { WindowRef } from '~services/window-ref/window-ref.service';
 
 enum ELoginStatus {
 	LoggedIn,
@@ -22,7 +22,7 @@ export class AfterLoginComponent implements OnInit {
 	public loginStatus = new AsyncSubject<ELoginStatus>();
 	public countdown = concat( of( -1 ), interval( 1000 ) ).pipe( map( t => 2 - t ), takeWhile( v => v >= 0 ) );
 
-	public constructor( private userService: UserService, private winRef: WindowRef ) { }
+	public constructor( private readonly userService: UserService, private readonly winRef: WindowRef ) { }
 
 	public ngOnInit() {
 		this.userService.checkLogin().subscribe( token => {

@@ -1,21 +1,31 @@
-<div *ngFor="let article of tree | async">
-	<hr class="major"/>
+<div *ngFor="let article of pagedArticles | async" id="blog">
+	<hr class="major" />
 	<article>
 		<header class="major">
-			<h1>{{article.title}}</h1>
+			<a [routerLink]="['/blog', article.title]" routerLinkActive="active">
+				<h1>{{ article.title }}</h1>
+			</a>
 		</header>
 		<showdown [value]="article.summary"></showdown>
 	</article>
 </div>
-<hr class="major"/>
-<ul class="pagination">
-	<li><span class="button small disabled">Prev</span></li>
-	<li><a href="#" class="page active">1</a></li>
-	<li><a href="#" class="page">2</a></li>
-	<li><a href="#" class="page">3</a></li>
-	<li><span>&hellip;</span></li>
-	<li><a href="#" class="page">8</a></li>
-	<li><a href="#" class="page">9</a></li>
-	<li><a href="#" class="page">10</a></li>
-	<li><a href="#" class="button small">Next</a></li>
+<hr class="major" />
+<ul *ngIf="pager && pager.pages && pager.pages.length" class="pagination">
+	<li [ngClass]="{disabled:pager.currentPage === 1}">
+		<span class="button small enabled" (click)="setPage(1)">First</span>
+	</li>
+	<li [ngClass]="{disabled:pager.currentPage === 1}">
+		<span class="button small enabled" (click)="setPage(pager.currentPage - 1)">Previous</span>
+	</li>
+	<li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+		<span class="button small enabled" (click)="setPage(page)">{{ page }}</span>
+	</li>
+	<li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+		<span class="button small enabled" (click)="setPage(pager.currentPage + 1)">Next</span>
+	</li>
+	<li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+		<span class="button small enabled" (click)="setPage(pager.totalPages)">Last</span>
+	</li>
 </ul>
+
+<!-- <pagination-controls (pageChange)="pagerStart = $event"></pagination-controls> -->

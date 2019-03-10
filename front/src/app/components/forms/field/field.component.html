@@ -1,10 +1,10 @@
 <div [formGroup]="form">
 	<ng-container *ngIf="invertLabelAndInput; else stdInput">
 		<input [formControlName]="key" [id]="key" [type]="fieldInput.type"/>
-		<label [attr.for]="key">{{field.label}}</label>
+		<label [attr.for]="key">{{ field.label }}</label>
 	</ng-container>
 	<ng-template #stdInput>
-		<label [attr.for]="key">{{field.label}}</label>
+		<label [attr.for]="key">{{ field.label }}</label>
 		
 		<div [ngSwitch]="field.controlType">
             
@@ -18,7 +18,7 @@
 			
 			<select *ngSwitchCase="EControlType.Dropdown" [id]="key" [formControlName]="key">
 				<option selected disabled value=''>Please select</option>
-				<option *ngFor="let opt of fieldDropdown.options" [value]="opt.value">{{opt.label || opt.value}}</option>
+				<option *ngFor="let opt of fieldDropdown.options" [value]="opt.value">{{ opt.label || opt.value }}</option>
 			</select>
 			
 			<ng-container *ngSwitchCase="EControlType.Textarea">
@@ -32,5 +32,5 @@
 		</div> 
 	</ng-template>
 	
-	<div class="errorMessage" *ngIf="!isValid">{{field.label}} is required</div>
+	<div class="errorMessage" *ngIf="!isValid">{{ field.label }} is required</div>
 </div>

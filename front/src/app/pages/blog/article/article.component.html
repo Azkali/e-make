@@ -1,1 +1,7 @@
-<showdown [src]="getRawContentUrl(article)"></showdown>
+<h1>
+	{{ title }}
+</h1>
+
+<p>
+	<showdown [value]="(article | async)?.summary"></showdown>
+</p>

@@ -12,3 +12,5 @@ back/lib/
 cross/config/environments/*
 !cross/config/environments/loader.ts
 !cross/config/environments/example
+
+back/src/logs/

@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { transform } from 'lodash';
 
-import { IFieldBase } from '~app/components/forms/field-base';
 import { isBoolean } from 'util';
+import { IFieldBase } from '~app/components/forms/field-base';
 
 @Injectable( {
 	providedIn: 'root',

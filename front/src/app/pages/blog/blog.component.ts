@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 
-import { MarkdownScrapperService, IArticle, IBlogArticle } from '~services/markdown-scrapper/markdown-scrapper.service';
-import { IRepositoryTreeResponse, IEntry } from '../../models/markdown-config';
+import { PagerService, IPage } from '~app/services/pager/pager';
+import { IBlogArticle, MarkdownScrapperService } from '~services/markdown-scrapper/markdown-scrapper.service';
 
 @Component( {
 	selector: 'app-blog',
@@ -10,10 +11,28 @@ import { IRepositoryTreeResponse, IEntry } from '../../models/markdown-config';
 	styleUrls: ['./blog.component.css'],
 	providers: [MarkdownScrapperService],
 } )
-export class BlogComponent {
-	public tree: Observable<IBlogArticle[]>;
+export class BlogComponent implements OnInit {
+	private readonly pagedArticlesSubject = new BehaviorSubject<IBlogArticle[]>( undefined );
+	public readonly pagedArticles = this.pagedArticlesSubject.asObservable();
 
-	public constructor( private markdownScrapperService: MarkdownScrapperService ) {
-		this.tree = this.markdownScrapperService.getBlogArticles();
+	public readonly tree = this.markdownScrapperService.getBlogArticles();
+
+	public pager?: IPage;
+	public articleLength: number;
+
+	public constructor( private readonly markdownScrapperService: MarkdownScrapperService, private readonly pagerService: PagerService ) { }
+
+	public ngOnInit() {
+		this.setPage( 1 );
+	}
+
+	/* Pager setPage Function */
+	public setPage( page: number ) {
+		this.tree.pipe( first() ).subscribe( articles => {
+			this.articleLength = articles.length;
+			// get pager object from service
+			this.pager = this.pagerService.getPager( this.articleLength, page, 3 );
+			this.pagedArticlesSubject.next( articles.slice( this.pager.startIndex, this.pager.endIndex + 1 ) );
+		} );
 	}
 }

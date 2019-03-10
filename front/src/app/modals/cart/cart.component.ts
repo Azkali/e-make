@@ -1,18 +1,17 @@
-import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { Component } from '@angular/core';
+import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
+import { BehaviorSubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import { ITempCart } from '~models/cart';
 import { ICartItem } from '~models/cartItem';
 
 import { ModalComponent } from '~modals/modal.component';
-import { LoginComponent } from '~modals/login/login.component';
 
-import { UserService } from '~services/user/user.service';
-import { ShopService } from '~services/shop/shop.service';
-import { ModalService } from '~services/modal/modal.service';
 import { Router } from '@angular/router';
+import { ModalService } from '~services/modal/modal.service';
+import { ShopService } from '~services/shop/shop.service';
+import { UserService } from '~services/user/user.service';
 
 @Component( {
 	selector: 'app-cart',
@@ -23,9 +22,9 @@ export class CartComponent extends ModalComponent {
 
 	public constructor(
 		modalService: ModalService,
-		private shopService: ShopService,
-		private userService: UserService,
-		private router: Router
+		private readonly shopService: ShopService,
+		private readonly userService: UserService,
+		private readonly router: Router,
 	) {
 		super( modalService );
 		this.subscriptions.push( this.shopService.currentCart.subscribe( async newCart => {
@@ -37,7 +36,7 @@ export class CartComponent extends ModalComponent {
 			this.cartInfos.next( newCart );
 		} ) );
 	}
-	public cartInfos = new BehaviorSubject<ITempCart>( {items: [], totalCount: 0, totalSum: 0} );
+	public cartInfos = new BehaviorSubject<ITempCart>( { items: [], totalCount: 0, totalSum: 0 } );
 
 	public trackCartItem( index: number, cartItem: ICartItem & IEntityProperties ) {
 		return cartItem.id;

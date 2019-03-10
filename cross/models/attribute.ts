@@ -1,13 +1,13 @@
+import { EFieldType, EntityUid } from '@diaspora/diaspora';
+import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
 import { IAttributeCategory } from './attributeCategory';
-import { EFieldType, EntityUid } from "@diaspora/diaspora";
-import { Raw } from "@diaspora/diaspora/dist/types/types/modelDescription";
 
-export interface IAttribute{
+export interface IAttribute {
 	uid: string;
 	name?: string;
 	price: number;
 	categoryId: EntityUid;
-	category: IAttributeCategory
+	category: IAttributeCategory;
 }
 export const attribute: Raw.IAttributesDescription = {
 	uid: {
@@ -17,7 +17,7 @@ export const attribute: Raw.IAttributesDescription = {
 	name: EFieldType.STRING,
 	price: {
 		type: EFieldType.FLOAT,
-		required: true
+		required: true,
 	},
 	categoryId: {
 		type: EFieldType.STRING,

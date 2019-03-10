@@ -1,5 +1,5 @@
+import { map, toPairs } from 'lodash';
 import { ECountryCode } from '~cross/models/countryCodes';
-import { toPairs, map } from 'lodash';
 
 export const addressFormExtra = {
 	firstname: {

@@ -1,8 +1,7 @@
-import { ModalService } from './../../services/modal/modal.service';
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable, of, Subscription } from 'rxjs';
-import { map, switchMap, filter, first } from 'rxjs/operators';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 
 import { UserService } from '~services/user/user.service';
 
@@ -10,7 +9,7 @@ import { UserService } from '~services/user/user.service';
 	providedIn: 'root',
 } )
 export class LoggedInGuard implements CanActivate {
-	public constructor( private userService: UserService ) {}
+	public constructor( private readonly userService: UserService ) {}
 
 	public canActivate(
 		next: ActivatedRouteSnapshot,
@@ -26,8 +25,7 @@ export class LoggedInGuard implements CanActivate {
 							this.userService.openLoginForSecuredRoute( route, true ).pipe( first() ).subscribe();
 							return false;
 						}
-					} )
+					} ),
 				);
 		}
 	}
-

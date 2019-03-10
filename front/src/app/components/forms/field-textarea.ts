@@ -1,4 +1,4 @@
-import { IFieldBase, EControlType } from './field-base';
+import { EControlType, IFieldBase } from './field-base';
 
 export interface IFieldTextarea extends IFieldBase<string> {
 	controlType: EControlType.Textarea;

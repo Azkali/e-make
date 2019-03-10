@@ -1,15 +1,15 @@
-import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
 import * as _ from 'lodash';
 
 import { IAttribute } from '~models/attribute';
 import { IProduct } from '~models/product';
 
+import { BehaviorSubject } from 'rxjs';
+import { HeaderService } from '~services/header/header.service';
 import { IProductViewModel } from '~services/shop/shop.service';
 import { ShopService } from '~services/shop/shop.service';
-import { HeaderService } from '~services/header/header.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component( {
 	selector: 'app-product-details',
@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 } )
 export class ProductDetailsComponent implements OnInit {
 
-	public constructor( private route: ActivatedRoute, private shopService: ShopService ) {
+	public constructor( private readonly route: ActivatedRoute, private readonly shopService: ShopService ) {
 		this.route.params.subscribe( params => {
 			this.shopService.geProductByName( params.identifier )
 				.subscribe( product => {

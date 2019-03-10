@@ -1,6 +1,6 @@
 {
   "name": "e-make-cross",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,10 +8,12 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@diaspora/diaspora": "^0.3.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "tslint": "^5.12.0"
+    "@diaspora/dev-tslint": "^1.1.1",
+    "@diaspora/diaspora": "git+https://github.com/diaspora-orm/diaspora.git#prerelease",
+    "tslint": "^5.13.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.3.3333"
   }
 }

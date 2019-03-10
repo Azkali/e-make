@@ -1,10 +1,10 @@
 import { EFieldType, EntityUid } from '@diaspora/diaspora';
 import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
 
+import { ECountryCode } from './countryCodes';
 import { IUser } from './user';
-import { ECountryCode } from "./countryCodes";
 
-export interface IAddress{
+export interface IAddress {
 	userId: EntityUid;
 	user?: IUser;
 	firstname: string;
@@ -12,7 +12,7 @@ export interface IAddress{
 	email: string;
 	// see https://www.npmjs.com/package/google-libphonenumber for validation
 	phone: string;
-	
+
 	addr1: string;
 	addr2: string;
 	city: string;
@@ -60,6 +60,6 @@ export const address: Raw.IAttributesDescription = {
 	country: {
 		type: EFieldType.STRING,
 		required: true,
-		enum: Object.keys(ECountryCode).map(k => ECountryCode[k as any])
+		enum: Object.keys( ECountryCode ).map( k => ECountryCode[k as any] ),
 	},
-}
+};

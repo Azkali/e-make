@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { AnyInput, EControlType, IFieldDropdown, IFieldTextarea } from '~app/components/forms';
-import { IFieldTextual } from '../field-textual';
 import { IFieldCheckbox } from '../field-checkbox';
+import { IFieldTextual } from '../field-textual';
 
 @Component( {
 	selector: 'app-field',

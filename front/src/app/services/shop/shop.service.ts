@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Diaspora, Model, Adapter, Set, EntityUid } from '@diaspora/diaspora';
+import { Adapter, Diaspora, EntityUid, Model, Set } from '@diaspora/diaspora';
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
-import DataAccessLayer = Adapter.DataAccessLayer;
-import { from, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import * as _ from 'lodash';
+import DataAccessLayer = Adapter.DataAccessLayer;
+import { AsyncSubject, BehaviorSubject, forkJoin, from } from 'rxjs';
 
 import { IEntry } from '../../models/markdown-config';
 
-import { MarkdownScrapperService, IProductArticle, IArticle } from '~services/markdown-scrapper/markdown-scrapper.service';
+import { IArticle, IProductArticle, MarkdownScrapperService } from '~services/markdown-scrapper/markdown-scrapper.service';
 
 import { environment } from '~environments/environment';
 
-import { loadMocks } from '~cross/mocks/loadMocks';
-
 import { ACookieDependentService } from '../ICookieDependentService';
 
-import { IAttributeCategory, attributeCategory as AttributeCategoryAttributes } from '~models/attributeCategory';
+import { attribute as AttributeAttributes, IAttribute } from '~models/attribute';
+import { attributeCategory as AttributeCategoryAttributes, IAttributeCategory } from '~models/attributeCategory';
+import { cart as CartAttributes, ICart, ITempCart } from '~models/cart';
+import { cartItem as CartItemAttributes, ICartItem } from '~models/cartItem';
 import { IProduct, product as ProductAttributes } from '~models/product';
-import { IAttribute, attribute as AttributeAttributes } from '~models/attribute';
-import { ICart, cart as CartAttributes, ITempCart } from '~models/cart';
-import { ICartItem, cartItem as CartItemAttributes } from '~models/cartItem';
 
 const serverDataSourceName = 'remote';
 const localDataSourceName = 'local';
@@ -58,7 +56,7 @@ export class ShopService extends ACookieDependentService {
 		this.refreshCart();
 	}
 
-	public constructor( private markdownScrapperService: MarkdownScrapperService ) {
+	public constructor( private readonly markdownScrapperService: MarkdownScrapperService ) {
 		super();
 
 		this.readyState = new AsyncSubject<any>();
@@ -106,7 +104,7 @@ export class ShopService extends ACookieDependentService {
 		this.readyState.subscribe(
 			() => console.info( 'Data source readyState: Next' ),
 			err => console.error( 'Data source readyState: Error', err ),
-			() => console.info( 'Data source readyState: Complete' )
+			() => console.info( 'Data source readyState: Complete' ),
 		);
 	}
 
@@ -120,14 +118,14 @@ export class ShopService extends ACookieDependentService {
 		}
 	}
 
-	private serverDataSource: DataAccessLayer;
-	private localDataSource: DataAccessLayer;
-	private tempDataSource: DataAccessLayer;
-	private Product: Model<IProduct>;
-	private AttributeCategory: Model<IAttributeCategory>;
-	private Attribute: Model<IAttribute>;
-	private Cart: Model<ICart>;
-	private CartItem: Model<ICartItem>;
+	private readonly serverDataSource: DataAccessLayer;
+	private readonly localDataSource: DataAccessLayer;
+	private readonly tempDataSource: DataAccessLayer;
+	private readonly Product: Model<IProduct>;
+	private readonly AttributeCategory: Model<IAttributeCategory>;
+	private readonly Attribute: Model<IAttribute>;
+	private readonly Cart: Model<ICart>;
+	private readonly CartItem: Model<ICartItem>;
 
 	public readonly currentCart = new BehaviorSubject<ITempCart>( {
 		totalSum: 0,
@@ -148,8 +146,8 @@ export class ShopService extends ACookieDependentService {
 			return ( await Promise.all( parts.map( async part =>
 				Promise.all( [
 					part,
-					this.AttributeCategory.find( { id: part.categoryId} ),
-					this.Attribute.findMany( { categoryId: part.categoryId} ),
+					this.AttributeCategory.find( { id: part.categoryId } ),
+					this.Attribute.findMany( { categoryId: part.categoryId } ),
 				] ) ) ) ).map( ( [part, attributeCategory, attributes] ) => {
 					const attributeCategoryAttributes = _.assign( attributeCategory.getProperties( serverDataSourceName ), {
 						attributes: attributes.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName )
@@ -166,8 +164,8 @@ export class ShopService extends ACookieDependentService {
 
 	private async assembleProductViewModel( productAttributes: IProduct & IEntityProperties, entries: IEntry[], summaries: IArticle[] ) {
 		const entry: IEntry = _.find<IEntry | undefined>( entries, entryProduct =>
-			entryProduct.path.replace( /^(?:.*?\/)?(.*)\.md$/, '$1' ) === productAttributes.name ) || {path: '404', type: 'not-found'};
-		const summary: IArticle = _.find<IArticle | undefined>( summaries, {title: productAttributes.name} ) || {
+			entryProduct.path.replace( /^(?:.*?\/)?(.*)\.md$/, '$1' ) === productAttributes.name ) || { path: '404', type: 'not-found' };
+		const summary: IArticle = _.find<IArticle | undefined>( summaries, { title: productAttributes.name } ) || {
 			title: '',
 			summary: 'No summary yet !',
 		};
@@ -189,7 +187,7 @@ export class ShopService extends ACookieDependentService {
 		const productObservable = new AsyncSubject<IProductViewModel>();
 		this.readyState
 			.subscribe( null, null, () => {
-				forkJoin( this.markdownScrapperService.getProductArticles(), from( this.Product.find( {name: productName} ) ) )
+				forkJoin( this.markdownScrapperService.getProductArticles(), from( this.Product.find( { name: productName } ) ) )
 				.subscribe( async ( [productArticles, product] ) => {
 					const props = product.getProperties( serverDataSourceName );
 					const viewModel = await this.assembleProductViewModel( props, productArticles.entries, productArticles.summaries );
@@ -197,7 +195,7 @@ export class ShopService extends ACookieDependentService {
 					productObservable.complete();
 				} );
 			} );
-		if ( environment.common.production === false ) {
+		if ( !environment.common.production ) {
 			productObservable.subscribe( console.info.bind( this, `Product ${productName} fetched:` ) );
 		}
 		return productObservable;
@@ -212,19 +210,17 @@ export class ShopService extends ACookieDependentService {
 					const allProducts = await Promise.all( retrievedProducts
 						.toChainable( Set.ETransformationMode.PROPERTIES, serverDataSourceName )
 						.map( props => this.assembleProductViewModel( props, productArticles.entries, productArticles.summaries ) )
-						.value()
+						.value(),
 					) as any; // TODO: Remove that `any` cast
 					allProductsObservable.next( allProducts );
 					allProductsObservable.complete();
 				} );
 			} );
-		if ( environment.common.production === false ) {
+		if ( !environment.common.production ) {
 			allProductsObservable.subscribe( console.info.bind( this, 'All products fetched:' ) );
 		}
 		return allProductsObservable;
 	}
-
-
 
 	// ############## CART ##############
 
@@ -232,7 +228,7 @@ export class ShopService extends ACookieDependentService {
 		attribute?: IAttribute;
 		attributeUid: string;
 	} ) {
-		const fetchedAttribute = await this.Attribute.find( {uid: item.attributeUid} );
+		const fetchedAttribute = await this.Attribute.find( { uid: item.attributeUid } );
 		return {
 			attributeUid: item.attributeUid,
 			attribute: fetchedAttribute ? fetchedAttribute.getProperties( serverDataSourceName ) : undefined,
@@ -252,9 +248,9 @@ export class ShopService extends ACookieDependentService {
 		console.log( 'Fetching prod', item );
 
 		const attrsPairs = _.toPairs( item.attributesUids );
-		const attrsPromises = attrsPairs.map( ( [,attrId] ) => this.Attribute.find( {uid: attrId} ) );
+		const attrsPromises = attrsPairs.map( ( [, attrId] ) => this.Attribute.find( { uid: attrId } ) );
 		const fetchedComponents = await Promise.all( [
-			this.Product.find( {uid: item.productUid} ),
+			this.Product.find( { uid: item.productUid } ),
 			Promise.all( attrsPromises ),
 		] );
 		const attrsProps = fetchedComponents[1].map( attr => attr ? attr.getProperties( serverDataSourceName ) : undefined );
@@ -327,8 +323,8 @@ export class ShopService extends ACookieDependentService {
 	}
 
 	public async setCartItemCount( cartItem: ICartItem & IEntityProperties, count: number ) {
-		console.log( {cartItem, count} );
-		await this.CartItem.update( cartItem.id, {count}, undefined, this.cartDataSource );
+		console.log( { cartItem, count } );
+		await this.CartItem.update( cartItem.id, { count }, undefined, this.cartDataSource );
 		return this.refreshCart();
 	}
 

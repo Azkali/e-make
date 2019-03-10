@@ -23,19 +23,19 @@
 		<div class="inner">
 			<ng-container *ngIf="productResolved?.customizableParts.length > 0">
 				<header class="major">
-					<h2>Customize your {{productResolved?.name}}</h2>
+					<h2>Customize your {{ productResolved?.name }}</h2>
 				</header>
 				
 				<table class="wide-only">
 					<tr>
-						<td>Base of <em>{{productResolved?.name}}</em></td>
+						<td>Base of <em>{{ productResolved?.name }}</em></td>
 						<td class="smallest">1</td>
-						<td style="text-align:right">{{productResolved?.basePrice | currency:'€':'symbol':'1.2-2'}}</td>
+						<td style="text-align:right">{{ productResolved?.basePrice | currency:'€':'symbol':'1.2-2' }}</td>
 						<td class="smallest"></td>
 					</tr>
 					<tr *ngFor="let part of productResolved?.customizableParts">
-						<td>{{part.name}} ({{part.category.name}})</td>
-						<td class="smallest">{{part.factor}}</td>
+						<td>{{ part.name }} ({{ part.category.name }})</td>
+						<td class="smallest">{{ part.factor }}</td>
 						<td><ng-container [ngTemplateOutlet]="attrSelect" [ngTemplateOutletContext]="{part:part}"></ng-container></td>
 						<td class="smallest"><ng-container [ngTemplateOutlet]="addAttrToCart" [ngTemplateOutletContext]="{part:part}"></ng-container></td>
 					</tr>
@@ -44,17 +44,17 @@
 			
 			<section class="small-only" id="customize-small">
 				<div>
-					<p>1 * base of <em>{{productResolved?.name}}</em></p>
-					<p>{{productResolved?.basePrice | currency:'€':'symbol':'1.2-2'}}</p>
+					<p>1 * base of <em>{{ productResolved?.name }}</em></p>
+					<p>{{ productResolved?.basePrice | currency:'€':'symbol':'1.2-2' }}</p>
 				</div>
 				<div *ngFor="let part of productResolved?.customizableParts">
-					<p>{{part.factor}} * {{part.name}} ({{part.category.name}})</p>
+					<p>{{ part.factor }} * {{ part.name }} ({{ part.category.name }})</p>
 					<p><ng-container [ngTemplateOutlet]="attrSelect" [ngTemplateOutletContext]="{part:part}"></ng-container></p>
 					<ng-container [ngTemplateOutlet]="addAttrToCart" [ngTemplateOutletContext]="{part:part}"></ng-container>
 				</div>
 			</section>
 			
-			<button class="button primary fit" (click)="addProductToCart()" *ngIf="allAttrsSelected | async; else disabledButton">Add to cart (<em>{{totalPrice | currency:'€':'symbol':'1.2-2'}}</em>)</button>
+			<button class="button primary fit" (click)="addProductToCart()" *ngIf="allAttrsSelected | async; else disabledButton">Add to cart (<em>{{ totalPrice | currency:'€':'symbol':'1.2-2' }}</em>)</button>
 			<ng-template #disabledButton><button class="button primary fit" disabled>Add to cart (<em>Please select all attributes first</em>)</button></ng-template>
 		</div>
 	</section>
@@ -76,7 +76,7 @@
 <ng-template #attrSelect let-part="part">
 	<select [(ngModel)]="choosenAttributes[part.name]" (ngModelChange)="refreshAllProductsSelected()">
 		<option disabled value="">Please select</option>
-		<option *ngFor="let attribute of part.category.attributes" [value]="attribute.uid">{{attribute.name}} ({{attribute.price * part.factor | currency:'€':'symbol':'1.2-2'}})</option>
+		<option *ngFor="let attribute of part.category.attributes" [value]="attribute.uid">{{ attribute.name }} ({{ attribute.price * part.factor | currency:'€':'symbol':'1.2-2' }})</option>
 	</select>
 </ng-template>
 

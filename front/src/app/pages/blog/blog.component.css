@@ -3,13 +3,11 @@ header {
 	margin-right: auto;
 }
 
-showdown {
+.pagination, showdown, #blog, pagination-controls {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
 }
-
 ul.pagination {
-	text-align: center;
-	list-style: inside;
+	display: block;
 }

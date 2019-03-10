@@ -5,10 +5,10 @@
 <div class="content">
 	<div class="inner">
 		<header class="major">
-			<h3>{{product.name}}</h3>
+			<h3>{{ product.name }}</h3>
 		</header>
 		<showdown [value]="product.summary"></showdown>
-		<p><em>Starts at {{ product.minimumPrice | currency:'€':'symbol':'1.2-2'}}</em></p>
+		<p><em>Starts at {{ product.minimumPrice | currency:'€':'symbol':'1.2-2' }}</em></p>
 		<ul class="actions">
 			<li><a class="button" [routerLink]="[product.name]">Learn more</a></li>
 		</ul>
