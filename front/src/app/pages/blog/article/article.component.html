@@ -3,5 +3,5 @@
 </h1>
 
 <p>
-	<showdown [value]="article.summary"></showdown>
+	<showdown [value]="(article | async)?.summary"></showdown>
 </p>

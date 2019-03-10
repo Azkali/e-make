@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { retry, map } from 'rxjs/operators';
+import { retry, map, first } from 'rxjs/operators';
+import 'rxjs/add/operator/map'
 import * as _ from 'lodash';
 
 import { environment } from '~environments/environment';
@@ -118,7 +119,6 @@ export class MarkdownScrapperService {
 		}
 	public getBlogArticle( title: string ) {
 		return this.getBlogArticles().pipe(
-			map( ( articles: IBlogArticle[] ) => articles.find( article => article.title === article.title ) )
-		);
+			first()).map( ( articles: IBlogArticle[] ) => articles.find( (article: IBlogArticle) => article.title === title ) );
 	}
 }

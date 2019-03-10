@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, AsyncSubject } from 'rxjs';
 
 import { MarkdownScrapperService, IArticle, IBlogArticle } from '~services/markdown-scrapper/markdown-scrapper.service';
+import { first } from 'rxjs/operators';
 
 @Component( {
 	selector: 'app-article',
@@ -11,33 +12,25 @@ import { MarkdownScrapperService, IArticle, IBlogArticle } from '~services/markd
 	styleUrls: ['./article.component.css'],
 } )
 export class ArticleComponent implements OnInit {
-	public article;
-	public sub;
+	private readonly articleSubject = new AsyncSubject<IBlogArticle>();
+	public article = this.articleSubject.asObservable();
 	public title: string;
 
 	public constructor(
-		private route: ActivatedRoute,
-		private markdownScrapperService: MarkdownScrapperService ) {
-
-		this.markdownScrapperService.getBlogArticles().subscribe(
-			articles => {
-				articles.forEach(
-					article => {
-						if ( this.title === article.title ) {
-							this.article = article;
-							console.log( this.article );
-						} else {
-							console.log( ' NooNooNooo' );
-						}
-					}
-				);
-			}
-		);
-	}
-
-	public ngOnInit() {
-		this.sub = this.route.params.subscribe( params => {
-			this.title = params['title'];
-		} );
-	}
+		private readonly route: ActivatedRoute,
+		private readonly markdownScrapperService: MarkdownScrapperService ) {
+		}
+		
+		public ngOnInit() {
+			this.route.params.pipe(first()).subscribe( params => {
+				this.title = params['title'];
+				this.markdownScrapperService.getBlogArticle(this.title)
+					.pipe(first())
+					.subscribe( article => {
+						console.log(article)
+						this.articleSubject.next( article )
+						this.articleSubject.complete()
+					} )
+			} );
+		}
 }

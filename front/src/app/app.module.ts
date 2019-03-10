@@ -3,12 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatDialogModule } from '@angular/material';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShowdownModule } from 'ngx-showdown';
-import { NgxPaginationModule } from 'ngx-pagination';
-
 
 import { AppRoutingModule } from '~app/app-routing.module';
 import { AppComponent } from '~app/app.component';
@@ -66,11 +61,7 @@ import { CartReviewComponent } from './components/cart-review/cart-review.compon
 		AppRoutingModule,
 		ShowdownModule,
 		HttpClientModule,
-		MatSidenavModule,
 		BrowserAnimationsModule,
-		MatDialogModule,
-		NgxPaginationModule,
-		NgbModule.forRoot(),
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
 	entryComponents: [CartComponent, LoginComponent, MenuComponent, OrderFormComponent],
