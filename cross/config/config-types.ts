@@ -28,6 +28,10 @@ export namespace ICommonConfig {
 
 export interface IBackConfig {
 	authMethods?: IBackConfig.IAuthMethodsConfig;
+	sessionCookie: {
+		domain: string;
+		maxAge: number;
+	};
 	host: string;
 	tokenSecret: string;
 
