@@ -12,6 +12,7 @@ import { ModalService } from '~services/modal/modal.service';
 
 enum EAuthProvider {
 	Google = 'google',
+	Github = 'github',
 }
 
 @Component( {

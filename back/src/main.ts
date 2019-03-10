@@ -1,16 +1,16 @@
-import express from 'express';
-import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import express from 'express';
 import expressSession from 'express-session';
 import { castArray } from 'lodash';
 
 import { ExpressApiGenerator } from '@diaspora/plugin-server';
 
-import './models';
-import { quoteAction } from './quoteAction';
-import { logger } from './logger';
 import { initializePassport } from './authentication';
-import { mainDataSource, AttributeCategory, Product, Attribute } from './models';
+import { logger } from './logger';
+import './models';
+import { Attribute, AttributeCategory, mainDataSource, Product } from './models';
+import { quoteAction } from './quoteAction';
 import { writeOnlyForAdmin } from './security';
 
 import { backConfig } from '../cross/config/environments/loader';
@@ -36,7 +36,6 @@ const apiMiddleware = new ExpressApiGenerator( {
 	},
 } );
 
-
 const app = express();
 /*
 app.use( ( req, res, next ) => {
@@ -53,11 +52,11 @@ app.use( expressSession( {
 	saveUninitialized: true,
 	cookie: {
 		domain: 'e-make.io',
-		maxAge: 1000 * 60 * 60 * 24 * 30 * 12, 
+		maxAge: 1000 * 60 * 60 * 24 * 30 * 12,
 	},
 } ) );
 
-const removeScheme = ( url:string ) => url.replace( /https?:\/\//, '' );
+const removeScheme = ( url: string ) => url.replace( /https?:\/\//, '' );
 
 const CORS_HOSTS = [
 	...makeAbsoluteUrlsNoRelativeProtocol( backConfig.common.front ),
@@ -66,7 +65,7 @@ const CORS_HOSTS = [
 const getCorsHost = ( req: express.Request ) => {
 	const reqHost = castArray( req.headers.origin )[0] || '';
 	const hostIndex = CORS_HOSTS.indexOf( reqHost );
-	if ( hostIndex !== -1 ){
+	if ( hostIndex !== -1 ) {
 		return reqHost;
 	}
 	return undefined;
@@ -74,7 +73,7 @@ const getCorsHost = ( req: express.Request ) => {
 app.use( ( req, res, next ) => {
 	res.header( 'Access-Control-Allow-Credentials', 'true' );
 	const corsHost = getCorsHost( req );
-	if ( corsHost ){
+	if ( corsHost ) {
 		res.header( 'Access-Control-Allow-Origin', corsHost );
 	} else {
 		logger.debug( `A request came from a non-allowed origin. Request origin: ${req.headers.origin}, accepted: ${CORS_HOSTS.map( v => `"${v}"` ).join( ', ' )}` );

@@ -15,7 +15,11 @@ export interface IUser {
 
 	googleId?: string;
 	googleToken?: string;
+
+	githubId?: string;
+	gihtubToken?: string;
 }
+
 export const user: Raw.IAttributesDescription = {
 	email: EFieldType.STRING,
 	password: EFieldType.STRING,
@@ -30,4 +34,7 @@ export const user: Raw.IAttributesDescription = {
 
 	googleId: EFieldType.STRING,
 	googleToken: EFieldType.STRING,
+
+	githubId: EFieldType.STRING,
+	gihtubToken: EFieldType.STRING,
 };

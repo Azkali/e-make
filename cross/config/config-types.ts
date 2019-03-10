@@ -22,12 +22,12 @@ export interface ICommonConfig {
 export namespace ICommonConfig {
 	export interface IBackAuthPathConfig {
 		baseAuthRoute: string;
-		availableMethods: Array<keyof IBackConfig.IOAuthConfig>;
+		availableMethods: Array<keyof IBackConfig.IAuthMethodsConfig>;
 	}
 }
 
 export interface IBackConfig {
-	oauth: IBackConfig.IOAuthConfig;
+	authMethods?: IBackConfig.IAuthMethodsConfig;
 	host: string;
 	tokenSecret: string;
 
@@ -37,15 +37,24 @@ export interface IBackConfig {
 	common: ICommonConfig;
 }
 export namespace IBackConfig {
-	export interface IOAuthConfig {
-		google?: IOAuthConfig.IGoogleOAuthConfig;
+	export interface IAuthMethodsConfig {
+		google?: IAuthMethodsConfig.IGoogleOAuthConfig;
+		github?: IAuthMethodsConfig.IGithubOAuthConfig;
 	}
-	export namespace IOAuthConfig {
+
+	export namespace IAuthMethodsConfig {
 		export interface IGoogleOAuthConfig {
 			appId: string;
 			appSecret: string;
 			redirectUrl: string;
 		}
+
+		export interface IGithubOAuthConfig {
+			appId: string;
+			appSecret: string;
+			redirectUrl: string;
+		}
+
 	}
 
 	export interface IMailConfig {
