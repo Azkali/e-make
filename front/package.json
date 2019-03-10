@@ -1,6 +1,6 @@
 {
   "name": "front",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --public-host www.e-make.io --port $(ts-node -pe 'require(`../cross/config/environments/local/common`).config.front.port')",
