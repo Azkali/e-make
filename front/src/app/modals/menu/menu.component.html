@@ -1,14 +1,14 @@
 <!-- Menu -->
 <nav class="inner" id="menu">
 	<ul class="links">
-		<li><a [routerLink]="['index']">Home</a></li>
-		<li><a [routerLink]="['shop']">Products</a></li>
-		<li><a [routerLink]="['blog']">Blog</a></li>
-		<li><a [routerLink]="['contact']">Contact</a></li>
+		<li><a [routerLink]="['index']" routerLinkActive="active">Home</a></li>
+		<li><a [routerLink]="['shop']" routerLinkActive="active">Products</a></li>
+		<li><a [routerLink]="['blog']" routerLinkActive="active">Blog</a></li>
+		<li><a [routerLink]="['contact']" routerLinkActive="active">Contact</a></li>
 	</ul>
 	<ul class="actions stacked">
-		<li><a href="#" class="button primary fit">Get Started</a></li>
-		<li><button (click)="openLoginModal()" class="button fit">Log In</button></li>
+		<li><button (click)="logout()" class="button fit" *ngIf="isLoggedIn | async; else login">Log out</button></li>
+		<ng-template #login><button (click)="openLoginModal()" class="button fit">Log In</button></ng-template>
 	</ul>
 </nav>
 <button class="close no-border no-hover" (click)="close()">Close</button>
