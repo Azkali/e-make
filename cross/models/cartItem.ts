@@ -1,9 +1,9 @@
-import { EntityUid, EFieldType } from "@diaspora/diaspora";
-import { Raw } from "@diaspora/diaspora/dist/types/types/modelDescription";
-import { IAttribute } from "./attribute";
-import { IProduct } from "./product";
+import { EFieldType } from '@diaspora/diaspora';
+import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
+import { IAttribute } from './attribute';
+import { IProduct } from './product';
 
-export interface ICartItem{
+export interface ICartItem {
 	unitPrice: number;
 	count: number;
 	item: {
@@ -14,7 +14,7 @@ export interface ICartItem{
 		product?: IProduct;
 		attributesUids: _.Dictionary<string>;
 		attributes?: _.Dictionary<IAttribute>;
-	}
+	};
 }
 
 export const cartItem: Raw.IAttributesDescription = {
@@ -47,5 +47,5 @@ export const cartItem: Raw.IAttributesDescription = {
 			},
 		] as any, // TODO fix object OR declaration
 		required: true,
-	}
+	},
 };

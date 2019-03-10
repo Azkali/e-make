@@ -1,16 +1,16 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ShowdownModule } from 'ngx-showdown';
 
 import { AppRoutingModule } from '~app/app-routing.module';
 import { AppComponent } from '~app/app.component';
 
 import { CookieConsentComponent } from '~components/cookie-consent/cookie-consent.component';
-import { FieldComponent } from '~components/forms/field/field.component';
 import { FooterComponent } from '~components/footer/footer.component';
+import { FieldComponent } from '~components/forms/field/field.component';
 
 import { AdminComponent } from '~pages/admin/admin.component';
 import { AfterLoginComponent } from '~pages/after-login/after-login.component';
@@ -19,8 +19,8 @@ import { BlogComponent } from '~pages/blog/blog.component';
 import { ContactComponent } from '~pages/contact/contact.component';
 import { IndexComponent } from '~pages/index/index.component';
 import { OrderFormComponent } from '~pages/order-form/order-form.component';
-import { ProductComponent } from '~pages/shop/product/product.component';
 import { ProductDetailsComponent } from '~pages/shop/product-details/product-details.component';
+import { ProductComponent } from '~pages/shop/product/product.component';
 import { ShopComponent } from '~pages/shop/shop.component';
 
 import { CartComponent } from '~modals/cart/cart.component';

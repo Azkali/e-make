@@ -1,6 +1,6 @@
 import {
-	Injectable, Injector, ComponentFactoryResolver,
-	EmbeddedViewRef, ApplicationRef, Type, ComponentRef, Inject
+	ApplicationRef, ComponentFactoryResolver, ComponentRef,
+	EmbeddedViewRef, Inject, Injectable, Injector, Type,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 
@@ -14,7 +14,7 @@ export class DomService {
 		private readonly componentFactoryResolver: ComponentFactoryResolver,
 		private readonly appRef: ApplicationRef,
 		private readonly injector: Injector,
-		@Inject( DOCUMENT ) private readonly document: Document
+		@Inject( DOCUMENT ) private readonly document: Document,
 	) { }
 
 	public appendComponentTo<T>( parentId: string, child: Type<T>, childConfig?: IChildConfig ) {

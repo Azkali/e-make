@@ -1,8 +1,8 @@
+import { EFieldType } from '@diaspora/diaspora';
+import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
 import { IAttribute } from './attribute';
-import { EFieldType } from "@diaspora/diaspora";
-import { Raw } from "@diaspora/diaspora/dist/types/types/modelDescription";
 
-export interface IAttributeCategory{
+export interface IAttributeCategory {
 	uid: string;
 	name?: string;
 	attributes?: IAttribute[];

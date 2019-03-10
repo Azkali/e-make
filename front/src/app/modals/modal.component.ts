@@ -1,7 +1,7 @@
-import { AnimationTriggerMetadata, style, state, trigger, transition, animate } from '@angular/animations';
+import { animate, AnimationTriggerMetadata, state, style, transition, trigger } from '@angular/animations';
 import { Subscription } from 'rxjs';
 
-import { ModalService, EModalAnimation } from '~services/modal/modal.service';
+import { EModalAnimation, ModalService } from '~services/modal/modal.service';
 
 export const ANIM_DURATION = '500';
 export const hideShowOpacity: AnimationTriggerMetadata =

@@ -39,15 +39,15 @@ export class PagerService {
 
 		// return object with all pager properties required by the view
 		return {
-			totalItems: totalItems,
-			currentPage: currentPage,
-			pageSize: pageSize,
-			totalPages: totalPages,
-			startPage: startPage,
-			endPage: endPage,
-			startIndex: startIndex,
-			endIndex: endIndex,
-			pages: pages,
+			totalItems,
+			currentPage,
+			pageSize,
+			totalPages,
+			startPage,
+			endPage,
+			startIndex,
+			endIndex,
+			pages,
 		};
 	}
 }

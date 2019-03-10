@@ -12,17 +12,17 @@
 		<tbody>
 			<ng-container *ngFor="let cartItem of (cartInfos | async).items; trackBy: trackCartItem">
 				<tr [ngClass]="{'product-row': cartItem.item.productUid, 'attribute-row': cartItem.item.attributeUid}">
-					<td *ngIf="cartItem.item.product || cartItem.item.attribute; else brokenRef">{{(cartItem.item.product || cartItem.item.attribute)?.name}}</td>
+					<td *ngIf="cartItem.item.product || cartItem.item.attribute; else brokenRef">{{ (cartItem.item.product || cartItem.item.attribute)?.name }}</td>
 					<td><input [(ngModel)]="cartItem.count" type="number" min="1" (change)="setCartItemCount(cartItem, cartItem.count)" /></td>
-					<td>{{cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
-					<td>{{cartItem.count * cartItem.unitPrice | currency:'€':'symbol':'1.2-2'}}</td>
+					<td>{{ cartItem.unitPrice | currency:'€':'symbol':'1.2-2' }}</td>
+					<td>{{ cartItem.count * cartItem.unitPrice | currency:'€':'symbol':'1.2-2' }}</td>
 					<td><button class="button" title="Remove this item" (click)="deleteCartItem(cartItem)"><i class="fa fa-times"></i></button></td>
 				</tr>
 				<ng-container *ngIf="cartItem.item.productUid">
 					<tr *ngFor="let attribute of cartItem.item.attributes | keyvalue" class="sub-attr-row">
-						<td>{{attribute.key}}</td>
-						<td *ngIf="attribute.value; else brokenRef">{{attribute.value?.name}}</td>
-						<td>{{ attribute.value?.price | currency:'€':'symbol':'1.2-2'}}</td>
+						<td>{{ attribute.key }}</td>
+						<td *ngIf="attribute.value; else brokenRef">{{ attribute.value?.name }}</td>
+						<td>{{ attribute.value?.price | currency:'€':'symbol':'1.2-2' }}</td>
 						<td></td>
 						<td></td>
 					</tr>
@@ -32,7 +32,7 @@
 		<tfoot>
 			<tr>
 				<td colspan="3"></td>
-				<td>{{(cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2'}}</td>
+				<td>{{ (cartInfos | async).totalSum | currency:'€':'symbol':'1.2-2' }}</td>
 			</tr>
 		</tfoot>
 	</table>

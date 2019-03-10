@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
-import { Observable, BehaviorSubject, AsyncSubject } from 'rxjs';
+import { AsyncSubject } from 'rxjs';
 
-import { MarkdownScrapperService, IArticle, IBlogArticle } from '~services/markdown-scrapper/markdown-scrapper.service';
 import { first } from 'rxjs/operators';
+import { IBlogArticle, MarkdownScrapperService } from '~services/markdown-scrapper/markdown-scrapper.service';
 
 @Component( {
 	selector: 'app-article',
@@ -20,17 +20,17 @@ export class ArticleComponent implements OnInit {
 		private readonly route: ActivatedRoute,
 		private readonly markdownScrapperService: MarkdownScrapperService ) {
 		}
-		
-		public ngOnInit() {
-			this.route.params.pipe(first()).subscribe( params => {
-				this.title = params['title'];
-				this.markdownScrapperService.getBlogArticle(this.title)
-					.pipe(first())
+
+	public ngOnInit() {
+			this.route.params.pipe( first() ).subscribe( params => {
+				this.title = params.title;
+				this.markdownScrapperService.getBlogArticle( this.title )
+					.pipe( first() )
 					.subscribe( article => {
-						console.log(article)
-						this.articleSubject.next( article )
-						this.articleSubject.complete()
-					} )
+						console.log( article );
+						this.articleSubject.next( article );
+						this.articleSubject.complete();
+					} );
 			} );
 		}
 }

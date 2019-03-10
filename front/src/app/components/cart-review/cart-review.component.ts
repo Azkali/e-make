@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { IEntityProperties } from '@diaspora/diaspora/dist/types/types/entity';
+import { BehaviorSubject } from 'rxjs';
 
 import { ShopService } from '~app/services/shop/shop.service';
 import { ITempCart } from '~cross/models/cart';
@@ -14,7 +14,7 @@ import { ICartItem } from '~cross/models/cartItem';
 export class CartReviewComponent {
 
 	public constructor(
-		private shopService: ShopService
+		private readonly shopService: ShopService,
 	) {
 		this.shopService.currentCart.subscribe( async newCart => {
 			const promises = newCart.items.map( async cartItem => {
@@ -24,7 +24,7 @@ export class CartReviewComponent {
 			this.cartInfos.next( newCart );
 		} );
 	}
-	public cartInfos = new BehaviorSubject<ITempCart>( {items: [], totalCount: 0, totalSum: 0} );
+	public cartInfos = new BehaviorSubject<ITempCart>( { items: [], totalCount: 0, totalSum: 0 } );
 
 	public trackCartItem( index: number, cartItem: ICartItem & IEntityProperties ) {
 		return cartItem.id;

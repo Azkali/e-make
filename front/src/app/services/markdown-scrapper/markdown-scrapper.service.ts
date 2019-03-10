@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import * as _ from 'lodash';
 import { Observable } from 'rxjs';
+import 'rxjs/add/operator/map';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { retry, map, first } from 'rxjs/operators';
-import 'rxjs/add/operator/map'
-import * as _ from 'lodash';
+import { first, map, retry } from 'rxjs/operators';
 
 import { environment } from '~environments/environment';
 
-import { IRepositoryTreeResponse, IEntry } from '../../models/markdown-config';
+import { IRepositoryTreeResponse } from '../../models/markdown-config';
 
 const branch = 'master';
 const repo = 'Azkali/e-make-articles';
@@ -34,14 +34,14 @@ export interface IProductArticle  extends IArticle {
 } )
 export class MarkdownScrapperService {
 
-	public constructor( private http: HttpClient ) {
+	public constructor( private readonly http: HttpClient ) {
 		this.http.get<IRepositoryTreeResponse>( apiFetchUrl ).subscribe( repoContent => {
 			this.apiContent.next( repoContent );
 			this.apiContent.complete();
 		} );
 	}
-	private apiContent = new AsyncSubject<IRepositoryTreeResponse>();
-	private summariesCache: _.Dictionary<Observable<IArticle[]>> = {};
+	private readonly apiContent = new AsyncSubject<IRepositoryTreeResponse>();
+	private readonly summariesCache: _.Dictionary<Observable<IArticle[]>> = {};
 
 	private static parseSummaryFileContent( summary: string ) {
 		return summary
@@ -70,7 +70,7 @@ export class MarkdownScrapperService {
 	private getSummaries( directoryName?: string ) {
 		const cachedValue = this.summariesCache[directoryName];
 		if ( cachedValue ) {
-			if ( environment.common.production === false ) {
+			if ( !environment.common.production ) {
 				console.info( `Using cached value for directory ${directoryName}`, cachedValue );
 			}
 			return cachedValue;
@@ -78,14 +78,14 @@ export class MarkdownScrapperService {
 
 		const basePath = directoryName ? directoryName + '/' : '';
 		const url = MarkdownScrapperService.getRawContentUrl( basePath + summaryFile );
-		this.summariesCache[directoryName] = this.http.get( url, {responseType: 'text'} )
+		this.summariesCache[directoryName] = this.http.get( url, { responseType: 'text' } )
 			.pipe( map( allSummaries => MarkdownScrapperService.parseSummaryFileContent( allSummaries ) ) );
 		return this.summariesCache[directoryName];
 	}
 
 	public getBlogArticles() {
 		return this.getRawDirectoryContent( 'blog' ).pipe(
-			map( ( {entries, summaries} ) => entries.map( entry => {
+			map( ( { entries, summaries } ) => entries.map( entry => {
 				const expectedTitle = entry.path.replace( /^(?:.*?\/)?(.*)\.md$/, '$1' );
 				const relatedSummary = summaries.find( sum => sum.title === expectedTitle );
 
@@ -98,8 +98,8 @@ export class MarkdownScrapperService {
 				} else {
 					return undefined;
 				}
-				} ).filter( entry => entry )
-			)
+				} ).filter( entry => entry ),
+			),
 		);
 	}
 
@@ -108,7 +108,7 @@ export class MarkdownScrapperService {
 	}
 
 	private getRawDirectoryContent(
-		basePath: string
+		basePath: string,
 	) {
 		const observable = forkJoin( this.apiContent, this.getSummaries( basePath ) );
 		return observable
@@ -119,6 +119,6 @@ export class MarkdownScrapperService {
 		}
 	public getBlogArticle( title: string ) {
 		return this.getBlogArticles().pipe(
-			first()).map( ( articles: IBlogArticle[] ) => articles.find( (article: IBlogArticle) => article.title === title ) );
+			first() ).map( ( articles: IBlogArticle[] ) => articles.find( ( article: IBlogArticle ) => article.title === title ) );
 	}
 }

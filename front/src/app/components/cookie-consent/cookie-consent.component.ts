@@ -1,9 +1,9 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, EventEmitter, Output, Input, HostBinding, HostListener } from '@angular/core';
-import { trigger, state, style, animate, transition, AnimationTriggerMetadata } from '@angular/animations';
+import { animate, AnimationTriggerMetadata, state, style, transition, trigger } from '@angular/animations';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
 
-import { ACookieDependentService } from '~services/ICookieDependentService';
 import { GoogleAnalyticsService } from '~services/google-analytics/google-analytics.service';
+import { ACookieDependentService } from '~services/ICookieDependentService';
 import { ShopService } from '~services/shop/shop.service';
 
 export type CookieLawPosition = 'top' | 'bottom';
@@ -80,11 +80,9 @@ export class CookieConsentComponent implements AfterViewInit {
 
 	public transition: CookieLawAnimation;
 
-
-
 	public constructor(
-		private shopService: ShopService,
-		private googleAnalytics: GoogleAnalyticsService
+		private readonly shopService: ShopService,
+		private readonly googleAnalytics: GoogleAnalyticsService,
 	) {
 		this.consentMatrice = {
 			localCart: this.shopService.cookieAccepted,
@@ -107,7 +105,6 @@ export class CookieConsentComponent implements AfterViewInit {
 		}
 		this.cookieLawClass = true;
 	}
-
 
 	public applyPreferences() {
 		console.log( 'Apply preferences', this.consentMatrice );

@@ -3,7 +3,7 @@
 	<article>
 		<header class="major">
 			<a [routerLink]="['/blog', article.title]" routerLinkActive="active">
-				<h1>{{article.title}}</h1>
+				<h1>{{ article.title }}</h1>
 			</a>
 		</header>
 		<showdown [value]="article.summary"></showdown>
@@ -18,7 +18,7 @@
 		<span class="button small enabled" (click)="setPage(pager.currentPage - 1)">Previous</span>
 	</li>
 	<li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
-		<span class="button small enabled" (click)="setPage(page)">{{page}}</span>
+		<span class="button small enabled" (click)="setPage(page)">{{ page }}</span>
 	</li>
 	<li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
 		<span class="button small enabled" (click)="setPage(pager.currentPage + 1)">Next</span>

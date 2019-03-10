@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {  BehaviorSubject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 
 import { IProduct } from '~models/product';
 
-import { ShopService } from '~services/shop/shop.service';
-import { HeaderService } from '~services/header/header.service';
 import { IAttribute } from '~models/attribute';
+import { HeaderService } from '~services/header/header.service';
+import { ShopService } from '~services/shop/shop.service';
 
 @Component( {
 	selector: 'app-shop',
@@ -19,7 +18,7 @@ export class ShopComponent implements OnInit {
 	public attributes = new BehaviorSubject<IAttribute[]>( [] );
 
 	public constructor(
-		private shopService: ShopService
+		private readonly shopService: ShopService,
 	) {}
 
 	public ngOnInit() {
@@ -27,7 +26,7 @@ export class ShopComponent implements OnInit {
 			.subscribe(
 				undefined,
 				err => console.error( 'Initialization failed', err ),
-				() => this.reloadProducts()
+				() => this.reloadProducts(),
 			);
 	}
 

@@ -1,8 +1,8 @@
 /// <reference types="@types/google.analytics"/>
 
-import {Injectable} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import { skip, filter } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, skip } from 'rxjs/operators';
 
 import { environment } from '~environments/environment';
 
@@ -53,7 +53,6 @@ export class GoogleAnalyticsService extends ACookieDependentService {
 		}
 	}
 
-
 	/**
 	 * Emit google analytics event
 	 * Fire event example:
@@ -66,10 +65,10 @@ export class GoogleAnalyticsService extends ACookieDependentService {
 		eventValue?: number ) {
 		if ( typeof ga === 'function' ) {
 			ga( 'send', 'event', {
-				eventCategory: eventCategory,
-				eventLabel: eventLabel,
-				eventAction: eventAction,
-				eventValue: eventValue,
+				eventCategory,
+				eventLabel,
+				eventAction,
+				eventValue,
 			} );
 		}
 	}

@@ -1,4 +1,4 @@
-import {isNil, escapeRegExp} from 'lodash';
+import { escapeRegExp, isNil } from 'lodash';
 
 export interface ICookieDependentService {
 	cookieAccepted: boolean;
@@ -21,7 +21,7 @@ export abstract class ACookieDependentService implements ICookieDependentService
 		}
 		return undefined;
 	}
-	public static setCookie( name:string, value: string, expiresIn: number = 13 * 30 * 24 * 60 * 60 * 1000 ) {
+	public static setCookie( name: string, value: string, expiresIn: number = 13 * 30 * 24 * 60 * 60 * 1000 ) {
 		const now = new Date();
 		const time = now.getTime();
 		const expireTime = time + expiresIn;
