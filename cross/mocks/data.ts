@@ -35,7 +35,7 @@ export const attributes: IAttribute[] = [
 		categoryId: '',
 		price: 160,
 	},
-	
+
 ];
 
 export const products: IProduct[] = [

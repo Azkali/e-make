@@ -88,6 +88,66 @@ if ( authConfig.github ) {
 		},
 	) );
 }
+if ( authConfig.github ) {
+	passport.use( new GitHubStrategy(
+		{
+			clientID: authConfig.github.appId,
+			clientSecret: authConfig.github.appSecret,
+			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + authConfig.github.redirectUrl,
+		},
+// tslint:disable-next-line: align
+		async ( accessToken, refreshToken, profile, done ) => {
+			console.log( { accessToken, refreshToken, profile } );
+			const user = await User.find( { githubId: profile.id } );
+			logger.info( 'Logging in user for Github ID: ' + profile.id );
+			if ( user ) {
+				logger.silly( `Retrieved user ${user.getId( 'main' )} for Github ID ${profile.id}` );
+				return done( undefined, user );
+			} else {
+				try {
+					const createdUser = await User.insert( { githubId: profile.id, authorizations: EAuthorization.User } );
+					if ( !createdUser ) {
+						throw new Error( 'Could not create a new user' );
+					}
+					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Github ID ${profile.id}` );
+					return done( undefined, createdUser );
+				} catch ( e ) {
+					logger.error( `An error occured when creating user for Github ID ${profile.id}: ${e.message}` );
+					return done( e, undefined );
+				}
+			}
+		},
+	) );
+}
+
+if ( authConfig.emailPass ) {
+	passport.use( new LocalStrategy(
+		{
+			usernameField: authConfig.emailPass.usernameField,
+			passwordField: authConfig.emailPass.passwordField,
+		},
+		async ( username, password, done ) => {
+			const user = await User.find( { username } );
+			logger.info( 'Logging in user for Local Username ID: ' + username.id );
+			if ( user ) {
+				logger.silly( `Retrieved user ${user.getId( 'main' )} for Local Username ID ${username.id}` );
+				return done( undefined, user );
+			} else {
+				try {
+					const createdUser = await User.insert( { email: username.id, authorizations: EAuthorization.User } );
+					if ( !createdUser ) {
+						throw new Error( 'Could not create a new user' );
+					}
+					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Github ID ${username.id}` );
+					return done( undefined, createdUser );
+				} catch ( e ) {
+					logger.error( `An error occured when creating user for Github ID ${username.id}: ${e.message}` );
+					return done( e, undefined );
+				}
+			}
+		},
+	) );
+}
 
 const createToken = ( auth: any ) =>
 	sign(
@@ -129,7 +189,7 @@ export const initializePassport = ( app: express.Express ) => {
 			}
 		},
 	);
-	
+
 	// GET /auth/google
 	//   Use passport.authenticate() as route middleware to authenticate the
 	//   request.  The first step in Google authentication will involve
@@ -163,7 +223,7 @@ export const initializePassport = ( app: express.Express ) => {
 				req.auth = {
 					id: req.user.getId( 'main' ),
 				};
-			
+
 				next();
 			},
 			generateToken,
