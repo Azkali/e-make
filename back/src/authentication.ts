@@ -89,11 +89,12 @@ export const initializePassport = ( app: express.Express ) => {
 	app.get(
 		'/auth/status',
 		( req, res ) => {
-			logger.silly( 'Retrieving the authentication status' );
-			console.log( req.session );
+			logger.verbose( 'Retrieving the authentication status' );
 			if ( req.session && req.session.token ){
+				logger.debug( `User with IP ${req.ip} is authenticated with session id ${req.session.token}` ); // Is it RGPD compliant ?
 				return res.status( 200 ).json( {token: req.session.token} );
 			} else {
+				logger.debug( `User with IP ${req.ip} is NOT authenticated` ); // Is it RGPD compliant ?
 				return res.status( 401 ).send( 'Unauthenticated' );
 			}
 		}

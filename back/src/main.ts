@@ -60,8 +60,8 @@ app.use( expressSession( {
 const removeScheme = ( url:string ) => url.replace( /https?:\/\//, '' );
 
 const CORS_HOSTS = [
-	...makeAbsoluteUrlsNoRelativeProtocol( Object.assign( {}, backConfig.common.front, {port: undefined} ) ),
-	...makeAbsoluteUrlsNoRelativeProtocol( Object.assign( {}, backConfig.common.back, {port: undefined} ) ),
+	...makeAbsoluteUrlsNoRelativeProtocol( backConfig.common.front ),
+	...makeAbsoluteUrlsNoRelativeProtocol( backConfig.common.back ),
 ];
 const getCorsHost = ( req: express.Request ) => {
 	const reqHost = castArray( req.headers.origin )[0] || '';

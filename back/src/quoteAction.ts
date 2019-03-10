@@ -95,6 +95,9 @@ export const quoteAction: express.RequestHandler = async ( req, res, next ) => {
 	const [insertedQuote] = await ( req.body.subscribeNews ?
 		Promise.all( [ saveAndSaveQuote( req ), subscribeUserToNewsletter( req ) ] ) :
 		Promise.all( [ saveAndSaveQuote( req ) ] ) );
+	if(!insertedQuote){
+		return res.status( 500 ).send( 'WTF ?' );
+	}
 	return res.status( 201 ).send( { quoteId: insertedQuote.getId( 'main' ) } );
 };
 
