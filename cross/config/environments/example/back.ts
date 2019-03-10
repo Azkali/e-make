@@ -3,6 +3,11 @@ import { config } from './common';
 
 export const backConfig: IBackConfig = {
 	authMethods: {
+		github: {
+			appId: "the-app-id",
+			appSecret:"the-app-secret",
+			redirectUrl: "/auth/google/callback",
+		},
 		google: {
 			appId: "the-app-id",
 			appSecret:"the-app-secret",
