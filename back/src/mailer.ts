@@ -112,16 +112,12 @@ const sendMail = async ( transport: nodemailer.Transporter, to: IBackConfig.IMai
 export const sendQuoteMails = async ( quote: IQuote, copyToUser: boolean ) => {
 	const transport = await getEnvTransport();
 	await Promise.all( compact( [
-		sendQuoteMail( 'quote-admin', quote, transport ),
-		copyToUser ? sendQuoteMail( 'quote-user', quote, transport ) : undefined,
+		sendQuoteMailToAdmin( quote, transport ),
+		copyToUser ? sendQuoteMailToUser( quote, transport ) : undefined,
 	] ) );
 	transport.close();
 };
-export const sendQuoteMail = async ( templateName: 'quote-admin' | 'quote-user', quote: IQuote, transport?: nodemailer.Transporter ) => {
-	const defaultedTransport = transport ? transport : await getEnvTransport();
-	const infos = await sendMail( defaultedTransport, backConfig.mail.quoteRecipients, templateName, { quote } );
-	if ( !transport ) {
-		defaultedTransport.close();
-	}
-	return infos;
-};
+export const sendQuoteMailToAdmin = async ( quote: IQuote, transport: nodemailer.Transporter ) =>
+	sendMail( transport, backConfig.mail.quoteRecipients, 'quote-admin', { quote } );
+export const sendQuoteMailToUser = async ( quote: IQuote, transport: nodemailer.Transporter ) =>
+	sendMail( transport, [{ email: quote.billing.email, name: `${quote.billing.firstname} ${quote.billing.lastname}` }], 'quote-user', { quote } );
