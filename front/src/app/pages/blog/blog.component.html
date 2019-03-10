@@ -1,4 +1,4 @@
-<div *ngFor="let article of allItems" id="blog">
+<div *ngFor="let article of pagedArticles | async" id="blog">
 	<hr class="major" />
 	<article>
 		<header class="major">
@@ -10,7 +10,7 @@
 	</article>
 </div>
 <hr class="major" />
-<ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+<ul *ngIf="pager && pager.pages && pager.pages.length" class="pagination">
 	<li [ngClass]="{disabled:pager.currentPage === 1}">
 		<span class="button small enabled" (click)="setPage(1)">First</span>
 	</li>

@@ -1,5 +1,25 @@
+import { Injectable } from '@angular/core';
+
+export interface IPage{
+	startIndex: number;
+	startPage: number;
+	
+	endIndex: number;
+	endPage: number;
+	
+	totalItems: number;
+	totalPages: number;
+	
+	currentPage: number;
+	pages: number[];
+	pageSize: number;
+}
+
+@Injectable( {
+	providedIn: 'root',
+} )
 export class PagerService {
-	public getPager( totalItems: number, currentPage: number = 1, pageSize: number = 10 ) {
+	public getPager( totalItems: number, currentPage: number = 1, pageSize: number = 10 ): IPage {
 		// calculate total pages
 		const totalPages = Math.ceil( totalItems / pageSize );
 
