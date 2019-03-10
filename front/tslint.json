@@ -4,6 +4,6 @@
     "rules": {
         "no-implicit-dependencies": [true,
             ["~app", "~services", "~pages", "~modals", "~environments", "~models", "~cross", "~components", "~guards"]
-        ],
+        ]
     }
 }
