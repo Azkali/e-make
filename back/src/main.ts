@@ -50,10 +50,7 @@ app.use( expressSession( {
 	secret: 'keyboard cat',
 	resave: true,
 	saveUninitialized: true,
-	cookie: {
-		domain: 'e-make.io',
-		maxAge: 1000 * 60 * 60 * 24 * 30 * 12,
-	},
+	cookie: backConfig.sessionCookie,
 } ) );
 
 const removeScheme = ( url: string ) => url.replace( /https?:\/\//, '' );

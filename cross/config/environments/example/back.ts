@@ -15,6 +15,10 @@ export const backConfig: IBackConfig = {
 		},
 	},
 	host: "0.0.0.0",
+	sessionCookie: {
+		domain: 'e-make.io',
+		maxAge: 1000 * 60 * 60 * 24 * 30 * 12,
+	},
 	tokenSecret: "some-token",
 	mail: {
 		quoteRecipients: [
