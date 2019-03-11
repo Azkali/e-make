@@ -32,7 +32,7 @@ export interface IBackConfig {
 		domain: string;
 		maxAge: number;
 	};
-	host: string;
+	host?: string;
 	tokenSecret: string;
 
 	mail: IBackConfig.IMailConfig;

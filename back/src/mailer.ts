@@ -1,5 +1,5 @@
-import { castArray, compact, Dictionary, map, mapValues, toPairs, values } from 'lodash';
-import nodemailer, { SendMailOptions } from 'nodemailer';
+import { castArray, compact, Dictionary, mapValues, values } from 'lodash';
+import nodemailer from 'nodemailer';
 import { assign } from 'nodemailer/lib/shared';
 import numeral from 'numeral';
 import nunjucks from 'nunjucks';
