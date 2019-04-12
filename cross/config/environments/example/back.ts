@@ -6,7 +6,7 @@ export const backConfig: IBackConfig = {
 		github: {
 			appId: 'the-app-id',
 			appSecret: 'the-app-secret',
-			redirectUrl: '/auth/google/callback',
+			redirectUrl: '/auth/github/callback',
 		},
 		google: {
 			appId: 'the-app-id',

@@ -42,9 +42,9 @@ export interface IBackConfig {
 }
 export namespace IBackConfig {
 	export interface IAuthMethodsConfig {
-		google?: IAuthMethodsConfig.IGoogleOAuthConfig;
-		github?: IAuthMethodsConfig.IGithubOAuthConfig;
-		emailPass?: IAuthMethodsConfig.IEmailPassConfig;
+		google?: IOAuthConfig.IGoogleOAuthConfig;
+		github?: IOAuthConfig.IGithubOAuthConfig;
+		emailPass?: IUserAuth.IEmailPassConfig;
 	}
 
 	export namespace IAuthMethodsConfig {
@@ -59,13 +59,16 @@ export namespace IBackConfig {
 			appSecret: string;
 			redirectUrl: string;
 		}
+	}
+
+	export namespace IUserAuth {
 
 		export interface IEmailPassConfig {
-			usernameField: string;
+			emailField: string;
 			passwordField: string;
 		}
-
 	}
+
 
 	export interface IMailConfig {
 		quoteRecipients: IMailConfig.IMailAddress[];

@@ -5,7 +5,9 @@ import { sign } from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { Strategy as LocalStrategy } from 'passport-local';
+import { OAuth2Strategy as GitHubStrategy } from 'passport-github';
+import { OAuth2Strategy as LocalStrategy } from 'passport-local';
+
 import { User } from './models';
 
 import { Entity } from '@diaspora/diaspora/dist/types';
@@ -88,12 +90,12 @@ if ( authConfig.github ) {
 		},
 	) );
 }
-if ( authConfig.github ) {
+if ( oauthConfig.github ) {
 	passport.use( new GitHubStrategy(
 		{
-			clientID: authConfig.github.appId,
-			clientSecret: authConfig.github.appSecret,
-			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + authConfig.github.redirectUrl,
+			clientID: oauthConfig.github.appId,
+			clientSecret: oauthConfig.github.appSecret,
+			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + oauthConfig.github.redirectUrl,
 		},
 // tslint:disable-next-line: align
 		async ( accessToken, refreshToken, profile, done ) => {
@@ -120,11 +122,11 @@ if ( authConfig.github ) {
 	) );
 }
 
-if ( authConfig.emailPass ) {
+if ( oauthConfig.emailPass ) {
 	passport.use( new LocalStrategy(
 		{
-			usernameField: authConfig.emailPass.usernameField,
-			passwordField: authConfig.emailPass.passwordField,
+			emailField: oauthConfig.emailPass.emailField,
+			passwordField: oauthConfig.emailPass.passwordField,
 		},
 		async ( username, password, done ) => {
 			const user = await User.find( { username } );
@@ -147,6 +149,36 @@ if ( authConfig.emailPass ) {
 			}
 		},
 	) );
+}
+
+if ( oauthConfig.emailPass ) {
+	passport.use( new LocalStrategy(
+		{
+			emailField: oauthConfig.emailPass.emailField,
+			passwordField: oauthConfig.emailPass.passwordField,
+		},
+	 async ( username, password, done ) => {
+		const user = await User.find( { email: username } );
+		logger.info( 'Logging in user : ' + username );
+		if ( user ) {
+				logger.silly( `Retrieved user ${user.getId( 'main' )} for Github ID ${username}` );
+				return done( undefined, user );
+			} else {
+				try {
+					const createdUser = await User.insert( { email: username, authorizations: EAuthorization.User } );
+					if ( !createdUser ) {
+						throw new Error( 'Could not create a new user' );
+					}
+					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for ${username}` );
+					return done( undefined, createdUser );
+				} catch ( e ) {
+					logger.error( `An error occured when creating user for ${username}: ${e.message}` );
+					return done( e, undefined );
+			}
+			}
+		},
+	),
+	);
 }
 
 const createToken = ( auth: any ) =>
@@ -204,8 +236,8 @@ export const initializePassport = ( app: express.Express ) => {
 			],
 		} ),
 	);
-	
-	if ( authConfig.google ) {
+
+	if ( oauthConfig.google ) {
 		// GET /auth/google/callback
 		//   Use passport.authenticate() as route middleware to authenticate the
 		//   request.  If authentication fails, the user will be redirected back to the
@@ -223,6 +255,12 @@ export const initializePassport = ( app: express.Express ) => {
 				req.auth = {
 					id: req.user.getId( 'main' ),
 				};
+				next();
+			},
+			generateToken,
+			sendToken,
+		);
+	}
 
 				next();
 			},
