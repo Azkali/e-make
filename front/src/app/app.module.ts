@@ -30,6 +30,7 @@ import { PagerService } from './services/pager/pager';
 
 import { WindowRef } from '~services/window-ref/window-ref.service';
 import { CartReviewComponent } from './components/cart-review/cart-review.component';
+import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 
 @NgModule( {
 	declarations: [
@@ -52,6 +53,7 @@ import { CartReviewComponent } from './components/cart-review/cart-review.compon
 		OrderFormComponent,
 		FieldComponent,
 		CartReviewComponent,
+		LegalNoticeComponent,
 
 	],
 	imports: [
