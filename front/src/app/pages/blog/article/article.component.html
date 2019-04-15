@@ -1,7 +1,12 @@
-<h1>
-	{{ title }}
-</h1>
-
-<p>
-	<showdown [value]="(article | async)?.summary"></showdown>
-</p>
+<article>
+	<header>
+		<h1>
+			{{ title }}
+		</h1>
+	</header>
+	<section>
+		<p>
+			<showdown [value]="(article | async)?.summary"></showdown>
+		</p>
+	</section>
+</article>

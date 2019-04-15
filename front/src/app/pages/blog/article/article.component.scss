@@ -1,0 +1,21 @@
+h1 {
+	text-align: center;
+}
+
+p {
+	text-align: center;
+}
+
+
+// Medium Article Layout : https://medium.freecodecamp.org/how-to-recreate-mediums-article-layout-with-css-grid-b4608792bad1
+article {
+    display: grid;
+    grid-template-columns: 1fr 740px 1fr;
+	* {
+		grid-column: 2;
+	}
+	figure {
+		grid-column: 1 / -1;
+		margin: 20px 0;
+	}
+}

@@ -8,7 +8,7 @@ import { IBlogArticle, MarkdownScrapperService } from '~services/markdown-scrapp
 @Component( {
 	selector: 'app-blog',
 	templateUrl: './blog.component.html',
-	styleUrls: ['./blog.component.css'],
+	styleUrls: ['./blog.component.scss'],
 	providers: [MarkdownScrapperService],
 } )
 export class BlogComponent implements OnInit {

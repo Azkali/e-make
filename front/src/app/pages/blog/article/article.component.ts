@@ -9,7 +9,7 @@ import { IBlogArticle, MarkdownScrapperService } from '~services/markdown-scrapp
 @Component( {
 	selector: 'app-article',
 	templateUrl: './article.component.html',
-	styleUrls: ['./article.component.css'],
+	styleUrls: ['./article.component.scss'],
 } )
 export class ArticleComponent implements OnInit {
 	private readonly articleSubject = new AsyncSubject<IBlogArticle>();
