@@ -19,7 +19,10 @@ import { backConfig } from '../cross/config/environments/loader';
 import { makeAbsoluteUrl } from '../cross/config/utils';
 import { EAuthorization, IUser } from '../cross/models';
 
-passport.serializeUser( async ( user: Entity<IUser & { id: any }>, done: ( err: Error | null, user: any ) => void ) => {
+import { createUser } from './authentication/index';
+
+// Passport serializer for emailPass
+passport.serializeUser( async ( user: Entity<IUser & {id: any}>, done: ( err: Error | null, user: any ) => void ) => {
 	done( null, user.getProperties( 'main' ) );
 } );
 
@@ -90,6 +93,7 @@ if ( authConfig.github ) {
 		},
 	) );
 }
+
 if ( oauthConfig.github ) {
 	passport.use( new GitHubStrategy(
 		{
@@ -120,65 +124,6 @@ if ( oauthConfig.github ) {
 			}
 		},
 	) );
-}
-
-if ( oauthConfig.emailPass ) {
-	passport.use( new LocalStrategy(
-		{
-			emailField: oauthConfig.emailPass.emailField,
-			passwordField: oauthConfig.emailPass.passwordField,
-		},
-		async ( username, password, done ) => {
-			const user = await User.find( { username } );
-			logger.info( 'Logging in user for Local Username ID: ' + username.id );
-			if ( user ) {
-				logger.silly( `Retrieved user ${user.getId( 'main' )} for Local Username ID ${username.id}` );
-				return done( undefined, user );
-			} else {
-				try {
-					const createdUser = await User.insert( { email: username.id, authorizations: EAuthorization.User } );
-					if ( !createdUser ) {
-						throw new Error( 'Could not create a new user' );
-					}
-					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Github ID ${username.id}` );
-					return done( undefined, createdUser );
-				} catch ( e ) {
-					logger.error( `An error occured when creating user for Github ID ${username.id}: ${e.message}` );
-					return done( e, undefined );
-				}
-			}
-		},
-	) );
-}
-
-if ( oauthConfig.emailPass ) {
-	passport.use( new LocalStrategy(
-		{
-			emailField: oauthConfig.emailPass.emailField,
-			passwordField: oauthConfig.emailPass.passwordField,
-		},
-	 async ( username, password, done ) => {
-		const user = await User.find( { email: username } );
-		logger.info( 'Logging in user : ' + username );
-		if ( user ) {
-				logger.silly( `Retrieved user ${user.getId( 'main' )} for Github ID ${username}` );
-				return done( undefined, user );
-			} else {
-				try {
-					const createdUser = await User.insert( { email: username, authorizations: EAuthorization.User } );
-					if ( !createdUser ) {
-						throw new Error( 'Could not create a new user' );
-					}
-					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for ${username}` );
-					return done( undefined, createdUser );
-				} catch ( e ) {
-					logger.error( `An error occured when creating user for ${username}: ${e.message}` );
-					return done( e, undefined );
-			}
-			}
-		},
-	),
-	);
 }
 
 const createToken = ( auth: any ) =>
@@ -237,6 +182,45 @@ export const initializePassport = ( app: express.Express ) => {
 		} ),
 	);
 
+	// Register User
+	if ( oauthConfig.emailPass ) {
+		app.post('/register', (req, res) => {
+			const password = req.body.password;
+			const password2 = req.body.password2;
+			
+			if (password == password2){
+				const newUser = new LocalStrategy({
+				emailField: oauthConfig.emailPass.emailField,
+				passwordField: oauthConfig.emailPass.passwordField,
+			});
+			
+			createUser(newUser, (err, user) => {
+				if(err) throw err;
+				res.send(user).end()
+			});
+		} else{
+			res.status(500).send("{errors: \"Passwords don't match\"}").end()
+		}
+	});
+
+	// Endpoint to login
+	app.post('/login', passport.authenticate('local'),
+	(req, res) => {
+		res.send(req.user);
+	});
+
+	// Endpoint to get current user
+	app.get('/user', function(req, res){
+		res.send(req.user);
+	});
+
+	// Endpoint to logout
+	app.get('/logout', function(req, res){
+		req.logout();
+		res.send( undefined )
+	});
+}
+	
 	if ( oauthConfig.google ) {
 		// GET /auth/google/callback
 		//   Use passport.authenticate() as route middleware to authenticate the
