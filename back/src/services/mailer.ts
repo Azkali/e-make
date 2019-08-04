@@ -6,12 +6,12 @@ import nunjucks from 'nunjucks';
 import { join, resolve as pathResolve } from 'path';
 
 import { inspect } from 'util';
-import { logger } from './logger';
+import { logger } from '../logger';
 
-import { IBackConfig } from '../cross/config/config-types';
-import { backConfig } from '../cross/config/environments/loader';
-import { makeAbsoluteUrl } from '../cross/config/utils';
-import { IQuote } from '../cross/models';
+import { IBackConfig } from '../../cross/config/config-types';
+import { backConfig } from '../../cross/config/environments/loader';
+import { makeAbsoluteUrl } from '../../cross/config/utils';
+import { IQuote } from '../../cross/models';
 
 const env = new nunjucks.Environment(
 	new nunjucks.FileSystemLoader(

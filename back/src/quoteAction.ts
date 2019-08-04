@@ -4,8 +4,8 @@ import { inspect } from 'util';
 
 import { Entity } from '@diaspora/diaspora/dist/types';
 
-import { sendQuoteMails } from './mailer';
-import { subscribeUserToNewsletter } from './mailing-list';
+import { sendQuoteMails } from './services/mailer';
+import { subscribeUserToNewsletter } from './services/mailing-list';
 import { Address, Cart, CartItem, Quote } from './models';
 import { getUserId, isAuthenticated } from './security';
 
