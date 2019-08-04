@@ -1,11 +1,8 @@
-/// <reference path="./types/index.d.ts"/>
-
 import express = require( 'express' );
 import { sign } from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { OAuth2Strategy as GitHubStrategy } from 'passport-github';
 import { OAuth2Strategy as LocalStrategy } from 'passport-local';
 
 import { User } from './models';
@@ -36,9 +33,9 @@ const authConfig = backConfig.authMethods;
 if ( authConfig.google ) {
 	passport.use( new GoogleStrategy(
 		{
+			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + authConfig.google.redirectUrl,
 			clientID: authConfig.google.appId,
 			clientSecret: authConfig.google.appSecret,
-			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + authConfig.google.redirectUrl,
 		},
 		async ( accessToken, refreshToken, profile, done ) => {
 			console.log( { accessToken, refreshToken, profile } );
@@ -66,9 +63,9 @@ if ( authConfig.google ) {
 if ( authConfig.github ) {
 	passport.use( new GitHubStrategy(
 		{
+			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + authConfig.github.redirectUrl,
 			clientID: authConfig.github.appId,
 			clientSecret: authConfig.github.appSecret,
-			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + authConfig.github.redirectUrl,
 		},
 		async ( accessToken, refreshToken, profile, done ) => {
 			console.log( { accessToken, refreshToken, profile } );
@@ -89,38 +86,6 @@ if ( authConfig.github ) {
 					logger.error( `An error occured when creating user for Github ID ${profile.id}: ${e.message}` );
 					return done( e, undefined );
 			}
-			}
-		},
-	) );
-}
-
-if ( oauthConfig.github ) {
-	passport.use( new GitHubStrategy(
-		{
-			clientID: oauthConfig.github.appId,
-			clientSecret: oauthConfig.github.appSecret,
-			callbackURL: makeAbsoluteUrl( backConfig.common.back ) + oauthConfig.github.redirectUrl,
-		},
-// tslint:disable-next-line: align
-		async ( accessToken, refreshToken, profile, done ) => {
-			console.log( { accessToken, refreshToken, profile } );
-			const user = await User.find( { githubId: profile.id } );
-			logger.info( 'Logging in user for Github ID: ' + profile.id );
-			if ( user ) {
-				logger.silly( `Retrieved user ${user.getId( 'main' )} for Github ID ${profile.id}` );
-				return done( undefined, user );
-			} else {
-				try {
-					const createdUser = await User.insert( { githubId: profile.id, authorizations: EAuthorization.User } );
-					if ( !createdUser ) {
-						throw new Error( 'Could not create a new user' );
-					}
-					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Github ID ${profile.id}` );
-					return done( undefined, createdUser );
-				} catch ( e ) {
-					logger.error( `An error occured when creating user for Github ID ${profile.id}: ${e.message}` );
-					return done( e, undefined );
-				}
 			}
 		},
 	) );
@@ -183,45 +148,47 @@ export const initializePassport = ( app: express.Express ) => {
 	);
 
 	// Register User
-	if ( oauthConfig.emailPass ) {
-		app.post('/register', (req, res) => {
+	if ( authConfig.emailPass ) {
+		app.post( '/register', ( req, res ) => {
 			const password = req.body.password;
 			const password2 = req.body.password2;
-			
-			if (password == password2){
-				const newUser = new LocalStrategy({
-				emailField: oauthConfig.emailPass.emailField,
-				passwordField: oauthConfig.emailPass.passwordField,
-			});
-			
-			createUser(newUser, (err, user) => {
-				if(err) throw err;
-				res.send(user).end()
-			});
-		} else{
-			res.status(500).send("{errors: \"Passwords don't match\"}").end()
+
+			if ( password === password2 ) {
+				const newUser = new LocalStrategy( {
+				emailField: authConfig.emailPass.emailField,
+				passwordField: authConfig.emailPass.passwordField,
+			} );
+
+			 createUser( newUser, ( err, user ) => {
+				if ( err ) { throw err; }
+				res.send( user ).end();
+			} );
+		} else {
+			res.status( 500 ).send( "{errors: \"Passwords don't match\"}" ).end();
 		}
-	});
+	} );
 
 	// Endpoint to login
-	app.post('/login', passport.authenticate('local'),
-	(req, res) => {
-		res.send(req.user);
-	});
+	 app.post(
+		'/login',
+		passport.authenticate( 'local' ),
+		( req, res ) => {
+			res.send( req.user );
+		} );
 
 	// Endpoint to get current user
-	app.get('/user', function(req, res){
-		res.send(req.user);
-	});
+	 app.get( '/user', ( req, res ) => {
+		res.send( req.user );
+	} );
 
 	// Endpoint to logout
-	app.get('/logout', function(req, res){
+	 app.get( '/logout', ( req, res ) => {
 		req.logout();
-		res.send( undefined )
-	});
+		res.send( undefined );
+	} );
 }
-	
-	if ( oauthConfig.google ) {
+
+	if ( authConfig.google ) {
 		// GET /auth/google/callback
 		//   Use passport.authenticate() as route middleware to authenticate the
 		//   request.  If authentication fails, the user will be redirected back to the
@@ -239,13 +206,6 @@ export const initializePassport = ( app: express.Express ) => {
 				req.auth = {
 					id: req.user.getId( 'main' ),
 				};
-				next();
-			},
-			generateToken,
-			sendToken,
-		);
-	}
-
 				next();
 			},
 			generateToken,

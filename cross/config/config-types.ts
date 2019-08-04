@@ -42,8 +42,8 @@ export interface IBackConfig {
 }
 export namespace IBackConfig {
 	export interface IAuthMethodsConfig {
-		google?: IOAuthConfig.IGoogleOAuthConfig;
-		github?: IOAuthConfig.IGithubOAuthConfig;
+		google?: IAuthMethodsConfig.IGoogleOAuthConfig;
+		github?: IAuthMethodsConfig.IGithubOAuthConfig;
 		emailPass?: IUserAuth.IEmailPassConfig;
 	}
 
