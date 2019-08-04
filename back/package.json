@@ -6,8 +6,8 @@
   "scripts": {
     "build": "rimraf lib && tsc -p . && cp -r templates lib/back && rm -rf lib/back/cross/config/environments",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "ts-node src/main.ts",
-    "watch:dev": "ts-node-dev src/main.ts",
+    "start:dev": "ts-node src/main.ts -P tsconfig.json",
+    "watch:dev": "ts-node-dev src/main.ts -P tsconfig.json",
     "start": "node src/main.js",
     "build:app+docker": "npm run build && npm run docker:build",
     "docker:build": "docker image build -t gerkin/e-make-back .",
