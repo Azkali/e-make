@@ -1,14 +1,13 @@
 /// <reference path="./types/index.d.ts"/>
 
-import express = require( 'express' );
+import { ObjectID } from 'bson';
+import express from 'express';
 import { sign } from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { Strategy as LocalStrategy } from 'passport-local';
 import { User } from './models';
-
-import { Entity } from '@diaspora/diaspora/dist/types';
 
 import { assign } from 'lodash';
 import { logger } from './logger';
@@ -17,12 +16,12 @@ import { backConfig } from '../cross/config/environments/loader';
 import { makeAbsoluteUrl } from '../cross/config/utils';
 import { EAuthorization, IUser } from '../cross/models';
 
-passport.serializeUser( async ( user: Entity<IUser & { id: any }>, done: ( err: Error | null, user: any ) => void ) => {
-	done( null, user.getProperties( 'main' ) );
+passport.serializeUser( async ( user: mongoose.Document & IUser, done: ( err: Error | null, user: any ) => void ) => {
+	done( null, user._id );
 } );
 
-passport.deserializeUser( async ( user: IUser & { id: any }, done: ( err: Error | null, user: any ) => void ) => {
-	done( null, await User.find( user.id ) );
+passport.deserializeUser( async ( userId: ObjectID, done: ( err: Error | null, user: any ) => void ) => {
+	done( null, await User.findById( userId ).exec() );
 } );
 
 const authConfig = backConfig.authMethods;
@@ -37,18 +36,18 @@ if ( authConfig.google ) {
 		},
 		async ( accessToken, refreshToken, profile, done ) => {
 			console.log( { accessToken, refreshToken, profile } );
-			const user = await User.find( { googleId: profile.id } );
+			const user = await User.findOne( { googleId: profile.id } ).exec();
 			logger.info( 'Logging in user for Google ID: ' + profile.id );
 			if ( user ) {
-				logger.silly( `Retrieved user ${user.getId( 'main' )} for Google ID ${profile.id}` );
+				logger.silly( `Retrieved user ${user._id} for Google ID ${profile.id}` );
 				return done( undefined, user );
 			} else {
 				try {
-					const createdUser = await User.insert( { googleId: profile.id, authorizations: EAuthorization.User } );
+					const createdUser = new User( { googleId: profile.id, authorizations: EAuthorization.User } );
 					if ( !createdUser ) {
 						throw new Error( 'Could not create a new user' );
 					}
-					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Google ID ${profile.id}` );
+					logger.verbose( `Created new user ${createdUser._id} for Google ID ${profile.id}` );
 					return done( undefined, createdUser );
 				} catch ( e ) {
 					logger.error( `An error occured when creating user for Google ID ${profile.id}: ${e.message}` );
@@ -67,18 +66,16 @@ if ( authConfig.github ) {
 		},
 		async ( accessToken, refreshToken, profile, done ) => {
 			console.log( { accessToken, refreshToken, profile } );
-			const user = await User.find( { githubId: profile.id } );
+			const user = await User.findOne( { githubId: profile.id } ).exec();
 			logger.info( 'Logging in user for Github ID: ' + profile.id );
 			if ( user ) {
-				logger.silly( `Retrieved user ${user.getId( 'main' )} for Github ID ${profile.id}` );
+				logger.silly( `Retrieved user ${user._id} for Github ID ${profile.id}` );
 				return done( undefined, user );
 			} else {
 				try {
-					const createdUser = await User.insert( { githubId: profile.id, authorizations: EAuthorization.User } );
-					if ( !createdUser ) {
-						throw new Error( 'Could not create a new user' );
-					}
-					logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Github ID ${profile.id}` );
+					const createdUser = new User( { githubId: profile.id, authorizations: EAuthorization.User } );
+					await createdUser.save();
+					logger.verbose( `Created new user ${createdUser._id} for Github ID ${profile.id}` );
 					return done( undefined, createdUser );
 				} catch ( e ) {
 					logger.error( `An error occured when creating user for Github ID ${profile.id}: ${e.message}` );
@@ -129,7 +126,7 @@ export const initializePassport = ( app: express.Express ) => {
 			}
 		},
 	);
-	
+
 	// GET /auth/google
 	//   Use passport.authenticate() as route middleware to authenticate the
 	//   request.  The first step in Google authentication will involve
@@ -144,7 +141,7 @@ export const initializePassport = ( app: express.Express ) => {
 			],
 		} ),
 	);
-	
+
 	if ( authConfig.google ) {
 		// GET /auth/google/callback
 		//   Use passport.authenticate() as route middleware to authenticate the
@@ -163,7 +160,7 @@ export const initializePassport = ( app: express.Express ) => {
 				req.auth = {
 					id: req.user.getId( 'main' ),
 				};
-			
+
 				next();
 			},
 			generateToken,

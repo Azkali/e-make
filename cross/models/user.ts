@@ -19,22 +19,3 @@ export interface IUser {
 	githubId?: string;
 	gihtubToken?: string;
 }
-
-export const user: Raw.IAttributesDescription = {
-	email: EFieldType.STRING,
-	password: EFieldType.STRING,
-	authorizations: {
-		type: EFieldType.INTEGER,
-		required: true,
-		default: EAuthorization.User,
-	},
-
-	facebookId: EFieldType.STRING,
-	facebookToken: EFieldType.STRING,
-
-	googleId: EFieldType.STRING,
-	googleToken: EFieldType.STRING,
-
-	githubId: EFieldType.STRING,
-	gihtubToken: EFieldType.STRING,
-};

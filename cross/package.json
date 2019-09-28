@@ -8,12 +8,15 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
-  "devDependencies": {
-    "@diaspora/dev-tslint": "^1.1.1",
+  "dependencies": {
     "@diaspora/diaspora": "git+https://github.com/diaspora-orm/diaspora.git#prerelease",
-    "tslint": "^5.13.1",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@diaspora/dev-tslint": "^1.2.0",
+    "@types/lodash": "^4.14.141",
+    "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.6.3"
   }
 }

@@ -27,6 +27,7 @@ export namespace ICommonConfig {
 }
 
 export interface IBackConfig {
+    databaseConnectionString: string;
 	authMethods?: IBackConfig.IAuthMethodsConfig;
 	sessionCookie: {
 		domain: string;

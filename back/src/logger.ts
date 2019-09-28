@@ -1,5 +1,3 @@
-import { Diaspora } from '@diaspora/diaspora';
-import { NodeLogger } from '@diaspora/diaspora/dist/types/logger/nodeLogger';
 import { assign } from 'lodash';
 import { resolve } from 'path';
 import { createLogger, format, Logger, transports } from 'winston';
@@ -27,12 +25,6 @@ const generateDailyRotateLoggers = ( prefix: string, isErrorHandler = false ) =>
 	new DailyRotateFile( assign( { filename: resolve( baseLogDir, `${prefix}-%DATE%`, 'combined.log' ) }, rotateCombBase ) ),
 ];
 
-const diasporaLogger = ( ( Diaspora.logger as any ).logger as Logger );
-diasporaLogger.configure( {
-	format: format.combine( format.timestamp(), format.json() ),
-	level: 'silly',
-	transports: generateDailyRotateLoggers( 'diaspora' ),
-} );
 export const logger = createLogger( {
 	exitOnError: false,
 	format: format.combine( format.timestamp(), format.json() ),
@@ -52,6 +44,5 @@ if ( process.env.NODE_ENV !== 'production' ) {
 			format.printf( info => `${info.timestamp} ${info.level}: ${info.message}` ),
 		),
 	} );
-	diasporaLogger.add( consoleTransport );
 	logger.add( consoleTransport );
 }

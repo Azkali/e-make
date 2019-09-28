@@ -2,6 +2,8 @@ import { IBackConfig } from '../../config-types';
 import { config } from './common';
 
 export const backConfig: IBackConfig = {
+	databaseConnectionString: 'mongo://my-connection-string',
+
 	authMethods: {
 		github: {
 			appId: 'the-app-id',
@@ -17,7 +19,7 @@ export const backConfig: IBackConfig = {
 	// Usually, you should bind every exposed interface.
 	// Letting the OS guessing the network interface may allow to bind both ipv6 & ipv4.
 	// https://github.com/nodejs/node/issues/18041#issuecomment-366601305
-	//host: '0.0.0.0'
+	// host: '0.0.0.0'
 	sessionCookie: {
 		domain: 'e-make.io',
 		maxAge: 1000 * 60 * 60 * 24 * 30 * 12,

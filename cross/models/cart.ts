@@ -9,21 +9,5 @@ export interface ITempCart {
 }
 export interface ICart extends ITempCart {
 	userId?: EntityUid;
-	user?: {};
 	itemIds: EntityUid[];
 }
-export const cart: Raw.IAttributesDescription = {
-	userId: EFieldType.STRING,
-	totalSum: {
-		type: EFieldType.FLOAT,
-		required: true,
-	},
-	itemIds: {
-		type: EFieldType.ARRAY,
-		of: {
-			type: EFieldType.STRING,
-			required: true,
-		},
-		required: true,
-	},
-};

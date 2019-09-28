@@ -4,11 +4,11 @@ import { IProduct } from '../models/product';
 
 export const attributesCategories: IAttributeCategory[] = [
 	{
-		uid: 'dac-type',
+		slug: 'dac-type',
 		name: 'DAC type',
 	},
 	{
-		uid: 'accessories',
+		slug: 'accessories',
 		name: 'Accessories',
 	},
 ];

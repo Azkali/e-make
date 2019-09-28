@@ -1,10 +1,10 @@
-import { EFieldType, EntityUid } from '@diaspora/diaspora';
-import { Raw } from '@diaspora/diaspora/dist/types/types/modelDescription';
+import { EntityUid } from '@diaspora/diaspora';
+
 import { IAttributeCategory } from './attributeCategory';
 import { IProduct } from './product';
 
 export interface IProduct {
-	uid: string;
+	slug: string;
 	name?: string;
 	customizableParts?: IProduct.IPart[];
 	images?: string[];
@@ -18,39 +18,3 @@ export namespace IProduct {
 		category?: IAttributeCategory;
 	}
 }
-export const product: Raw.IAttributesDescription = {
-	uid: {
-		type: EFieldType.STRING,
-		required: true,
-	},
-	name: EFieldType.STRING,
-	customizableParts: {
-		type: EFieldType.ARRAY,
-		of: {
-			type: EFieldType.OBJECT,
-			attributes: {
-				factor: {
-					type: EFieldType.INTEGER,
-					required: true,
-					default: 1,
-				},
-				name: {
-					type: EFieldType.STRING,
-					required: true,
-				},
-				categoryId: {
-					type: EFieldType.STRING,
-					required: true,
-				},
-			},
-		},
-	},
-	images: {
-		type: EFieldType.ARRAY,
-		of: EFieldType.STRING,
-	},
-	basePrice: {
-		type: EFieldType.FLOAT,
-		required: true,
-	},
-};

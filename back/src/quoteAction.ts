@@ -1,21 +1,20 @@
 import express from 'express';
 import { assign, compact, keys, mapValues, omit, omitBy, pick, values, zipObject } from 'lodash';
-import { inspect } from 'util';
+import mongoose from 'mongoose';
 
-import { Entity } from '@diaspora/diaspora/dist/types';
-
-import { sendQuoteMails } from './services/mailer';
-import { subscribeUserToNewsletter } from './services/mailing-list';
 import { Address, Cart, CartItem, Quote } from './models';
 import { getUserId, isAuthenticated } from './security';
+import { sendQuoteMails } from './services/mailer';
+import { subscribeUserToNewsletter } from './services/mailing-list';
 
 import { IAddress, IQuote, IUser } from '../cross/models';
 import { ICart } from '../cross/models/cart';
+import { ICartItem } from '../cross/models/cartItem';
 import { logger } from './logger';
 
 interface IAddressHash {
-	billingAddress: Entity<IAddress>;
-	shippingAddress: Entity<IAddress>;
+	billingAddress: IAddress & mongoose.Document;
+	shippingAddress: IAddress & mongoose.Document;
 }
 
 const insertAddresses = async ( body: any, userId: any ) => {
@@ -30,7 +29,7 @@ const insertAddresses = async ( body: any, userId: any ) => {
 		addresses.billingAddress,
 		addresses.shippingAddress,
 	] ) );
-	const insertedAddressesObject = zipObject( keys( addresses ), insertedAddresses.entities );
+	const insertedAddressesObject = zipObject( keys( addresses ), insertedAddresses );
 	if ( keys( insertedAddressesObject ).length === 1 ) {
 		return {
 			billingAddress: insertedAddressesObject.address,
@@ -41,12 +40,10 @@ const insertAddresses = async ( body: any, userId: any ) => {
 	}
 };
 const insertCart = async ( body: any, userId: any ) => {
-	const itemIds = ( await CartItem.insertMany( body.cart.items ) )
-		.toChainable()
-		.map( entity => entity.getId( 'main' ) )
-		.value();
+	const itemIds = ( await CartItem.insertMany( body.cart.items as ICartItem[] ) )
+		.map( entity => entity._id );
 	const cart = assign( {}, omit( body.cart, 'items' ), { userId, itemIds } );
-	const cartInserted = await Cart.insert( cart );
+	const cartInserted = await Cart.create( cart );
 	return cartInserted;
 };
 const insertAddressesAndCart = async ( body: any, userId: any ) => {
@@ -54,7 +51,7 @@ const insertAddressesAndCart = async ( body: any, userId: any ) => {
 		insertAddresses( body, userId ),
 		insertCart( body, userId ),
 	] );
-	return zipObject( ['addresses', 'cart'], promisesResolutions ) as {addresses: IAddressHash; cart: Entity<ICart>};
+	return zipObject( ['addresses', 'cart'], promisesResolutions ) as {addresses: IAddressHash; cart: ICart & mongoose.Document};
 };
 
 const saveAndSaveQuote = async ( req: express.Request ) => {
@@ -63,25 +60,25 @@ const saveAndSaveQuote = async ( req: express.Request ) => {
 
 	const { addresses, cart } = await insertAddressesAndCart( body, userId );
 	const quote = {
-		billingAddressId: addresses.billingAddress.getId( 'main' ) as any,
-		shippingAddressId: addresses.shippingAddress.getId( 'main' ) as any,
+		billingAddressId: addresses.billingAddress._id,
+		shippingAddressId: addresses.shippingAddress._id,
 
-		cartId: cart.getId( 'main' ) as any,
+		cartId: cart._id,
 		userId,
 	};
-	const insertedQuote = await Quote.insert( quote ) as Entity<IQuote>;
+	const insertedQuote = await Quote.create( quote );
 
 	// TODO: Deep populate
-	const cartNoId = omitBy( cart.getAttributes( 'main' ), ( val, key ) => key.endsWith( 'Id' ) );
+	const cartNoId = omitBy( cart, ( val, key ) => key.endsWith( 'Id' ) );
 	const fullQuote = {
-		id: insertedQuote.getId( 'main' ),
+		id: insertedQuote._id,
 
-		billingAddress: addresses.billingAddress.getAttributes( 'main' ),
-		shippingAddress: addresses.shippingAddress.getAttributes( 'main' ),
+		billingAddress: addresses.billingAddress._id,
+		shippingAddress: addresses.shippingAddress._id,
 
 		cart: assign( cartNoId, { items: body.cart.items } ),
 		message: body.message,
-		user: ( req.user as Entity<IUser> ).getAttributes( 'main' ),
+		user: ( req.user as IUser & mongoose.Document ),
 	} as any as IQuote;
 	await sendQuoteMails( fullQuote, body.copyToUser );
 
@@ -100,7 +97,7 @@ export const quoteAction: express.RequestHandler = async ( req, res, next ) => {
 		if ( !insertedQuote ) {
 			return res.status( 500 ).send( 'WTF ?' );
 		}
-		return res.status( 201 ).send( { quoteId: insertedQuote.getId( 'main' ) } );
+		return res.status( 201 ).send( { quoteId: insertedQuote._id } );
 	} catch ( e ) {
 		logger.error( `An error occured while saving the quote & sending mails: ${e.message}` );
 	}

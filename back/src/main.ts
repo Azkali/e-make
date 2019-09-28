@@ -4,38 +4,32 @@ import express from 'express';
 import expressSession from 'express-session';
 import { castArray } from 'lodash';
 
-import { ExpressApiGenerator } from '@diaspora/plugin-server';
-
 import { initializePassport } from './authentication';
 import { logger } from './logger';
-import './models';
-import { Attribute, AttributeCategory, mainDataSource, Product } from './models';
 import { quoteAction } from './quoteAction';
-import { writeOnlyForAdmin } from './security';
 
-import { Server } from 'http';
 import { backConfig } from '../cross/config/environments/loader';
 import { makeAbsoluteUrlsNoRelativeProtocol } from '../cross/config/utils';
-import { loadMocks } from '../cross/mocks/loadMocks';
+import { apiMiddleware } from './api';
 
-const apiMiddleware = new ExpressApiGenerator( {
-	webserverType: 'express',
-	models: {
-		Product: {
-			middlewares: writeOnlyForAdmin,
-		},
-		User: {
-			middlewares: writeOnlyForAdmin,
-		},
-		AttributeCategory: {
-			plural: 'attributecategories',
-			middlewares: writeOnlyForAdmin,
-		},
-		Attribute: {
-			middlewares: writeOnlyForAdmin,
-		},
-	},
-} );
+// const apiMiddleware = new ExpressApiGenerator( {
+// 	webserverType: 'express',
+// 	models: {
+// 		Product: {
+// 			middlewares: writeOnlyForAdmin,
+// 		},
+// 		User: {
+// 			middlewares: writeOnlyForAdmin,
+// 		},
+// 		AttributeCategory: {
+// 			plural: 'attributecategories',
+// 			middlewares: writeOnlyForAdmin,
+// 		},
+// 		Attribute: {
+// 			middlewares: writeOnlyForAdmin,
+// 		},
+// 	},
+// } );
 
 const app = express();
 /*
@@ -53,8 +47,6 @@ app.use( expressSession( {
 	saveUninitialized: true,
 	cookie: backConfig.sessionCookie,
 } ) );
-
-const removeScheme = ( url: string ) => url.replace( /https?:\/\//, '' );
 
 const CORS_HOSTS = [
 	...makeAbsoluteUrlsNoRelativeProtocol( backConfig.common.front ),
@@ -84,25 +76,16 @@ app.use( ( req, res, next ) => {
 // Auth routes
 initializePassport( app );
 // Initialize the API
-app.use( backConfig.common.back.apiBaseUrl, apiMiddleware.middleware );
-
-mainDataSource.waitReady()
-	.then( () => loadMocks( 'main', AttributeCategory, Attribute, Product ) )
-	.then( async () => {
-		logger.debug( `Accepted CORS FQDN are ${CORS_HOSTS.map( v => `"${v}"` ).join( ', ' )}.` );
-		const port = backConfig.common.back.port || 80;
-		const loggableHost = backConfig.host || '(unspecified)';
-
-		return new Promise<Server>( ( resolve, reject ) => {
-			const httpServer = app.listen( port, backConfig.host, () => {
-				logger.info( `E-Make API listening on "${loggableHost}":${port}!` );
-				return resolve( httpServer );
-			} ).on( 'error', e =>
-				reject( new Error( `An error occured while starting the server on "${loggableHost}":${port}: ${e.message || e}` ) ) );
-		} );
-	} )
-	.catch( e => {
-		logger.error( `Failed to start E-Make API! ${e}` );
-	} );
+app.use( backConfig.common.back.apiBaseUrl, [bodyParser.json(), apiMiddleware] );
 
 app.post( '/quote', [bodyParser.json(), quoteAction] );
+
+logger.debug( `Accepted CORS FQDN are ${CORS_HOSTS.map( v => `"${v}"` ).join( ', ' )}.` );
+const port = backConfig.common.back.port || 80;
+const loggableHost = backConfig.host || '(unspecified)';
+
+const httpServer = app.listen( port, backConfig.host, () => {
+	logger.info( `E-Make API listening on "${loggableHost}":${port}!` );
+} ).on( 'error', e => {
+	throw new Error( `An error occured while starting the server on "${loggableHost}":${port}: ${e.message || e}` );
+} );
