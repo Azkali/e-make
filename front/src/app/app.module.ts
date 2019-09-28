@@ -25,6 +25,7 @@ import { ShopComponent } from '~pages/shop/shop.component';
 
 import { CartComponent } from '~modals/cart/cart.component';
 import { LoginComponent } from '~modals/login/login.component';
+import { RegisterComponent } from './modals/login/register.component';
 import { MenuComponent } from '~modals/menu/menu.component';
 import { PagerService } from './services/pager/pager';
 
@@ -54,6 +55,7 @@ import { LegalNoticeComponent } from './components/legal-notice/legal-notice.com
 		FieldComponent,
 		CartReviewComponent,
 		LegalNoticeComponent,
+		RegisterComponent,
 
 	],
 	imports: [
@@ -66,7 +68,7 @@ import { LegalNoticeComponent } from './components/legal-notice/legal-notice.com
 		BrowserAnimationsModule,
 		ShowdownModule.forRoot( { tables: true, tasklists: true } ),
 	],
-	entryComponents: [CartComponent, LoginComponent, MenuComponent, OrderFormComponent],
+	entryComponents: [CartComponent, LoginComponent, MenuComponent, OrderFormComponent, RegisterComponent],
 	providers: [WindowRef, PagerService],
 	bootstrap: [AppComponent],
 } )

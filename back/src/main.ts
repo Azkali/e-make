@@ -46,6 +46,7 @@ app.use( ( req, res, next ) => {
 } );
 */
 app.use( cookieParser() );
+app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( { extended: true } ) );
 app.use( expressSession( {
 	secret: 'keyboard cat',
@@ -105,4 +106,4 @@ mainDataSource.waitReady()
 		logger.error( `Failed to start E-Make API! ${e}` );
 	} );
 
-app.post( '/quote', [bodyParser.json(), quoteAction] );
+app.post( '/quote', quoteAction );

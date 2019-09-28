@@ -1,12 +1,12 @@
-import { OAuth2Strategy as GitHubStrategy } from 'passport-github';
-import { backConfig } from '../../cross/config/environments/loader';
 import passport from 'passport';
-import { User } from '../models';
-import { logger } from '../logger';
-import {  EAuthorization } from '../../cross/models';
+import { Strategy as GitHubStrategy } from 'passport-github';
+import { backConfig } from '../../cross/config/environments/loader';
 import { makeAbsoluteUrl } from '../../cross/config/utils';
+import {  EAuthorization } from '../../cross/models';
+import { logger } from '../logger';
+import { User } from '../models';
 
-const oauthConfig = backConfig.oauth;
+const oauthConfig = backConfig.authMethods;
 
 if ( oauthConfig.github ) {
 	passport.use( new GitHubStrategy(

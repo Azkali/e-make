@@ -3,7 +3,7 @@ import { sign } from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
-import { OAuth2Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
 
 import { User } from './models';
 
@@ -16,10 +16,13 @@ import { backConfig } from '../cross/config/environments/loader';
 import { makeAbsoluteUrl } from '../cross/config/utils';
 import { EAuthorization, IUser } from '../cross/models';
 
-import { createUser } from './authentication/index';
+import bodyParser = require( 'body-parser' );
+import './authentication/emailPass';
+import './authentication/github';
+import './authentication/google';
 
 // Passport serializer for emailPass
-passport.serializeUser( async ( user: Entity<IUser & {id: any}>, done: ( err: Error | null, user: any ) => void ) => {
+passport.serializeUser( async ( user: Entity<IUser & { id: any }>, done: ( err: Error | null, user: any ) => void ) => {
 	done( null, user.getProperties( 'main' ) );
 } );
 
@@ -59,7 +62,7 @@ if ( authConfig.google ) {
 			}
 		},
 	) );
-		}
+}
 if ( authConfig.github ) {
 	passport.use( new GitHubStrategy(
 		{
@@ -85,7 +88,7 @@ if ( authConfig.github ) {
 				} catch ( e ) {
 					logger.error( `An error occured when creating user for Github ID ${profile.id}: ${e.message}` );
 					return done( e, undefined );
-			}
+				}
 			}
 		},
 	) );
@@ -141,54 +144,64 @@ export const initializePassport = ( app: express.Express ) => {
 		`${backConfig.common.back.auth.baseAuthRoute}/google`,
 		passport.authenticate( 'google', {
 			scope: [
-			'email',
-			'profile',
+				'email',
+				'profile',
 			],
 		} ),
 	);
 
 	// Register User
-	if ( authConfig.emailPass ) {
-		app.post( '/register', ( req, res ) => {
+	app.post( '/register', async ( req, res, done ) => {
+		try {
 			const password = req.body.password;
 			const password2 = req.body.password2;
 
 			if ( password === password2 ) {
-				const newUser = new LocalStrategy( {
-				emailField: authConfig.emailPass.emailField,
-				passwordField: authConfig.emailPass.passwordField,
-			} );
+				try {
+					// Todo by @GerkinDev
+					// await User.insert( { email: req.body.email, password: req.body.password, authorizations:  } );
+					throw new Error( 'Not implemented' );
+				} catch ( e ) {
+					logger.error( `An error occured when creating user for USername ID ${req.body.email}: ${e.message}` );
+					return done( e );
+				}
+				res.send( { email: req.body.email, password: req.body.password } ).end();
+			} else {
+				res.status( 500 ).send( "{errors: \"Passwords don't match\"}" ).end();
+			}
 
-			 createUser( newUser, ( err, user ) => {
-				if ( err ) { throw err; }
-				res.send( user ).end();
-			} );
-		} else {
-			res.status( 500 ).send( "{errors: \"Passwords don't match\"}" ).end();
+			const createdUser = await User.insert( { email: req.body.email, authorizations: EAuthorization.User } );
+			if ( !createdUser ) {
+						throw new Error( 'Could not create a new user' );
+					}
+			logger.verbose( `Created new user ${createdUser.getId( 'main' )} for Username ID ${req.body.email}` );
+			return done( createdUser );
+		} catch ( e ) {
+			logger.error( `An error occured when creating user for USername ID ${req.body.email}: ${e.message}` );
+			return done( e );
 		}
 	} );
 
 	// Endpoint to login
-	 app.post(
-		'/login',
-		passport.authenticate( 'local' ),
+ app.post(
+		`${backConfig.common.back.auth.baseAuthRoute}/emailPass`,
+		passport.authenticate( 'local-signin' ),
 		( req, res ) => {
 			res.send( req.user );
 		} );
 
 	// Endpoint to get current user
-	 app.get( '/user', ( req, res ) => {
+ app.get( '/user', ( req, res ) => {
 		res.send( req.user );
 	} );
 
 	// Endpoint to logout
-	 app.get( '/logout', ( req, res ) => {
+ app.get( '/logout', ( req, res ) => {
 		req.logout();
 		res.send( undefined );
 	} );
-}
 
-	if ( authConfig.google ) {
+ if ( authConfig.google ) {
 		// GET /auth/google/callback
 		//   Use passport.authenticate() as route middleware to authenticate the
 		//   request.  If authentication fails, the user will be redirected back to the
@@ -213,7 +226,7 @@ export const initializePassport = ( app: express.Express ) => {
 		);
 	}
 
-	app.get(
+ app.get(
 		`${backConfig.common.back.auth.baseAuthRoute}/github`,
 		passport.authenticate( 'github', {
 			scope: [
@@ -223,7 +236,7 @@ export const initializePassport = ( app: express.Express ) => {
 		} ),
 	);
 
-	if ( authConfig.github ) {
+ if ( authConfig.github ) {
 		// GET /auth/github/callback
 		//   Use passport.authenticate() as route middleware to authenticate the
 		//   request.  If authentication fails, the user will be redirected back to the

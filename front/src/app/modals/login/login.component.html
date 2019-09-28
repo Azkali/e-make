@@ -16,7 +16,10 @@
 				</div>
 				<div class="col-12">
 					<p *ngIf="(formSendState | async) === false">Form sending failed. Please retry later.</p>
-					<button class="button primary fit" [disabled]="!formLogin.valid"><i class="fas fa-cubes"></i> Login </button>
+					<button (click)="send()" class="button primary fit" [disabled]="!formLogin.valid"><i class="fas fa-cubes"></i> Login </button>
+				</div>
+				<div class="col-12">
+					<button (click)="openRegisterModal()" class="button primary fit"><i class="fas fa-cubes"></i> Register </button>
 				</div>
 			</div>
 		</form>

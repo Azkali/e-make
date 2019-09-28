@@ -12,7 +12,7 @@ export const backConfig: IBackConfig = {
 			appId: 'the-app-id',
 			appSecret: 'the-app-secret',
 			redirectUrl: '/auth/google/callback',
-		},
+		}
 	},
 	// Usually, you should bind every exposed interface.
 	// Letting the OS guessing the network interface may allow to bind both ipv6 & ipv4.

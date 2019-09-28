@@ -22,7 +22,7 @@ export interface ICommonConfig {
 export namespace ICommonConfig {
 	export interface IBackAuthPathConfig {
 		baseAuthRoute: string;
-		availableMethods: Array<keyof IBackConfig.IAuthMethodsConfig>;
+		availableMethods: Array<keyof IBackConfig.IAuthMethodsConfig | 'emailPass'>;
 	}
 }
 
@@ -44,7 +44,6 @@ export namespace IBackConfig {
 	export interface IAuthMethodsConfig {
 		google?: IAuthMethodsConfig.IGoogleOAuthConfig;
 		github?: IAuthMethodsConfig.IGithubOAuthConfig;
-		emailPass?: IUserAuth.IEmailPassConfig;
 	}
 
 	export namespace IAuthMethodsConfig {
@@ -60,15 +59,6 @@ export namespace IBackConfig {
 			redirectUrl: string;
 		}
 	}
-
-	export namespace IUserAuth {
-
-		export interface IEmailPassConfig {
-			emailField: string;
-			passwordField: string;
-		}
-	}
-
 
 	export interface IMailConfig {
 		quoteRecipients: IMailConfig.IMailAddress[];
