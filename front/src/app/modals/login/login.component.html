@@ -23,8 +23,6 @@
 				</div>
 			</div>
 		</form>
-<!-- 
-		<p>For now, you can only log in using one of the social medias bellow. Choose your favorite method to continue.</p> -->
 		<p>
 			<a (click)="openLoginPopup(EAuthProvider.Google)" [href]="getLoginUrl(EAuthProvider.Google)" target="popup"><i class="alt fab fa-google"></i></a>
 			<a (click)="openLoginPopup(EAuthProvider.Github)" [href]="getLoginUrl(EAuthProvider.Github)" target="popup"><i class="alt fab fa-github"></i></a>
